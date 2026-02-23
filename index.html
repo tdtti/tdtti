@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>School Bus Management System</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+body{
+    margin:0;
+    font-family:Arial, sans-serif;
+    background:#f4f6f9;
+}
+
+header{
+    background:#1565c0;
+    color:white;
+    padding:15px;
+    text-align:center;
+}
+
+nav{
+    background:#0d47a1;
+    padding:10px;
+    display:none;
+}
+
+nav button{
+    background:white;
+    border:none;
+    padding:8px 12px;
+    margin-right:5px;
+    cursor:pointer;
+    font-weight:bold;
+}
+
+section{
+    display:none;
+    padding:20px;
+}
+
+section.active{
+    display:block;
+}
+
+input{
+    padding:6px;
+    margin:4px;
+}
+
+button{
+    padding:6px 10px;
+    margin:4px;
+    cursor:pointer;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+    background:white;
+    margin-top:10px;
+}
+
+th,td{
+    border:1px solid #ccc;
+    padding:8px;
+}
+
+th{
+    background:#e3f2fd;
+}
+
+.card{
+    background:white;
+    padding:15px;
+    margin-bottom:15px;
+    border-radius:6px;
+    box-shadow:0 2px 6px rgba(0,0,0,0.1);
+}
+
+#map{
+    height:400px;
+    margin-top:10px;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<h2>School Bus Management System</h2>
+</header>
+
+<!-- LOGIN -->
+<section id="loginSection" class="active">
+<h3>Login</h3>
+<input id="username" placeholder="Username">
+<input id="password" type="password" placeholder="Password">
+<button onclick="login()">Login</button>
+<p id="loginMsg" style="color:red;"></p>
+</section>
+
+<!-- NAV -->
+<nav id="mainNav">
+<button onclick="showSection('dashboard')">Dashboard</button>
+<button onclick="showSection('students')">Students</button>
+<button onclick="showSection('billing')">Billing</button>
+<button onclick="showSection('tracking')">GPS Tracking</button>
+<button onclick="logout()">Logout</button>
+</nav>
+
+<!-- DASHBOARD -->
+<section id="dashboard">
+<div class="card">
+<h3>Financial Summary</h3>
+<div id="financeSummary"></div>
+</div>
+</section>
+
+<!-- STUDENTS -->
+<section id="students">
+<div class="card">
+<h3>Add Student</h3>
+<input id="s_id" placeholder="ID">
+<input id="s_name" placeholder="Name">
+<input id="s_class" placeholder="Class">
+<input id="s_route" placeholder="Route ID">
+<input id="s_pickup" placeholder="Pickup">
+<input id="s_phone" placeholder="Phone">
+<input id="s_fee" placeholder="Monthly Fee">
+<button onclick="addStudent()">Add</button>
+</div>
+
+<div class="card">
+<h3>Students List</h3>
+<input placeholder="Search..." onkeyup="filterTable('studentsTable',this.value)">
+<button onclick="loadSheet('Students','studentsTable')">Refresh</button>
+<table id="studentsTable"></table>
+</div>
+</section>
+
+<!-- BILLING -->
+<section id="billing">
+<div class="card">
+<h3>Generate Monthly Bills</h3>
+<input id="billMonth" placeholder="Jan-2026">
+<button onclick="generateBills()">Generate</button>
+</div>
+
+<div class="card">
+<h3>Payments</h3>
+<button onclick="loadSheet('Payments','paymentsTable')">Load Payments</button>
+<table id="paymentsTable"></table>
+</div>
+</section>
+
+<!-- GPS TRACKING -->
+<section id="tracking">
+<div class="card">
+<h3>Live GPS Simulation</h3>
+<input id="trackRoute" placeholder="Route ID">
+<button onclick="startTracking()">Start</button>
+<div id="map"></div>
+</div>
+</section>
+
+<script src="https://maps.googleapis.com/maps/api/js?key=YOUR_GOOGLE_MAPS_KEY"></script>
+
+<script>
+/* ================= CONFIG ================= */
+const API_URL = "https://script.google.com/macros/s/AKfycbz2dT4E_hso57GziRiE8Jxppskwl5IcdBiIbgmSDCRHzShwFNj648sPjok0QZOIPo9u/exec";
+
+/* ================= GLOBAL ================= */
+let CURRENT_USER = null;
+let map, marker, path=[], index=0;
+
+/* ================= LOGIN ================= */
+async function login(){
+
+    const res = await fetch(API_URL + "?action=login",{
+        method:"POST",
+        body:JSON.stringify({
+            username:username.value,
+            password:password.value
+        })
+    });
+
+    const data = await res.json();
+
+    if(data.status==="success"){
+        CURRENT_USER = data;
+        loginSection.classList.remove("active");
+        mainNav.style.display="block";
+        showSection("dashboard");
+        loadFinance();
+    }else{
+        loginMsg.innerText="Invalid login";
+    }
+}
+
+/* ================= LOGOUT ================= */
+function logout(){
+    location.reload();
+}
+
+/* ================= NAVIGATION ================= */
+function showSection(id){
+    document.querySelectorAll("section").forEach(s=>s.classList.remove("active"));
+    document.getElementById(id).classList.add("active");
+}
+
+/* ================= LOAD SHEET ================= */
+async function loadSheet(sheet, tableId){
+
+    const res = await fetch(API_URL+"?sheet="+sheet);
+    const data = await res.json();
+
+    const table=document.getElementById(tableId);
+    table.innerHTML="";
+
+    data.forEach((row,i)=>{
+        const tr=document.createElement("tr");
+        row.forEach(cell=>{
+            const el=document.createElement(i===0?"th":"td");
+            el.textContent=cell;
+            tr.appendChild(el);
+        });
+        table.appendChild(tr);
+    });
+}
+
+/* ================= FILTER TABLE ================= */
+function filterTable(tableId,query){
+    query=query.toLowerCase();
+    const rows=document.querySelectorAll("#"+tableId+" tr");
+    rows.forEach((r,i)=>{
+        if(i===0) return;
+        r.style.display=r.innerText.toLowerCase().includes(query)?"":"none";
+    });
+}
+
+/* ================= ADD STUDENT ================= */
+async function addStudent(){
+
+    const row=[
+        s_id.value,
+        s_name.value,
+        CURRENT_USER.school_id,
+        s_class.value,
+        s_route.value,
+        s_pickup.value,
+        s_phone.value,
+        s_fee.value,
+        "Active"
+    ];
+
+    await fetch(API_URL+"?sheet=Students",{
+        method:"POST",
+        body:JSON.stringify(row)
+    });
+
+    alert("Student Added");
+}
+
+/* ================= BILLING ================= */
+async function generateBills(){
+
+    await fetch(API_URL+"?action=generateBills",{
+        method:"POST",
+        body:JSON.stringify({
+            month:billMonth.value,
+            school_id:CURRENT_USER.school_id
+        })
+    });
+
+    alert("Bills Generated");
+}
+
+/* ================= FINANCE SUMMARY ================= */
+async function loadFinance(){
+
+    const res=await fetch(API_URL+"?sheet=Ledger");
+    const data=await res.json();
+
+    let debit=0,credit=0;
+
+    for(let i=1;i<data.length;i++){
+        debit+=Number(data[i][3]);
+        credit+=Number(data[i][4]);
+    }
+
+    financeSummary.innerHTML=
+        "<strong>Total Revenue:</strong> "+debit+
+        "<br><strong>Total Expenses:</strong> "+credit+
+        "<br><strong>Net Balance:</strong> "+(debit-credit);
+}
+
+/* ================= GPS SIMULATION ================= */
+async function startTracking(){
+
+    const routeId=trackRoute.value;
+
+    const res=await fetch(API_URL+"?sheet=Routes");
+    const data=await res.json();
+
+    for(let i=1;i<data.length;i++){
+        if(data[i][0]===routeId){
+            path=JSON.parse(data[i][4]);
+            break;
+        }
+    }
+
+    if(!path.length){
+        alert("Route not found");
+        return;
+    }
+
+    map=new google.maps.Map(document.getElementById("map"),{
+        zoom:15,
+        center:path[0]
+    });
+
+    marker=new google.maps.Marker({
+        position:path[0],
+        map:map
+    });
+
+    index=0;
+
+    setInterval(()=>{
+        if(index>=path.length) index=0;
+        marker.setPosition(path[index]);
+        map.panTo(path[index]);
+        index++;
+    },3000);
+}
+
+</script>
+
+</body>
+</html>
