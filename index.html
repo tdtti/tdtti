@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Age & BMI Calculator</title>
+    <title>Age, BMI & Fitness Tracker</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap');
 
@@ -21,7 +21,7 @@
             background-color: #1f1f47;
             padding: 30px 40px;
             border-radius: 15px;
-            width: 360px;
+            width: 380px;
             box-shadow: 0 4px 20px rgba(0,0,0,0.4);
             text-align: center;
         }
@@ -30,7 +30,6 @@
             font-weight: 700;
             letter-spacing: 1.2px;
         }
-
         /* Tabs styling */
         .tabs {
             display: flex;
@@ -96,7 +95,7 @@
         .result {
             margin-top: 30px;
             min-height: 90px;
-            font-size: 20px;
+            font-size: 18px;
             font-weight: 700;
             background: rgba(255 255 255 / 0.15);
             border-radius: 15px;
@@ -108,25 +107,23 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            white-space: nowrap;
+            white-space: normal;
+            text-align: center;
         }
         .line {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin: 5px 0;
-            gap: 12px;
+            margin: 6px 0;
         }
         .num {
-            background: #764ba2;
             color: #fff;
-            border-radius: 16px;
-            padding: 6px 20px;
             font-weight: 800;
-            font-size: 24px;
-            min-width: 56px;
-            text-align: center;
+            font-size: 22px;
+            background: #764ba2;
+            border-radius: 16px;
+            padding: 4px 14px;
             box-shadow: 0 0 8px #764ba2;
+            display: inline-block;
+            min-width: 48px;
+            text-align: center;
             font-feature-settings: "tnum";
         }
         /* Spinner styles */
@@ -150,11 +147,12 @@
     </style>
 </head>
 <body>
-    <div class="container" role="main" aria-label="Age and BMI Calculator">
+    <div class="container" role="main" aria-label="Age, BMI and Fitness Tracker">
         <h1>Calculator</h1>
         <nav class="tabs" role="tablist">
-            <div id="tab-age" class="tab active" role="tab" aria-selected="true" tabindex="0" aria-controls="panel-age" >Age </div>
-            <div id="tab-bmi" class="tab" role="tab" aria-selected="false" tabindex="-1" aria-controls="panel-bmi">BMI </div>
+            <div id="tab-age" class="tab active" role="tab" aria-selected="true" tabindex="0" aria-controls="panel-age" >Age</div>
+            <div id="tab-bmi" class="tab" role="tab" aria-selected="false" tabindex="-1" aria-controls="panel-bmi">BMI</div>
+            <div id="tab-fitness" class="tab" role="tab" aria-selected="false" tabindex="-1" aria-controls="panel-fitness">Fitness</div>
         </nav>
 
         <section id="panel-age" role="tabpanel" aria-labelledby="tab-age">
@@ -174,57 +172,71 @@
             <div class="spinner" id="spinnerBmi" aria-hidden="true"></div>
             <div class="result" id="resultBmi" aria-live="polite" aria-atomic="true"></div>
         </section>
+
+        <section id="panel-fitness" role="tabpanel" aria-labelledby="tab-fitness" hidden>
+            <label for="steps">Steps Walked Today</label>
+            <input type="number" id="steps" min="0" max="100000" step="1" placeholder="e.g. 8000" />
+            <label for="workout">Workout Minutes</label>
+            <input type="number" id="workout" min="0" max="1440" step="1" placeholder="e.g. 45" />
+            <label for="sleep">Sleep Hours Last Night</label>
+            <input type="number" id="sleep" min="0" max="24" step="0.1" placeholder="e.g. 7.5" />
+            <button id="calcFitnessBtn">Check Fitness</button>
+            <div class="spinner" id="spinnerFitness" aria-hidden="true"></div>
+            <div class="result" id="resultFitness" aria-live="polite" aria-atomic="true"></div>
+        </section>
     </div>
 
 <script>
-    /* Tab switching */
-    const tabAge = document.getElementById('tab-age');
-    const tabBmi = document.getElementById('tab-bmi');
-    const panelAge = document.getElementById('panel-age');
-    const panelBmi = document.getElementById('panel-bmi');
+    // Tab switching logic
+    const tabs = {
+        age: document.getElementById('tab-age'),
+        bmi: document.getElementById('tab-bmi'),
+        fitness: document.getElementById('tab-fitness'),
+    }
+    const panels = {
+        age: document.getElementById('panel-age'),
+        bmi: document.getElementById('panel-bmi'),
+        fitness: document.getElementById('panel-fitness'),
+    }
 
-    function activateTab(tabToActivate) {
-        if(tabToActivate === 'age') {
-            tabAge.classList.add('active');
-            tabAge.setAttribute('aria-selected', 'true');
-            tabAge.tabIndex = 0;
-            panelAge.removeAttribute('hidden');
-
-            tabBmi.classList.remove('active');
-            tabBmi.setAttribute('aria-selected', 'false');
-            tabBmi.tabIndex = -1;
-            panelBmi.setAttribute('hidden', '');
-        } else {
-            tabBmi.classList.add('active');
-            tabBmi.setAttribute('aria-selected', 'true');
-            tabBmi.tabIndex = 0;
-            panelBmi.removeAttribute('hidden');
-
-            tabAge.classList.remove('active');
-            tabAge.setAttribute('aria-selected', 'false');
-            tabAge.tabIndex = -1;
-            panelAge.setAttribute('hidden', '');
+    function activateTab(tabName) {
+        for (const key in tabs) {
+            if (key === tabName) {
+                tabs[key].classList.add('active');
+                tabs[key].setAttribute('aria-selected', 'true');
+                tabs[key].tabIndex = 0;
+                panels[key].removeAttribute('hidden');
+            } else {
+                tabs[key].classList.remove('active');
+                tabs[key].setAttribute('aria-selected', 'false');
+                tabs[key].tabIndex = -1;
+                panels[key].setAttribute('hidden', '');
+            }
         }
     }
-    tabAge.addEventListener('click', () => activateTab('age'));
-    tabBmi.addEventListener('click', () => activateTab('bmi'));
 
-    tabAge.addEventListener('keydown', e => {
-        if(e.key === 'ArrowRight' || e.key === 'ArrowDown') {
-            e.preventDefault();
-            activateTab('bmi');
-            tabBmi.focus();
-        }
-    });
-    tabBmi.addEventListener('keydown', e => {
-        if(e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
-            e.preventDefault();
-            activateTab('age');
-            tabAge.focus();
-        }
+    Object.values(tabs).forEach(tab => {
+        tab.addEventListener('click', () => activateTab(tab.id.replace('tab-', '')));
+        tab.addEventListener('keydown', e => {
+            if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+                e.preventDefault();
+                const keys = Object.keys(tabs);
+                const idx = keys.indexOf(tab.id.replace('tab-', ''));
+                const nextIdx = (idx + 1) % keys.length;
+                activateTab(keys[nextIdx]);
+                tabs[keys[nextIdx]].focus();
+            } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+                e.preventDefault();
+                const keys = Object.keys(tabs);
+                const idx = keys.indexOf(tab.id.replace('tab-', ''));
+                const prevIdx = (idx - 1 + keys.length) % keys.length;
+                activateTab(keys[prevIdx]);
+                tabs[keys[prevIdx]].focus();
+            }
+        });
     });
 
-    /* Age Calculator code */
+    // Existing Age Calculator code
     const birthdateInput = document.getElementById('birthdate');
     const calcAgeBtn = document.getElementById('calcAgeBtn');
     const resultAge = document.getElementById('resultAge');
@@ -297,7 +309,7 @@
         }, 1000);
     });
 
-    /* BMI Calculator code */
+    // Existing BMI Calculator code
     const weightInput = document.getElementById('weight');
     const heightInput = document.getElementById('height');
     const calcBmiBtn = document.getElementById('calcBmiBtn');
@@ -347,6 +359,70 @@
             resultBmi.innerHTML = `
                 <div class="line">BMI: <span class="num">${bmi.toFixed(1)}</span></div>
                 <div class="line">Category: <span class="num">${category}</span></div>
+            `;
+        }, 1000);
+    });
+
+    // New Fitness Tracker code
+    const stepsInput = document.getElementById('steps');
+    const workoutInput = document.getElementById('workout');
+    const sleepInput = document.getElementById('sleep');
+    const calcFitnessBtn = document.getElementById('calcFitnessBtn');
+    const resultFitness = document.getElementById('resultFitness');
+    const spinnerFitness = document.getElementById('spinnerFitness');
+
+    function evaluateFitness(steps, workoutMins, sleepHrs) {
+        let messages = [];
+
+        if(steps < 5000) messages.push("You should walk more. Aim for at least 5000 steps.");
+        else messages.push("Great job on your steps!");
+
+        if(workoutMins < 30) messages.push("Try to workout at least 30 minutes a day.");
+        else messages.push("Good workout time today!");
+
+        if(sleepHrs < 7) messages.push("Try to get at least 7 hours of sleep.");
+        else if(sleepHrs > 10) messages.push("Too much sleep can also affect your energy.");
+        else messages.push("Nice sleep duration!");
+
+        return messages;
+    }
+
+    calcFitnessBtn.addEventListener('click', () => {
+        const steps = parseInt(stepsInput.value, 10);
+        const workoutMins = parseInt(workoutInput.value, 10);
+        const sleepHrs = parseFloat(sleepInput.value);
+        resultFitness.textContent = '';
+
+        if(isNaN(steps) || steps < 0) {
+            resultFitness.textContent = "Please enter a valid number of steps.";
+            return;
+        }
+        if(isNaN(workoutMins) || workoutMins < 0) {
+            resultFitness.textContent = "Please enter valid workout minutes.";
+            return;
+        }
+        if(isNaN(sleepHrs) || sleepHrs <= 0 || sleepHrs > 24) {
+            resultFitness.textContent = "Please enter valid sleep hours (0-24).";
+            return;
+        }
+
+        spinnerFitness.classList.add('active');
+        calcFitnessBtn.disabled = true;
+
+        setTimeout(() => {
+            spinnerFitness.classList.remove('active');
+            calcFitnessBtn.disabled = false;
+
+            const msgs = evaluateFitness(steps, workoutMins, sleepHrs);
+
+            resultFitness.innerHTML = `
+                <div class="line">Steps: <span class="num">${steps}</span></div>
+                <div class="line">Workout Minutes: <span class="num">${workoutMins}</span></div>
+                <div class="line">Sleep Hours: <span class="num">${sleepHrs.toFixed(1)}</span></div>
+                <div style="margin-top:12px; font-weight:600; font-size:16px; color:#ffd;">Health Tips:</div>
+                <ul style="text-align:left; margin: 8px 20px 0; padding-left: 20px; color: #ffe;">
+                    ${msgs.map(m => `<li>${m}</li>`).join('')}
+                </ul>
             `;
         }, 1000);
     });
