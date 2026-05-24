@@ -3,353 +3,119 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Uthsav Registration - TDTTI Thuravoor</title>
-    <!-- Tailwind CSS for styling -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Supabase JS Library CDN -->
+    <title>Simple Data Saver</title>
+    <!-- We load the Supabase JavaScript library from a Content Delivery Network (CDN) -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 50px;
+            background-color: #f4f4f9;
+        }
+        .form-container {
+            max-width: 400px;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input[type="text"], input[type="email"] {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #message {
+            margin-top: 15px;
+            font-weight: bold;
+        }
+    </style>
 </head>
-<body class="bg-gray-100 min-h-screen py-8">
+<body>
 
-    <div class="max-w-4xl mx-auto bg-white rounded-lg shadow-md overflow-hidden">
-        
-        <!-- Header Section -->
-        <div class="bg-blue-800 text-white p-6 text-center flex flex-col items-center justify-center border-b-4 border-yellow-500">
-            <!-- School Logo Placeholder -->
-            <div class="w-20 h-20 bg-white rounded-full flex items-center justify-center mb-3 shadow">
-                <span class="text-blue-800 font-bold text-xs">LOGO</span>
+    <div class="form-container">
+        <h2>Contact Form</h2>
+        <form id="contactForm">
+            <div class="form-group">
+                <label for="userName">Name</label>
+                <input type="text" id="userName" required placeholder="Enter your name">
             </div>
-            <h1 class="text-3xl font-bold tracking-wide">TDTTI THURAVOOR</h1>
-            <p class="text-yellow-300 font-semibold mt-1">UTHAV REGISTRATION PORTAL</p>
-        </div>
-
-        <!-- Main Body -->
-        <div class="p-6">
-            
-            <!-- Step 1: Student Search Section -->
-            <div class="mb-8 p-4 bg-blue-50 rounded-lg border border-blue-200">
-                <h2 class="text-lg font-bold text-blue-900 mb-3">1. Find Student Details</h2>
-                <div class="flex flex-col md:flex-row gap-3">
-                    <input type="text" id="searchInput" placeholder="Search by Adm No, Name, or Phone..." 
-                           class="flex-grow p-2.5 border rounded border-gray-300 focus:ring-2 focus:ring-blue-500 focus:outline-none">
-                    <button type="button" onclick="searchStudent()" 
-                            class="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-2.5 rounded transition duration-200">
-                        Search Student
-                    </button>
-                </div>
-                <p id="searchStatus" class="text-sm mt-2 text-gray-600 font-medium"></p>
+            <div class="form-group">
+                <label for="userEmail">Email</label>
+                <input type="email" id="userEmail" required placeholder="Enter your email">
             </div>
-
-            <!-- Registration Form -->
-            <form id="registrationForm" onsubmit="submitRegistration(event)" class="space-y-6">
-                
-                <!-- Student Details Grid (Auto-populated/Editable) -->
-                <div>
-                    <h2 class="text-lg font-bold text-gray-800 mb-3 border-b pb-1">Student Details</h2>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700">Admission Number *</label>
-                            <input type="text" id="admNo" required readonly
-                                   class="mt-1 block w-full p-2.5 border rounded bg-gray-50 border-gray-300">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700">Student Name</label>
-                            <input type="text" id="stdName" readonly
-                                   class="mt-1 block w-full p-2.5 border rounded bg-gray-50 border-gray-300">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700">Gender</label>
-                            <input type="text" id="stdGender" readonly
-                                   class="mt-1 block w-full p-2.5 border rounded bg-gray-50 border-gray-300">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700">Class</label>
-                            <input type="text" id="stdClass" readonly
-                                   class="mt-1 block w-full p-2.5 border rounded bg-gray-50 border-gray-300">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700">Division</label>
-                            <input type="text" id="stdDiv" readonly
-                                   class="mt-1 block w-full p-2.5 border rounded bg-gray-50 border-gray-300">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700">Phone Number</label>
-                            <input type="text" id="stdPhone" readonly
-                                   class="mt-1 block w-full p-2.5 border rounded bg-gray-50 border-gray-300">
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Fest & Item Selection Section -->
-                <div>
-                    <h2 class="text-lg font-bold text-gray-800 mb-3 border-b pb-1">Select Fest and Item</h2>
-                    
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700">Name of Fest *</label>
-                            <select id="festSelect" onchange="onFestChange()" required disabled
-                                    class="mt-1 block w-full p-2.5 border rounded border-gray-300 focus:ring-2 focus:ring-blue-500">
-                                <option value="">-- Select Fest --</option>
-                                <option value="General Kalothswom">General Kalothswom</option>
-                                <option value="Sanskrit Kalothswom">Sanskrit Kalothswom</option>
-                                <option value="Arabic Kalothswom">Arabic Kalothswom</option>
-                                <option value="Art Fest">Art Fest</option>
-                                <option value="Work Experience">Work Experience</option>
-                                <option value="Maths Fest">Maths Fest</option>
-                                <option value="Science Fest">Science Fest</option>
-                                <option value="Social Science">Social Science</option>
-                                <option value="IT Fair">IT Fair</option>
-                                <option value="Sports Fest">Sports Fest</option>
-                            </select>
-                        </div>
-
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700">Select Item *</label>
-                            <select id="itemSelect" onchange="onItemChange()" required disabled
-                                    class="mt-1 block w-full p-2.5 border rounded border-gray-300 focus:ring-2 focus:ring-blue-500">
-                                <option value="">-- Select Item --</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Selected Item Properties (Auto-fetched fields) -->
-                <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
-                    <h3 class="text-sm font-bold text-gray-700 mb-3">Item Parameters</h3>
-                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-                        <div>
-                            <label class="block text-xs font-medium text-gray-500">Item Code</label>
-                            <input type="text" id="itemCode" readonly class="mt-1 block w-full p-2 border rounded bg-white text-gray-700">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-medium text-gray-500">Category Restriction</label>
-                            <input type="text" id="itemCategory" readonly class="mt-1 block w-full p-2 border rounded bg-white text-gray-700">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-medium text-gray-500">No. of Participants</label>
-                            <input type="text" id="itemParticipants" readonly class="mt-1 block w-full p-2 border rounded bg-white text-gray-700">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-medium text-gray-500">Duration</label>
-                            <input type="text" id="itemDuration" readonly class="mt-1 block w-full p-2 border rounded bg-white text-gray-700">
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Submit Button -->
-                <div class="pt-4">
-                    <button type="submit" id="submitBtn" disabled
-                            class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded shadow transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed">
-                        Register Student for Fest
-                    </button>
-                </div>
-            </form>
-
-            <!-- Status Indicator -->
-            <div id="formStatus" class="mt-4 p-3 rounded hidden"></div>
-
-        </div>
+            <button type="submit">Save Data</button>
+        </form>
+        <div id="message"></div>
     </div>
 
-    <!-- Script to handle application logic -->
     <script>
-        // --- CONFIGURATION ---
-        const SUPABASE_URL = 'sb_publishable_p6e4bD-47huN4-iCefBdtw_KbBc1hwd'; 
-        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpsaWd4YmJmbXhkbGdsYnBmbnBlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk2MjUwMTAsImV4cCI6MjA5NTIwMTAxMH0.gBw-iewIWW6PUofIo31KWZP7gzvO363LL3UAZzqH4rM'; 
+        // 1. Replace these variables with your actual Supabase credentials
+        const SUPABASE_URL = "sb_publishable_Qlf1BmVdHYarOxZJmQh8FQ_BEXFDBtl"; 
+        const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpsaWd4YmJmbXhkbGdsYnBmbnBlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk2MjUwMTAsImV4cCI6MjA5NTIwMTAxMH0.gBw-iewIWW6PUofIo31KWZP7gzvO363LL3UAZzqH4rM";
 
-        // Initialize Supabase Client
-        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        // 2. Initialize the Supabase Client
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        // State Store
-        let currentStudent = null;
-        let fetchedItems = [];
+        // 3. Select the elements from our HTML
+        const form = document.getElementById('contactForm');
+        const messageDiv = document.getElementById('message');
 
-        // 1. Search Student Logic
-        async function searchStudent() {
-            const queryValue = document.getElementById('searchInput').value.trim();
-            const statusEl = document.getElementById('searchStatus');
-            
-            if (!queryValue) {
-                statusEl.textContent = 'Please enter a search term.';
-                statusEl.className = 'text-sm mt-2 text-red-600 font-medium';
-                return;
-            }
+        // 4. Listen for when the form is submitted
+        form.addEventListener('submit', async function(event) {
+            event.preventDefault(); // Prevents the page from refreshing
 
-            statusEl.textContent = 'Searching...';
-            statusEl.className = 'text-sm mt-2 text-blue-600 font-medium';
+            // Get the values entered by the user
+            const nameValue = document.getElementById('userName').value;
+            const emailValue = document.getElementById('userEmail').value;
+
+            messageDiv.style.color = "black";
+            messageDiv.innerText = "Saving data...";
 
             try {
-                // Search table where admission_number, name, or phone matches input
+                // Send the data to the 'contacts' table in Supabase
                 const { data, error } = await supabaseClient
-                    .from('students')
-                    .select('*')
-                    .or(`admission_number.eq.${queryValue},name.ilike.%${queryValue}%,phone_no.eq.${queryValue}`);
+                    .from('contacts')
+                    .insert([
+                        { name: nameValue, email: emailValue }
+                    ]);
 
-                if (error) throw error;
-
-                if (data && data.length > 0) {
-                    const student = data[0];
-                    currentStudent = student;
-                    
-                    // Auto-populate readonly fields
-                    document.getElementById('admNo').value = student.admission_number;
-                    document.getElementById('stdName').value = student.name;
-                    document.getElementById('stdGender').value = student.gender;
-                    document.getElementById('stdClass').value = student.class;
-                    document.getElementById('stdDiv').value = student.division;
-                    document.getElementById('stdPhone').value = student.phone_no;
-
-                    statusEl.textContent = `Student "${student.name}" found.`;
-                    statusEl.className = 'text-sm mt-2 text-green-600 font-medium';
-
-                    // Enable Fest dropdown and Submit button
-                    document.getElementById('festSelect').disabled = false;
-                    document.getElementById('submitBtn').disabled = false;
-                    
-                    // Reset selected items in case we are changing search
-                    resetItemFields();
-                } else {
-                    statusEl.textContent = 'No matching student record found.';
-                    statusEl.className = 'text-sm mt-2 text-red-600 font-medium';
-                    clearStudentFields();
-                }
-            } catch (err) {
-                console.error(err);
-                statusEl.textContent = 'Error connecting to database.';
-                statusEl.className = 'text-sm mt-2 text-red-600 font-medium';
-            }
-        }
-
-        // 2. Fetch Filtered Items based on selected Fest & Student Gender (Category restriction)
-        async function onFestChange() {
-            const selectedFest = document.getElementById('festSelect').value;
-            const itemSelectEl = document.getElementById('itemSelect');
-            resetItemFields();
-
-            if (!selectedFest || !currentStudent) {
-                itemSelectEl.disabled = true;
-                return;
-            }
-
-            try {
-                // Show items belonging to chosen fest, matching 'General' category or student's gender category
-                const { data, error } = await supabaseClient
-                    .from('fest_items')
-                    .select('*')
-                    .eq('fest_name', selectedFest)
-                    .in('category', ['General', currentStudent.gender]);
-
-                if (error) throw error;
-
-                fetchedItems = data || [];
-                itemSelectEl.innerHTML = '<option value="">-- Select Item --</option>';
-
-                if (fetchedItems.length > 0) {
-                    fetchedItems.forEach(item => {
-                        const opt = document.createElement('option');
-                        opt.value = item.item_code;
-                        opt.textContent = `${item.item_name} (${item.category})`;
-                        itemSelectEl.appendChild(opt);
-                    });
-                    itemSelectEl.disabled = false;
-                } else {
-                    itemSelectEl.innerHTML = '<option value="">No items available for this gender category</option>';
-                    itemSelectEl.disabled = true;
+                if (error) {
+                    throw error;
                 }
 
-            } catch (err) {
-                console.error(err);
-                alert('Error fetching items from database.');
-            }
-        }
-
-        // 3. Auto-populate parameters when Item is chosen
-        function onItemChange() {
-            const selectedItemCode = document.getElementById('itemSelect').value;
-            const matchedItem = fetchedItems.find(item => item.item_code === selectedItemCode);
-
-            if (matchedItem) {
-                document.getElementById('itemCode').value = matchedItem.item_code;
-                document.getElementById('itemCategory').value = matchedItem.category;
-                document.getElementById('itemParticipants').value = matchedItem.no_of_participants;
-                document.getElementById('itemDuration').value = matchedItem.duration;
-            } else {
-                resetItemFields();
-            }
-        }
-
-        // 4. Save Registration Records
-        async function submitRegistration(e) {
-            e.preventDefault();
-            const statusEl = document.getElementById('formStatus');
-            statusEl.className = "mt-4 p-3 rounded hidden";
-
-            if (!currentStudent) {
-                alert('Please search for and select a student first.');
-                return;
-            }
-
-            const payload = {
-                admission_number: document.getElementById('admNo').value,
-                name: document.getElementById('stdName').value,
-                gender: document.getElementById('stdGender').value,
-                class: document.getElementById('stdClass').value,
-                division: document.getElementById('stdDiv').value,
-                phone_number: document.getElementById('stdPhone').value,
-                fest_name: document.getElementById('festSelect').value,
-                item_name: document.getElementById('itemSelect').options[document.getElementById('itemSelect').selectedIndex].text.split(' (')[0],
-                item_code: document.getElementById('itemCode').value,
-                category: document.getElementById('itemCategory').value,
-                no_of_participants: parseInt(document.getElementById('itemParticipants').value, 10),
-                duration: document.getElementById('itemDuration').value
-            };
-
-            try {
-                const { error } = await supabaseClient
-                    .from('registrations')
-                    .insert([payload]);
-
-                if (error) throw error;
-
-                statusEl.textContent = "Registration recorded successfully!";
-                statusEl.className = "mt-4 p-3 rounded bg-green-100 text-green-800 font-semibold block";
-                
-                // Clear form state
-                document.getElementById('registrationForm').reset();
-                clearStudentFields();
-                resetItemFields();
-                currentStudent = null;
-                document.getElementById('searchInput').value = '';
-                document.getElementById('searchStatus').textContent = '';
+                // If successful, show success message and clear form
+                messageDiv.style.color = "green";
+                messageDiv.innerText = "Data saved successfully!";
+                form.reset();
 
             } catch (err) {
-                console.error(err);
-                statusEl.textContent = "Failed to submit registration details. " + err.message;
-                statusEl.className = "mt-4 p-3 rounded bg-red-100 text-red-800 font-semibold block";
+                // If there is an error, display it
+                messageDiv.style.color = "red";
+                messageDiv.innerText = "Error: " + err.message;
             }
-        }
-
-        // Helper cleanup functions
-        function clearStudentFields() {
-            document.getElementById('admNo').value = '';
-            document.getElementById('stdName').value = '';
-            document.getElementById('stdGender').value = '';
-            document.getElementById('stdClass').value = '';
-            document.getElementById('stdDiv').value = '';
-            document.getElementById('stdPhone').value = '';
-            document.getElementById('festSelect').value = '';
-            document.getElementById('festSelect').disabled = true;
-            document.getElementById('submitBtn').disabled = true;
-        }
-
-        function resetItemFields() {
-            document.getElementById('itemSelect').value = '';
-            document.getElementById('itemSelect').disabled = true;
-            document.getElementById('itemCode').value = '';
-            document.getElementById('itemCategory').value = '';
-            document.getElementById('itemParticipants').value = '';
-            document.getElementById('itemDuration').value = '';
-        }
+        });
     </script>
 </body>
 </html>
