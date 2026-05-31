@@ -8,15 +8,22 @@
   <script src="https://cdn.tailwindcss.com"></script>
   
   <style>
-    /* NATIVE PRINT/PDF EXPORT FORMATTING */
+    /* NATIVE PRINT/PDF A4 LANDSCAPE FORMATTING */
     @media print {
+      /* Force landscape A4 page sizing and standard 10mm margins */
+      @page {
+        size: A4 landscape;
+        margin: 10mm;
+      }
+      
       body {
         background: white !important;
         color: black !important;
         padding: 0 !important;
         margin: 0 !important;
       }
-      /* Hide all forms, buttons, header, and configuration panels on print */
+
+      /* Hide interactive headers, selectors, form containers, sync tools and share columns */
       header, 
       form, 
       #dbSyncControls,
@@ -24,40 +31,70 @@
       .share-col {
         display: none !important;
       }
-      /* Force tables to stretch to full print container without truncation */
-      .overflow-x-auto {
-        overflow: visible !important;
-        width: 100% !important;
-      }
+
+      /* Force main container block to span entire canvas */
       .max-w-7xl {
         max-width: 100% !important;
         width: 100% !important;
         padding: 0 !important;
         margin: 0 !important;
       }
+
+      /* FIRST TABLE CARD: Forces Page 1, spanning full width and max print viewport height */
+      #teacherTableCard {
+        width: 100% !important;
+        height: 95vh !important; 
+        page-break-after: always !important; 
+        break-after: page !important;
+        box-shadow: none !important;
+        border: none !important;
+        padding: 0 !important;
+        margin: 0 0 20mm 0 !important;
+      }
+
+      /* SECOND TABLE CARD: Forces Page 2, spanning full width and max print viewport height */
+      #studentTableCard {
+        width: 100% !important;
+        height: 95vh !important;
+        box-shadow: none !important;
+        border: none !important;
+        padding: 0 !important;
+        margin: 0 !important;
+      }
+
+      /* Clear horizontal scroll constraints inside printable layout */
+      .overflow-x-auto {
+        overflow: visible !important;
+        width: 100% !important;
+      }
+
       table {
         table-layout: auto !important;
         width: 100% !important;
-        page-break-inside: avoid !important;
-        font-size: 8pt !important; /* Smaller text for compact print grid spacing */
+        font-size: 8pt !important; /* Optimal compact print scale */
         border-collapse: collapse !important;
       }
+
       tr {
         page-break-inside: avoid !important;
         page-break-after: auto !important;
       }
+
       thead {
         display: table-header-group !important;
       }
-      td, th {
-        padding: 4px 6px !important;
-        border: 1px solid #cbd5e1 !important;
-      }
-      /* Remove sticky background styling layers during print */
+
+      /* Strip background shadows and sticky attributes which clip borders when printed */
       .sticky {
         position: static !important;
         box-shadow: none !important;
         background-color: white !important;
+      }
+
+      /* Ensure strict high-contrast grid lines for print readability */
+      td, th {
+        border: 1px solid #64748b !important;
+        padding: 5px 4px !important;
       }
     }
   </style>
@@ -95,21 +132,21 @@
                 <select id="teacher" required class="w-full px-3 py-2 border border-slate-300 rounded-md bg-white text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 h-11 sm:h-10">
                   <option value="">-- Choose Teacher --</option>
                   <option value="ANM">ANM</option>
-<option value="BA">BA</option>
-<option value="BUS">BUS</option>
-<option value="ERJ">ERJ</option>
-<option value="GMK">GMK</option>
-<option value="KK">KK</option>
-<option value="KSPB">KSPB</option>
-<option value="NV">NV</option>
-<option value="RR">RR</option>
-<option value="SA">SA</option>
-<option value="SJS">SJS</option>
-<option value="SK">SK</option>
-<option value="SS">SS</option>
-<option value="SSR">SSR</option>
-<option value="TAK">TAK</option>
-<option value="VA">VA</option>
+                  <option value="BA">BA</option>
+                  <option value="BUS">BUS</option>
+                  <option value="ERJ">ERJ</option>
+                  <option value="GMK">GMK</option>
+                  <option value="KK">KK</option>
+                  <option value="KSPB">KSPB</option>
+                  <option value="NV">NV</option>
+                  <option value="RR">RR</option>
+                  <option value="SA">SA</option>
+                  <option value="SJS">SJS</option>
+                  <option value="SK">SK</option>
+                  <option value="SS">SS</option>
+                  <option value="SSR">SSR</option>
+                  <option value="TAK">TAK</option>
+                  <option value="VA">VA</option>
                 </select>
               </div>
 
@@ -193,8 +230,8 @@
         </div>
       </div>
       
-      <!-- Live Teacher Table Card -->
-      <div class="bg-white rounded-lg shadow-sm border border-slate-200 p-4 sm:p-6 w-full">
+      <!-- Live Teacher Table Card (Page 1 in PDF print-layout) -->
+      <div id="teacherTableCard" class="bg-white rounded-lg shadow-sm border border-slate-200 p-4 sm:p-6 w-full">
         <h2 class="text-base sm:text-lg font-bold text-slate-950 mb-1 flex items-center gap-2">
           <span class="text-indigo-600">📊</span> Live Teachers Summary Table
         </h2>
@@ -208,7 +245,7 @@
             <table class="min-w-[1020px] text-[11px] sm:text-xs text-left divide-y divide-slate-200 w-full" id="teacherSummaryTable">
               <thead class="bg-slate-100 text-slate-700 uppercase font-semibold">
                 <tr>
-                  <th class="px-3 py-2.5 border-r border-slate-200 sticky left-0 bg-slate-100 z-10 shadow-[2px_0_5px_rgba(0,0,0,0.05)] w-24">Teacher</th>
+                  <th class="px-3 py-2.5 border-r border-slate-200 sticky left-0 bg-slate-100 z-10 shadow-[2px_0_5px_rgba(0,0,0,0.05)] w-32">Teacher</th>
                   <th class="px-2 py-2.5 text-center border-r border-slate-200 w-20">Charge</th>
                   <th class="px-1 py-2.5 text-center border-r border-slate-200">5A</th>
                   <th class="px-1 py-2.5 text-center border-r border-slate-200">5B</th>
@@ -234,8 +271,8 @@
         </div>
       </div>
 
-      <!-- Live Student Table Card -->
-      <div class="bg-white rounded-lg shadow-sm border border-slate-200 p-4 sm:p-6 w-full">
+      <!-- Live Student Table Card (Page 2 in PDF print-layout) -->
+      <div id="studentTableCard" class="bg-white rounded-lg shadow-sm border border-slate-200 p-4 sm:p-6 w-full">
         <h2 class="text-base sm:text-lg font-bold text-slate-950 mb-1 flex items-center gap-2">
           <span class="text-teal-600">🎓</span> Live Students Period Allocation Table
         </h2>
@@ -249,7 +286,7 @@
             <table class="min-w-[950px] text-[11px] sm:text-xs text-left divide-y divide-slate-200 w-full" id="studentSummaryTable">
               <thead class="bg-slate-100 text-slate-700 uppercase font-semibold">
                 <tr>
-                  <th class="px-3 py-2.5 border-r border-slate-200 sticky left-0 bg-slate-100 z-10 shadow-[2px_0_5px_rgba(0,0,0,0.05)] w-24">Teacher</th>
+                  <th class="px-3 py-2.5 border-r border-slate-200 sticky left-0 bg-slate-100 z-10 shadow-[2px_0_5px_rgba(0,0,0,0.05)] w-24">Subject</th>
                   <th class="px-1 py-2.5 text-center border-r border-slate-200">5A</th>
                   <th class="px-1 py-2.5 text-center border-r border-slate-200">5B</th>
                   <th class="px-1 py-2.5 text-center border-r border-slate-200">5C</th>
@@ -288,6 +325,7 @@
 
     const TEACHERS = ["ANM", "BA", "BUS", "ERJ", "GMK", "KK", "KSPB", "NV", "RR", "SA", "SJS", "SK", "SS", "SSR", "TAK", "VA"];
     const CLASSES = ["5A", "5B", "5C", "5D", "6A", "6B", "6C", "6D", "7A", "7B", "7C", "7D"];
+    const SUBJECTS = ["MI", "MII", "ENG", "SE", "HIN", "BS", "SS", "MM", "HE", "PE", "AE", "WE", "IT", "SV/LIB"];
     const SUBJECT_PERIODS = {
       "MI": 4, "MII": 2, "ENG": 4, "SE": 1, 
       "BS": 5, "SS": 5, "MM": 5, "HE": 1, 
@@ -462,14 +500,22 @@
       const studentClassTotals = {};
       CLASSES.forEach(c => studentClassTotals[c] = 0);
 
+      // ==========================================
+      // TABLE 1: TEACHER SUMMARY GENERATION
+      // ==========================================
       TEACHERS.forEach(t => {
         const profile = dbState[t];
         const inCharge = profile.classInCharge !== "None" ? profile.classInCharge : "-";
         
-        // 1. Compile Teacher calculations
+        // Dynamically build the subject allocations summary list for the first column
+        const subjectsSummary = profile.allocations.map(a => `${a.subject}(${a.periods})`).join(", ");
+        
         let teacherRowHtml = `
           <tr class="hover:bg-slate-50 border-b border-slate-100 ${t === activeTeacher ? 'bg-indigo-50/50 font-medium' : ''}">
-            <td class="px-3 py-2 font-semibold border-r border-slate-100 bg-white sticky left-0 z-10 shadow-[2px_0_5px_rgba(0,0,0,0.02)]">${t}</td>
+            <td class="px-3 py-2 border-r border-slate-100 bg-white sticky left-0 z-10 shadow-[2px_0_5px_rgba(0,0,0,0.02)]">
+              <div class="font-bold text-slate-900">${t}</div>
+              ${subjectsSummary ? `<div class="text-[10px] text-slate-500 font-normal leading-tight mt-0.5">${subjectsSummary}</div>` : ''}
+            </td>
             <td class="px-2 py-2 text-center border-r border-slate-100 text-indigo-700 font-semibold">${inCharge}</td>
         `;
 
@@ -499,46 +545,60 @@
           </tr>
         `;
         tBody.insertAdjacentHTML('beforeend', teacherRowHtml);
+      });
 
-        // 2. Compile Student period calculations
+      // =========================================================
+      // TABLE 2: SUBJECT VS CLASS SYSTEM GENERATION
+      // =========================================================
+      SUBJECTS.forEach(sub => {
         let studentRowHtml = `
-          <tr class="hover:bg-slate-50 border-b border-slate-100 ${t === activeTeacher ? 'bg-teal-50/30' : ''}">
-            <td class="px-3 py-2 font-semibold border-r border-slate-100 bg-white sticky left-0 z-10 shadow-[2px_0_5px_rgba(0,0,0,0.02)]">${t}</td>
+          <tr class="hover:bg-slate-50 border-b border-slate-100">
+            <td class="px-3 py-2.5 font-bold border-r border-slate-100 bg-white sticky left-0 z-10 shadow-[2px_0_5px_rgba(0,0,0,0.02)] text-indigo-950">${sub}</td>
         `;
 
-        let studentTeacherRowTotal = 0;
+        let subjectRowTotal = 0;
 
         CLASSES.forEach(c => {
-          const matched = profile.allocations.filter(a => a.className === c);
-          let classSum = 0;
-          matched.forEach(m => classSum += parseInt(m.periods) || 0);
+          let cellAllocations = [];
+          let cellPeriodsSum = 0;
 
-          if (classSum > 0) {
-            studentRowHtml += `<td class="px-1 py-2 text-center border-r border-slate-100 font-semibold text-teal-800">${classSum}</td>`;
-            studentClassTotals[c] += classSum;
-            studentTeacherRowTotal += classSum;
+          // Search across all teachers to collect active allocations for this subject and class
+          TEACHERS.forEach(t => {
+            const profile = dbState[t];
+            const matched = profile.allocations.filter(a => a.className === c && a.subject === sub);
+            matched.forEach(m => {
+              cellAllocations.push(`${t}(${m.periods})`);
+              cellPeriodsSum += parseInt(m.periods) || 0;
+            });
+          });
+
+          if (cellAllocations.length > 0) {
+            studentRowHtml += `<td class="px-1 py-2 text-center border-r border-slate-100 font-medium text-teal-800 text-[10px] sm:text-xs">${cellAllocations.join(", ")}</td>`;
+            studentClassTotals[c] += cellPeriodsSum;
+            subjectRowTotal += cellPeriodsSum;
           } else {
             studentRowHtml += `<td class="px-1 py-2 text-center border-r border-slate-100 text-slate-300">-</td>`;
           }
         });
 
         studentRowHtml += `
-            <td class="px-3 py-2 text-center bg-teal-50/50 font-bold text-teal-950">${studentTeacherRowTotal}</td>
+            <td class="px-3 py-2.5 text-center bg-teal-50/50 font-bold text-teal-950">${subjectRowTotal}</td>
           </tr>
         `;
         sBody.insertAdjacentHTML('beforeend', studentRowHtml);
       });
 
-      // 3. Render Student summary values
+      // 3. Render Student summary totals values (footer)
       let footerHtml = `
         <tr>
-          <td class="px-3 py-2 border-r border-slate-300 text-left uppercase sticky left-0 bg-slate-200 z-10">Grand Total</td>
+          <td class="px-3 py-2 border-r border-slate-300 text-left uppercase sticky left-0 bg-slate-200 z-10 text-xs font-bold">Grand Total</td>
       `;
       let grandTotalSum = 0;
 
       CLASSES.forEach(c => {
         const total = studentClassTotals[c];
         grandTotalSum += total;
+        // Visual indicator colors depending on period workload targets
         const bgStyle = total >= 34 ? 'bg-emerald-100 text-emerald-900 font-bold' : 'bg-amber-100 text-amber-950';
         footerHtml += `<td class="px-1 py-2 text-center border-r border-slate-300 ${bgStyle}">${total}</td>`;
       });
@@ -698,7 +758,7 @@
         });
       });
 
-      // Plain-text target type configuration bypasses preflight restrictions
+      // Simple plain text request avoids CORS preflight failures entirely
       fetch(WEB_APP_URL, {
         method: "POST",
         redirect: "follow", 
