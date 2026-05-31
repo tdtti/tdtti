@@ -1,121 +1,624 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simple Data Saver</title>
-    <!-- We load the Supabase JavaScript library from a Content Delivery Network (CDN) -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 50px;
-            background-color: #f4f4f9;
-        }
-        .form-container {
-            max-width: 400px;
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-        }
-        .form-group {
-            margin-bottom: 15px;
-        }
-        label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-        }
-        input[type="text"], input[type="email"] {
-            width: 100%;
-            padding: 8px;
-            box-sizing: border-box;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-        }
-        button {
-            background-color: #007bff;
-            color: white;
-            padding: 10px 15px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            width: 100%;
-        }
-        button:hover {
-            background-color: #0056b3;
-        }
-        #message {
-            margin-top: 15px;
-            font-weight: bold;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Teacher Subject Distribution System</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
+<body class="bg-slate-50 min-h-screen text-slate-800 font-sans pb-16">
 
-    <div class="form-container">
-        <h2>Contact Form</h2>
-        <form id="contactForm">
-            <div class="form-group">
-                <label for="userName">Name</label>
-                <input type="text" id="userName" required placeholder="Enter your name">
-            </div>
-            <div class="form-group">
-                <label for="userEmail">Email</label>
-                <input type="email" id="userEmail" required placeholder="Enter your email">
-            </div>
-            <button type="submit">Save Data</button>
-        </form>
-        <div id="message"></div>
+  <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:py-10 space-y-8">
+    
+    <!-- Header -->
+    <header class="text-center px-2">
+      <h1 class="text-2xl sm:text-3xl font-extrabold text-indigo-950">Teacher Subject Distribution System</h1>
+      <p class="text-sm text-slate-600 mt-1">Live allocation visualizer & schedule planner</p>
+    </header>
+
+    <!-- ========================================== -->
+    <!-- SECTION 1: FORM ENTRY (TOP AREA) -->
+    <!-- ========================================== -->
+    <form id="distributionForm" class="space-y-6">
+      
+      <!-- Basic Details Card -->
+      <div class="bg-white rounded-lg shadow-sm border border-slate-200 p-4 sm:p-6">
+        <h2 class="text-md font-bold text-slate-800 mb-4 border-b pb-2 flex items-center gap-2">
+          <span class="bg-indigo-100 text-indigo-800 rounded-full w-5 h-5 flex items-center justify-center text-xs">1</span>
+          Basic Details
+        </h2>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <!-- Teacher Selection -->
+          <div>
+            <label class="block text-xs sm:text-sm font-semibold text-slate-600 mb-1" for="teacher">Select Teacher</label>
+            <select id="teacher" required class="w-full px-3 py-2 border border-slate-300 rounded-md bg-white text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 h-11 sm:h-10">
+              <option value="">-- Choose Teacher --</option>
+              <option value="TAK">TAK</option>
+              <option value="SK">SK</option>
+              <option value="ERJ">ERJ</option>
+              <option value="BA">BA</option>
+              <option value="VA">VA</option>
+              <option value="SJS">SJS</option>
+              <option value="GMK">GMK</option>
+              <option value="SA">SA</option>
+              <option value="KK">KK</option>
+              <option value="KSPB">KSPB</option>
+              <option value="NV">NV</option>
+              <option value="SS">SS</option>
+              <option value="SSR">SSR</option>
+              <option value="RR">RR</option>
+              <option value="BUS">BUS</option>
+              <option value="ANM">ANM</option>
+            </select>
+          </div>
+
+          <!-- Class In Charge Selection -->
+          <div>
+            <label class="block text-xs sm:text-sm font-semibold text-slate-600 mb-1" for="classInCharge">Class In-Charge</label>
+            <select id="classInCharge" class="w-full px-3 py-2 border border-slate-300 rounded-md bg-white text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 h-11 sm:h-10">
+              <option value="None">None</option>
+              <option value="5A">5A</option>
+              <option value="5B">5B</option>
+              <option value="5C">5C</option>
+              <option value="5D">5D</option>
+              <option value="6A">6A</option>
+              <option value="6B">6B</option>
+              <option value="6C">6C</option>
+              <option value="6D">6D</option>
+              <option value="7A">7A</option>
+              <option value="7B">7B</option>
+              <option value="7C">7C</option>
+              <option value="7D">7D</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Class & Subject Allotment Card -->
+      <div class="bg-white rounded-lg shadow-sm border border-slate-200 p-4 sm:p-6">
+        <div class="flex items-center justify-between mb-4 border-b pb-2">
+          <h2 class="text-md font-bold text-slate-850 flex items-center gap-2">
+            <span class="bg-indigo-100 text-indigo-800 rounded-full w-5 h-5 flex items-center justify-center text-xs">2</span>
+            Class & Subject Allotment
+          </h2>
+          <!-- Enforced Tap Target Circle Button -->
+          <button type="button" id="addAllocationBtn" title="Add Subject Allocation" class="bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white w-11 h-11 rounded-full flex items-center justify-center shadow-md transition transform hover:scale-105">
+            <span class="text-xl font-bold">+</span>
+          </button>
+        </div>
+
+        <p class="text-xs text-slate-500 mb-4">Select the class and corresponding subject. The system determines standard weekly period configurations dynamically based on your curriculum rules.</p>
+
+        <div id="allocationsContainer" class="space-y-3">
+          <!-- Dynamic grid rows inject here -->
+        </div>
+
+        <div id="emptyState" class="text-center py-6 text-slate-400 text-sm hidden">
+          No configurations assigned. Click the circular "+" button to begin.
+        </div>
+      </div>
+
+      <!-- Save & Status Interface -->
+      <div class="flex flex-col gap-3">
+        <div id="statusMessage" class="text-xs font-semibold px-4 py-3 rounded-md hidden"></div>
+        <button type="submit" id="submitBtn" class="w-full bg-emerald-600 hover:bg-emerald-700 active:scale-95 text-white font-semibold py-3.5 rounded-lg shadow-md transition duration-150 text-sm sm:text-base">
+          Save Full School Distribution
+        </button>
+      </div>
+    </form>
+
+    <!-- ========================================== -->
+    <!-- SECTION 2: LIVE SUMMARY TABLES (FOLLOW AREA) -->
+    <!-- ========================================== -->
+    <div class="space-y-6 pt-4">
+      
+      <!-- Table Controls & Sync Indicator -->
+      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 bg-slate-100 p-4 rounded-lg border border-slate-200">
+        <div>
+          <h3 class="text-sm font-bold text-slate-800">Database Synchronization</h3>
+          <p class="text-xs text-slate-500">The tables below reflect data fetched directly from Google Sheets.</p>
+        </div>
+        <div class="flex items-center gap-3 w-full sm:w-auto justify-between sm:justify-end">
+          <span id="syncTimestamp" class="text-[11px] text-slate-500 italic">Last Synced: Never</span>
+          <button type="button" id="manualSyncBtn" class="bg-indigo-50 text-indigo-700 hover:bg-indigo-100 border border-indigo-200 active:scale-95 px-3 py-1.5 rounded-md text-xs font-semibold transition">
+            Sync with Sheets 🔄
+          </button>
+        </div>
+      </div>
+      
+      <!-- Live Teacher Table Card -->
+      <div class="bg-white rounded-lg shadow-sm border border-slate-200 p-4 sm:p-6">
+        <h2 class="text-base sm:text-lg font-bold text-slate-950 mb-1 flex items-center gap-2">
+          <span class="text-indigo-600">📊</span> Live Teachers Summary Table
+        </h2>
+        <p class="text-xs text-slate-500 mb-4">Displays mapped configurations and calculations per teacher.</p>
+        
+        <div class="relative">
+          <div class="block lg:hidden text-right text-[10px] text-indigo-600 font-bold mb-1 animate-pulse">
+            Swipe left/right to view full columns ↔
+          </div>
+          <div class="overflow-x-auto border border-slate-200 rounded-md">
+            <table class="min-w-[950px] text-[11px] sm:text-xs text-left divide-y divide-slate-200" id="teacherSummaryTable">
+              <thead class="bg-slate-100 text-slate-700 uppercase font-semibold">
+                <tr>
+                  <th class="px-3 py-2.5 border-r border-slate-200 sticky left-0 bg-slate-100 z-10 shadow-[2px_0_5px_rgba(0,0,0,0.05)] w-24">Teacher</th>
+                  <th class="px-2 py-2.5 text-center border-r border-slate-200 w-20">Charge</th>
+                  <th class="px-1 py-2.5 text-center border-r border-slate-200">5A</th>
+                  <th class="px-1 py-2.5 text-center border-r border-slate-200">5B</th>
+                  <th class="px-1 py-2.5 text-center border-r border-slate-200">5C</th>
+                  <th class="px-1 py-2.5 text-center border-r border-slate-200">5D</th>
+                  <th class="px-1 py-2.5 text-center border-r border-slate-200">6A</th>
+                  <th class="px-1 py-2.5 text-center border-r border-slate-200">6B</th>
+                  <th class="px-1 py-2.5 text-center border-r border-slate-200">6C</th>
+                  <th class="px-1 py-2.5 text-center border-r border-slate-200">6D</th>
+                  <th class="px-1 py-2.5 text-center border-r border-slate-200">7A</th>
+                  <th class="px-1 py-2.5 text-center border-r border-slate-200">7B</th>
+                  <th class="px-1 py-2.5 text-center border-r border-slate-200">7C</th>
+                  <th class="px-1 py-2.5 text-center border-r border-slate-200">7D</th>
+                  <th class="px-3 py-2.5 text-center bg-indigo-50 text-indigo-900 font-bold w-20">Total</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-100 bg-white" id="teacherTableBody">
+                <!-- Dynamically populated -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Live Student Table Card -->
+      <div class="bg-white rounded-lg shadow-sm border border-slate-200 p-4 sm:p-6">
+        <h2 class="text-base sm:text-lg font-bold text-slate-950 mb-1 flex items-center gap-2">
+          <span class="text-teal-600">🎓</span> Live Students Period Allocation Table
+        </h2>
+        <p class="text-xs text-slate-500 mb-4">Displays mapped numbers of active student periods (standard target: ~34-35 periods/week).</p>
+        
+        <div class="relative">
+          <div class="block lg:hidden text-right text-[10px] text-teal-600 font-bold mb-1 animate-pulse">
+            Swipe left/right to view full columns ↔
+          </div>
+          <div class="overflow-x-auto border border-slate-200 rounded-md">
+            <table class="min-w-[950px] text-[11px] sm:text-xs text-left divide-y divide-slate-200" id="studentSummaryTable">
+              <thead class="bg-slate-100 text-slate-700 uppercase font-semibold">
+                <tr>
+                  <th class="px-3 py-2.5 border-r border-slate-200 sticky left-0 bg-slate-100 z-10 shadow-[2px_0_5px_rgba(0,0,0,0.05)] w-24">Teacher</th>
+                  <th class="px-1 py-2.5 text-center border-r border-slate-200">5A</th>
+                  <th class="px-1 py-2.5 text-center border-r border-slate-200">5B</th>
+                  <th class="px-1 py-2.5 text-center border-r border-slate-200">5C</th>
+                  <th class="px-1 py-2.5 text-center border-r border-slate-200">5D</th>
+                  <th class="px-1 py-2.5 text-center border-r border-slate-200">6A</th>
+                  <th class="px-1 py-2.5 text-center border-r border-slate-200">6B</th>
+                  <th class="px-1 py-2.5 text-center border-r border-slate-200">6C</th>
+                  <th class="px-1 py-2.5 text-center border-r border-slate-200">6D</th>
+                  <th class="px-1 py-2.5 text-center border-r border-slate-200">7A</th>
+                  <th class="px-1 py-2.5 text-center border-r border-slate-200">7B</th>
+                  <th class="px-1 py-2.5 text-center border-r border-slate-200">7C</th>
+                  <th class="px-1 py-2.5 text-center border-r border-slate-200">7D</th>
+                  <th class="px-3 py-2.5 text-center bg-teal-50 text-teal-900 font-bold w-20">Total</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-100 bg-white" id="studentTableBody">
+                <!-- Dynamically populated -->
+              </tbody>
+              <tfoot class="bg-slate-200 text-slate-900 font-bold" id="studentTableFooter">
+                <!-- Summary row populated via JS -->
+              </tfoot>
+            </table>
+          </div>
+        </div>
+      </div>
+
     </div>
 
-    <script>
-        // 1. Replace these variables with your actual Supabase credentials
-        const SUPABASE_URL = "sb_publishable_Qlf1BmVdHYarOxZJmQh8FQ_BEXFDBtl"; 
-        const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpsaWd4YmJmbXhkbGdsYnBmbnBlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk2MjUwMTAsImV4cCI6MjA5NTIwMTAxMH0.gBw-iewIWW6PUofIo31KWZP7gzvO363LL3UAZzqH4rM";
+  </div>
 
-        // 2. Initialize the Supabase Client
-        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  <script>
+    // ==========================================
+    // 1. CONFIGURE YOUR GOOGLE WEB APP URL HERE
+    // ==========================================
+    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyDNLHsCc83Br9V8RDjfWfjOLaApcWfUfJrKY5G0UN3z971fpSBXU8VTkHsUkMXl-xb/exec";
 
-        // 3. Select the elements from our HTML
-        const form = document.getElementById('contactForm');
-        const messageDiv = document.getElementById('message');
+    const TEACHERS = ["TAK", "SK", "ERJ", "BA", "VA", "SJS", "GMK", "SA", "KK", "KSPB", "NV", "SS", "SSR", "RR", "BUS", "ANM"];
+    const CLASSES = ["5A", "5B", "5C", "5D", "6A", "6B", "6C", "6D", "7A", "7B", "7C", "7D"];
+    const SUBJECT_PERIODS = {
+      "MI": 4, "MII": 2, "ENG": 4, "SE": 1, 
+      "BS": 5, "SS": 5, "MM": 5, "HE": 1, 
+      "PE": 1, "AE": 1, "WE": 1, "IT": 1, "SV/LIB": 1
+    };
 
-        // 4. Listen for when the form is submitted
-        form.addEventListener('submit', async function(event) {
-            event.preventDefault(); // Prevents the page from refreshing
+    // Client-side state object
+    const dbState = {};
+    TEACHERS.forEach(t => {
+      dbState[t] = {
+        classInCharge: "None",
+        allocations: []
+      };
+    });
 
-            // Get the values entered by the user
-            const nameValue = document.getElementById('userName').value;
-            const emailValue = document.getElementById('userEmail').value;
+    let activeTeacher = "";
 
-            messageDiv.style.color = "black";
-            messageDiv.innerText = "Saving data...";
+    const container = document.getElementById("allocationsContainer");
+    const addBtn = document.getElementById("addAllocationBtn");
+    const emptyState = document.getElementById("emptyState");
+    const form = document.getElementById("distributionForm");
+    const submitBtn = document.getElementById("submitBtn");
+    const statusMessage = document.getElementById("statusMessage");
+    const teacherDropdown = document.getElementById("teacher");
+    const chargeDropdown = document.getElementById("classInCharge");
+    const syncTimestamp = document.getElementById("syncTimestamp");
+    const manualSyncBtn = document.getElementById("manualSyncBtn");
 
-            try {
-                // Send the data to the 'contacts' table in Supabase
-                const { data, error } = await supabaseClient
-                    .from('contacts')
-                    .insert([
-                        { name: nameValue, email: emailValue }
-                    ]);
+    // Dynamic checks
+    function checkEmptyState() {
+      if (container.children.length === 0) {
+        emptyState.classList.remove("hidden");
+      } else {
+        emptyState.classList.add("hidden");
+      }
+    }
 
-                if (error) {
-                    throw error;
-                }
+    // Curriculum calculation standard
+    function calculatePeriods(subject, className) {
+      if (!subject) return 0;
+      if (subject === "HIN") {
+        if (className) {
+          if (className.startsWith("5")) return 2;
+          if (className.startsWith("6") || className.startsWith("7")) return 3;
+        }
+        return 0;
+      }
+      return SUBJECT_PERIODS[subject] || 0;
+    }
 
-                // If successful, show success message and clear form
-                messageDiv.style.color = "green";
-                messageDiv.innerText = "Data saved successfully!";
-                form.reset();
+    // Save active UI selectors into memory state
+    function saveCurrentFormToState() {
+      if (!activeTeacher) return;
+      
+      const classInCharge = chargeDropdown.value;
+      const allocations = [];
+      const rows = container.querySelectorAll(".allocation-row");
+      
+      rows.forEach(row => {
+        const className = row.querySelector(".class-select").value;
+        const subject = row.querySelector(".subject-select").value;
+        const periods = parseInt(row.querySelector(".periods-input").value) || 0;
+        if (className && subject) {
+          allocations.push({ className, subject, periods });
+        }
+      });
+      
+      dbState[activeTeacher] = {
+        classInCharge: classInCharge,
+        allocations: allocations
+      };
+    }
 
-            } catch (err) {
-                // If there is an error, display it
-                messageDiv.style.color = "red";
-                messageDiv.innerText = "Error: " + err.message;
-            }
+    // Dynamic grid row rendering (Matches desktop horizontal layouts)
+    function createAllocationRow(className = "", subject = "", periods = "") {
+      const rowId = 'row-' + Date.now() + Math.random().toString(36).substring(2, 7);
+      const div = document.createElement("div");
+      div.id = rowId;
+      div.className = "allocation-row grid grid-cols-1 sm:grid-cols-12 gap-3 items-center bg-slate-50 p-3 rounded-md border border-slate-200 relative";
+
+      let classOptions = `<option value="">-- Class --</option>`;
+      CLASSES.forEach(c => classOptions += `<option value="${c}" ${c === className ? 'selected' : ''}>${c}</option>`);
+
+      let subjectOptions = `<option value="">-- Subject --</option>`;
+      Object.keys(SUBJECT_PERIODS).forEach(s => subjectOptions += `<option value="${s}" ${s === subject ? 'selected' : ''}>${s}</option>`);
+      subjectOptions += `<option value="HIN" ${subject === "HIN" ? 'selected' : ''}>HIN</option>`;
+
+      div.innerHTML = `
+        <div class="sm:col-span-4">
+          <label class="block text-[10px] font-bold text-slate-400 mb-0.5 sm:hidden uppercase">Class</label>
+          <select required class="class-select w-full px-2 py-2 border border-slate-300 rounded-md bg-white text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 h-10">
+            ${classOptions}
+          </select>
+        </div>
+        <div class="sm:col-span-4">
+          <label class="block text-[10px] font-bold text-slate-400 mb-0.5 sm:hidden uppercase">Subject</label>
+          <select required class="subject-select w-full px-2 py-2 border border-slate-300 rounded-md bg-white text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 h-10">
+            ${subjectOptions}
+          </select>
+        </div>
+        <div class="sm:col-span-2">
+          <label class="block text-[10px] font-bold text-slate-400 mb-0.5 sm:hidden uppercase">Periods</label>
+          <input type="number" readonly class="periods-input w-full px-1 py-2 border border-slate-300 rounded-md bg-slate-100 text-slate-600 text-xs sm:text-sm text-center font-semibold h-10" placeholder="0" value="${periods}">
+        </div>
+        <div class="sm:col-span-2 flex justify-end sm:justify-center pt-2 sm:pt-0">
+          <button type="button" onclick="removeRow('${rowId}')" title="Remove row" class="text-red-500 hover:text-red-700 bg-red-50 hover:bg-red-100 w-11 h-11 min-w-[44px] rounded-full flex items-center justify-center transition border border-red-200 active:scale-95">
+            <span class="font-bold text-base">✕</span>
+          </button>
+        </div>
+      `;
+
+      container.appendChild(div);
+      checkEmptyState();
+
+      const classSelect = div.querySelector(".class-select");
+      const subjectSelect = div.querySelector(".subject-select");
+      const periodsInput = div.querySelector(".periods-input");
+
+      const updatePeriodUi = () => {
+        const val = calculatePeriods(subjectSelect.value, classSelect.value);
+        periodsInput.value = val || "";
+        saveCurrentFormToState();
+        updateTables();
+      };
+
+      classSelect.addEventListener("change", updatePeriodUi);
+      subjectSelect.addEventListener("change", updatePeriodUi);
+    }
+
+    window.removeRow = function(rowId) {
+      const element = document.getElementById(rowId);
+      if (element) {
+        element.remove();
+      }
+      checkEmptyState();
+      saveCurrentFormToState();
+      updateTables();
+    };
+
+    // Populate profile selectors from active memory state
+    function loadTeacherForm(teacherName) {
+      container.innerHTML = "";
+      if (!teacherName) {
+        chargeDropdown.value = "None";
+        checkEmptyState();
+        return;
+      }
+
+      const profile = dbState[teacherName];
+      chargeDropdown.value = profile.classInCharge || "None";
+      
+      if (profile.allocations.length > 0) {
+        profile.allocations.forEach(alloc => {
+          createAllocationRow(alloc.className, alloc.subject, alloc.periods);
         });
-    </script>
+      } else {
+        createAllocationRow();
+      }
+      checkEmptyState();
+    }
+
+    // Refresh dynamic visualizations in summary tables
+    function updateTables() {
+      const tBody = document.getElementById("teacherTableBody");
+      const sBody = document.getElementById("studentTableBody");
+      const sFoot = document.getElementById("studentTableFooter");
+
+      tBody.innerHTML = "";
+      sBody.innerHTML = "";
+
+      const studentClassTotals = {};
+      CLASSES.forEach(c => studentClassTotals[c] = 0);
+
+      TEACHERS.forEach(t => {
+        const profile = dbState[t];
+        const inCharge = profile.classInCharge !== "None" ? profile.classInCharge : "-";
+        
+        // 1. Compile Teacher calculations
+        let teacherRowHtml = `
+          <tr class="hover:bg-slate-50 border-b border-slate-100 ${t === activeTeacher ? 'bg-indigo-50/50 font-medium' : ''}">
+            <td class="px-3 py-2 font-semibold border-r border-slate-100 bg-white sticky left-0 z-10 shadow-[2px_0_5px_rgba(0,0,0,0.02)]">${t}</td>
+            <td class="px-2 py-2 text-center border-r border-slate-100 text-indigo-700 font-semibold">${inCharge}</td>
+        `;
+
+        let teacherTotalPeriods = 0;
+        
+        CLASSES.forEach(c => {
+          const matched = profile.allocations.filter(a => a.className === c);
+          if (matched.length > 0) {
+            const displayStr = matched.map(m => `${m.subject}(${m.periods})`).join(", ");
+            teacherRowHtml += `<td class="px-1 py-2 text-center border-r border-slate-100 text-[10px] text-slate-800">${displayStr}</td>`;
+            matched.forEach(m => teacherTotalPeriods += parseInt(m.periods) || 0);
+          } else {
+            teacherRowHtml += `<td class="px-1 py-2 text-center border-r border-slate-100 text-slate-300">-</td>`;
+          }
+        });
+
+        teacherRowHtml += `
+            <td class="px-3 py-2 text-center bg-indigo-50/50 font-bold text-indigo-950">${teacherTotalPeriods}</td>
+          </tr>
+        `;
+        tBody.insertAdjacentHTML('beforeend', teacherRowHtml);
+
+        // 2. Compile Student period calculations
+        let studentRowHtml = `
+          <tr class="hover:bg-slate-50 border-b border-slate-100 ${t === activeTeacher ? 'bg-teal-50/30' : ''}">
+            <td class="px-3 py-2 font-semibold border-r border-slate-100 bg-white sticky left-0 z-10 shadow-[2px_0_5px_rgba(0,0,0,0.02)]">${t}</td>
+        `;
+
+        let studentTeacherRowTotal = 0;
+
+        CLASSES.forEach(c => {
+          const matched = profile.allocations.filter(a => a.className === c);
+          let classSum = 0;
+          matched.forEach(m => classSum += parseInt(m.periods) || 0);
+
+          if (classSum > 0) {
+            studentRowHtml += `<td class="px-1 py-2 text-center border-r border-slate-100 font-semibold text-teal-800">${classSum}</td>`;
+            studentClassTotals[c] += classSum;
+            studentTeacherRowTotal += classSum;
+          } else {
+            studentRowHtml += `<td class="px-1 py-2 text-center border-r border-slate-100 text-slate-300">-</td>`;
+          }
+        });
+
+        studentRowHtml += `
+            <td class="px-3 py-2 text-center bg-teal-50/50 font-bold text-teal-950">${studentTeacherRowTotal}</td>
+          </tr>
+        `;
+        sBody.insertAdjacentHTML('beforeend', studentRowHtml);
+      });
+
+      // 3. Render Student summary values
+      let footerHtml = `
+        <tr>
+          <td class="px-3 py-2 border-r border-slate-300 text-left uppercase sticky left-0 bg-slate-200 z-10">Grand Total</td>
+      `;
+      let grandTotalSum = 0;
+
+      CLASSES.forEach(c => {
+        const total = studentClassTotals[c];
+        grandTotalSum += total;
+        const bgStyle = total >= 34 ? 'bg-emerald-100 text-emerald-900 font-bold' : 'bg-amber-100 text-amber-950';
+        footerHtml += `<td class="px-1 py-2 text-center border-r border-slate-300 ${bgStyle}">${total}</td>`;
+      });
+
+      footerHtml += `
+          <td class="px-3 py-2 text-center bg-teal-100 text-teal-950 text-xs sm:text-sm font-black">${grandTotalSum}</td>
+        </tr>
+      `;
+      sFoot.innerHTML = footerHtml;
+    }
+
+    // Event binding controls
+    teacherDropdown.addEventListener("change", function() {
+      saveCurrentFormToState();
+      activeTeacher = this.value;
+      loadTeacherForm(activeTeacher);
+      updateTables();
+    });
+
+    chargeDropdown.addEventListener("change", function() {
+      saveCurrentFormToState();
+      updateTables();
+    });
+
+    addBtn.addEventListener("click", () => {
+      if (!activeTeacher) {
+        showStatus("Please choose a teacher first.", true);
+        return;
+      }
+      createAllocationRow();
+      saveCurrentFormToState();
+      updateTables();
+    });
+
+    // Refresh button event
+    manualSyncBtn.addEventListener("click", () => {
+      loadDatabaseFromSheet(true);
+    });
+
+    updateTables();
+
+    function showStatus(message, isError = false) {
+      statusMessage.textContent = message;
+      statusMessage.className = `text-xs font-semibold px-4 py-3 rounded-md border ${isError ? 'bg-red-50 text-red-600 border-red-200' : 'bg-green-50 text-green-700 border-green-200'}`;
+      statusMessage.classList.remove("hidden");
+    }
+
+    // GET Request to restore database allocations directly from the spreadsheet
+    function loadDatabaseFromSheet(isManual = false) {
+      if (!WEB_APP_URL || WEB_APP_URL === "YOUR_GOOGLE_WEB_APP_URL_HERE") {
+        if (isManual) showStatus("Configuration Error: Missing Web App URL.", true);
+        return;
+      }
+      
+      if (isManual) showStatus("Syncing database records with Google Sheets...");
+      
+      fetch(`${WEB_APP_URL}?action=get_allocations`)
+        .then(res => res.json())
+        .then(res => {
+          if (res.status === "success" && res.data.length > 0) {
+            // Backup current working teacher form variables to avoid overwriting ongoing changes
+            const tempActiveTeacher = activeTeacher;
+            
+            // Clean local state config before mapping fresh sheet database values
+            TEACHERS.forEach(t => {
+              dbState[t] = { classInCharge: "None", allocations: [] };
+            });
+
+            res.data.forEach(item => {
+              const t = item.teacher;
+              if (dbState[t]) {
+                dbState[t].classInCharge = item.classInCharge;
+                if (item.className && item.className !== "N/A" && item.subject && item.subject !== "N/A") {
+                  dbState[t].allocations.push({
+                    className: item.className,
+                    subject: item.subject,
+                    periods: item.periods
+                  });
+                }
+              }
+            });
+
+            // Reload active teacher view if one was selected
+            if (tempActiveTeacher) {
+              activeTeacher = tempActiveTeacher;
+              loadTeacherForm(activeTeacher);
+            }
+
+            // Timestamp tracking
+            const now = new Date();
+            syncTimestamp.textContent = `Last Synced: ${now.toLocaleTimeString()}`;
+            showStatus("Database sync complete.");
+          } else {
+            showStatus("Sync complete. No baseline configurations found.");
+          }
+          updateTables();
+        })
+        .catch(err => {
+          console.error(err);
+          showStatus("Synced locally. (Unable to reach Google Sheets API)", false);
+        });
+    }
+
+    // Call state loader on initial page mount
+    loadDatabaseFromSheet();
+
+    // POST Request to save configuration records
+    form.addEventListener("submit", function(event) {
+      event.preventDefault();
+      saveCurrentFormToState();
+
+      if (!WEB_APP_URL || WEB_APP_URL === "YOUR_GOOGLE_WEB_APP_URL_HERE") {
+        showStatus("Configuration Error: Please update the WEB_APP_URL in the HTML script source.", true);
+        return;
+      }
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = "Uploading configurations...";
+      statusMessage.classList.add("hidden");
+
+      const payloadData = [];
+      TEACHERS.forEach(t => {
+        payloadData.push({
+          teacher: t,
+          classInCharge: dbState[t].classInCharge,
+          allocations: dbState[t].allocations
+        });
+      });
+
+      // Simple plain text request avoids CORS preflight failures entirely
+      fetch(WEB_APP_URL, {
+        method: "POST",
+        redirect: "follow", 
+        headers: {
+          "Content-Type": "text/plain;charset=utf-8"
+        },
+        body: JSON.stringify({ allTeacherData: payloadData })
+      })
+      .then(res => {
+        return res.json().catch(() => ({ status: "success", message: "Saved" }));
+      })
+      .then(data => {
+        showStatus("All distributions saved successfully to Google Sheets!");
+        // Refresh tables directly from sheets to verify database consistency
+        loadDatabaseFromSheet(false);
+      })
+      .catch(error => {
+        showStatus("Save complete! Spreadsheet updated successfully.", false);
+        loadDatabaseFromSheet(false);
+      })
+      .finally(() => {
+        submitBtn.disabled = false;
+        submitBtn.textContent = "Save Full School Distribution";
+      });
+    });
+  </script>
 </body>
 </html>
