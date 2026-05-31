@@ -10,7 +10,6 @@
   <style>
     /* NATIVE PRINT/PDF A4 LANDSCAPE FORMATTING */
     @media print {
-      /* Force landscape A4 page sizing and standard 10mm margins */
       @page {
         size: A4 landscape;
         margin: 10mm;
@@ -31,6 +30,7 @@
       #timetableSection header,
       #timetableSection .tab-container,
       #timetableSection .section-controls,
+      #loadingOverlay,
       .no-print,
       .share-col {
         display: none !important;
@@ -75,7 +75,7 @@
       table {
         table-layout: auto !important;
         width: 100% !important;
-        font-size: 8pt !important; /* Optimal compact print scale */
+        font-size: 8pt !important;
         border-collapse: collapse !important;
       }
 
@@ -88,20 +88,18 @@
         display: table-header-group !important;
       }
 
-      /* Strip background shadows and sticky attributes which clip borders when printed */
       .sticky {
         position: static !important;
         box-shadow: none !important;
         background-color: white !important;
       }
 
-      /* Ensure strict high-contrast grid lines for print readability */
       td, th {
         border: 1px solid #64748b !important;
         padding: 5px 4px !important;
       }
 
-      /* Layout rule switches for specific print target states */
+      /* Layout switches for print targets */
       body.print-default #teacherTableCard {
         page-break-after: always !important; 
         break-after: page !important;
@@ -201,22 +199,23 @@
               <div>
                 <label class="block text-xs sm:text-sm font-semibold text-slate-600 mb-1" for="teacher">Select Teacher</label>
                 <select id="teacher" required class="w-full px-3 py-2 border border-slate-300 rounded-md bg-white text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 h-11 sm:h-10">
-                  <option value="ANM">ANM</option>
-                  <option value="BA">BA</option>
-                  <option value="BUS">BUS</option>
+                  <option value="">-- Choose Teacher --</option>
+                  <option value="TAK">TAK</option>
+                  <option value="SK">SK</option>
                   <option value="ERJ">ERJ</option>
+                  <option value="BA">BA</option>
+                  <option value="VA">VA</option>
+                  <option value="SJS">SJS</option>
                   <option value="GMK">GMK</option>
+                  <option value="SA">SA</option>
                   <option value="KK">KK</option>
                   <option value="KSPB">KSPB</option>
                   <option value="NV">NV</option>
-                  <option value="RR">RR</option>
-                  <option value="SA">SA</option>
-                  <option value="SJS">SJS</option>
-                  <option value="SK">SK</option>
                   <option value="SS">SS</option>
                   <option value="SSR">SSR</option>
-                  <option value="TAK">TAK</option>
-                  <option value="VA">VA</option>
+                  <option value="RR">RR</option>
+                  <option value="BUS">BUS</option>
+                  <option value="ANM">ANM</option>
                 </select>
               </div>
 
@@ -440,7 +439,13 @@
       
       <!-- Modal Header -->
       <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
-        <h3 class="text-lg font-bold text-indigo-950" id="modalTitle">Edit Teacher Allocations</h3>
+        <div class="flex items-center gap-3">
+          <h3 class="text-lg font-bold text-indigo-950" id="modalTitle">Edit Teacher Allocations</h3>
+          <!-- Dynamic instant total periods badge inside header -->
+          <span class="bg-indigo-100 text-indigo-800 text-xs px-2.5 py-1 rounded-full font-bold">
+            Allotted: <span id="modalTotalPeriods">0</span> Periods
+          </span>
+        </div>
         <button type="button" onclick="closeTeacherModal()" class="text-slate-400 hover:text-slate-600 font-bold text-xl p-1 active:scale-95 transition">✕</button>
       </div>
       
@@ -493,17 +498,30 @@
     </div>
   </div>
 
+  <!-- ========================================== -->
+  <!-- ACTION LOADING SPINNER OVERLAY             -->
+  <!-- ========================================== -->
+  <div id="loadingOverlay" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[100] flex flex-col items-center justify-center p-4 hidden">
+    <div class="bg-white rounded-xl p-6 shadow-2xl flex flex-col items-center gap-4 max-w-xs w-full border border-slate-100">
+      <svg class="animate-spin h-12 w-12 text-indigo-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+      </svg>
+      <div class="text-sm font-bold text-slate-800 text-center" id="loadingText">Please wait...</div>
+    </div>
+  </div>
+
   <script>
     // ==========================================
     // 1. CONFIGURE YOUR GOOGLE WEB APP URL HERE
     // ==========================================
     const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyDNLHsCc83Br9V8RDjfWfjOLaApcWfUfJrKY5G0UN3z971fpSBXU8VTkHsUkMXl-xb/exec";
 
-    const TEACHERS = ["ANM", "BA", "BUS", "ERJ", "GMK", "KK", "KSPB", "NV", "RR", "SA", "SJS", "SK", "SS", "SSR", "TAK", "VA"];
+    const TEACHERS = ["TAK", "SK", "ERJ", "BA", "VA", "SJS", "GMK", "SA", "KK", "KSPB", "NV", "SS", "SSR", "RR", "BUS", "ANM"];
     const CLASSES = ["5A", "5B", "5C", "5D", "6A", "6B", "6C", "6D", "7A", "7B", "7C", "7D"];
     const SUBJECTS = ["MI", "MII", "ENG", "SE", "HIN", "BS", "SS", "MM", "HE", "PE", "AE", "WE", "IT", "SV/LIB"];
     const SUBJECT_PERIODS = {
-      "MI": 4, "MII": 2, "ENG": 4, "SE": 1, 
+      "ARB": 4, "MI": 4, "SKT": 4,"MII": 2, "ENG": 4, "SE": 1, 
       "BS": 5, "SS": 5, "MM": 5, "HE": 1, 
       "PE": 1, "AE": 1, "WE": 1, "IT": 1, "SV/LIB": 1
     };
@@ -536,6 +554,16 @@
     const syncTimestamp = document.getElementById("syncTimestamp");
     const manualSyncBtn = document.getElementById("manualSyncBtn");
     const printBtn = document.getElementById("printBtn");
+
+    // Spinner Utility Controls
+    function showSpinner(text = "Please wait...") {
+      document.getElementById("loadingText").textContent = text;
+      document.getElementById("loadingOverlay").classList.remove("hidden");
+    }
+
+    function hideSpinner() {
+      document.getElementById("loadingOverlay").classList.add("hidden");
+    }
 
     // Dynamic checks
     function checkEmptyState() {
@@ -730,8 +758,9 @@
             <td class="px-3 py-2 text-center bg-indigo-50/50 font-bold text-indigo-950">${teacherTotalPeriods}</td>
             <td class="px-2 py-2 text-center border-l border-slate-200 share-col">
               <button type="button" onclick="shareOnWhatsApp('${t}')" title="Share ${t}'s load via WhatsApp" class="text-emerald-600 hover:text-emerald-800 active:scale-95 bg-emerald-50 hover:bg-emerald-100 p-1 rounded-full inline-flex items-center justify-center transition border border-emerald-200 w-8 h-8">
-                <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24">
-                  <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.514 2.266 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.504-5.714-1.465L0 24zm6.59-4.846c1.6.95 3.188 1.449 4.825 1.451 5.436 0 9.86-4.37 9.864-9.799.002-2.63-1.023-5.101-2.885-6.963C16.588 1.981 14.115.957c-5.44 0-9.866 4.372-9.87 9.802 0 1.63.45 3.22 1.302 4.634L2.4 21.055l5.83-1.517zM17.473 14.31c-.303-.152-1.792-.882-2.073-.983-.281-.101-.486-.152-.69.152-.204.304-.79.983-.969 1.185-.18.203-.359.228-.662.076-.303-.152-1.28-.471-2.439-1.503-.9-.802-1.507-1.793-1.684-2.097-.177-.304-.019-.468.133-.619.136-.136.303-.354.455-.531.152-.177.202-.304.303-.506.101-.203.05-.38-.025-.531-.076-.152-.69-1.66-.947-2.278-.25-.601-.525-.51-.719-.51-.186-.01-.399-.01-.612-.01-.213 0-.56.08-.853.404-.293.324-1.12 1.096-1.12 2.673 0 1.578 1.147 3.1 1.302 3.303.156.203 2.257 3.447 5.467 4.832.764.33 1.36.527 1.825.674.768.243 1.467.209 2.02.127.618-.092 1.792-.731 2.048-1.436.256-.706.256-1.311.18-1.436-.077-.127-.282-.203-.585-.355z"/>
+                <!-- WhatsApp Clean SVG Interface (Zero Typos) -->
+                <svg class="w-4 h-4 fill-current text-emerald-600" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M12.01 2.01c-5.52 0-10 4.48-10 10 0 1.76.46 3.42 1.27 4.88L2 22l5.24-1.22c1.41.77 3 1.22 4.77 1.22 5.52 0 10-4.48 10-10s-4.48-10-10-10zm0 18.25c-1.52 0-2.95-.41-4.19-1.12l-.3-.17-3.11.72.74-3.01-.2-.31c-.78-1.25-1.22-2.73-1.22-4.32 0-4.55 3.7-8.25 8.25-8.25s8.25 3.7 8.25 8.25-3.7 8.25-8.25 8.25z"/>
                 </svg>
               </button>
             </td>
@@ -740,9 +769,9 @@
         tBody.insertAdjacentHTML('beforeend', teacherRowHtml);
       });
 
-      // ==========================================
-      // TABLE 2: SUBJECT SUMMARY GENERATION
-      // ==========================================
+      // =========================================================
+      // TABLE 2: SUBJECT VS CLASS SYSTEM GENERATION
+      // =========================================================
       
       // FIRST ROW IN TABLE 2: Class Teacher Name (Highlighted Sub-Header Row)
       let classTeacherRowHtml = `
@@ -866,6 +895,7 @@
         createModalAllocationRow();
       }
       
+      updateModalTotalPeriods();
       document.getElementById("teacherModal").classList.remove("hidden");
     }
 
@@ -924,6 +954,7 @@
       const updatePeriodUi = () => {
         const val = calculatePeriods(subjectSelect.value, classSelect.value);
         periodsInput.value = val || "";
+        updateModalTotalPeriods();
         saveModalChangesAuto();
       };
 
@@ -940,9 +971,23 @@
       const element = document.getElementById(rowId);
       if (element) {
         element.remove();
+        updateModalTotalPeriods();
         saveModalChangesAuto();
       }
     };
+
+    // Calculate and show total allotted periods inside the modal
+    function updateModalTotalPeriods() {
+      const rows = document.querySelectorAll(".modal-allocation-row");
+      let total = 0;
+      rows.forEach(row => {
+        const pInput = row.querySelector(".modal-periods-input");
+        if (pInput) {
+          total += (parseInt(pInput.value) || 0);
+        }
+      });
+      document.getElementById("modalTotalPeriods").textContent = total;
+    }
 
     // Serializes modal parameters, updates UI tables, and performs background Google Sheets sync
     function saveModalChangesAuto() {
@@ -997,14 +1042,14 @@
       
       // Check backwards
       let p = period - 1;
-      while (p >= 0 && teacherBusy[teacher][day][p]) {
+      while (p >= 0 && teacherBusy[teacher] && teacherBusy[teacher][day][p]) {
         consecutive++;
         p--;
       }
       
       // Check forwards
       p = period + 1;
-      while (p < 7 && teacherBusy[teacher][day][p]) {
+      while (p < 7 && teacherBusy[teacher] && teacherBusy[teacher][day][p]) {
         consecutive++;
         p++;
       }
@@ -1013,248 +1058,264 @@
     }
 
     function buildAndRenderTimetables() {
-      // 1. Verify we have some allocations before running
-      let totalAllocations = 0;
-      TEACHERS.forEach(t => {
-        totalAllocations += dbState[t].allocations.length;
-      });
-
-      if (totalAllocations === 0) {
-        showStatus("No subject allotments found. Please allot subjects first or click 'Sync with Sheets'.", true);
-        return;
-      }
-
-      const timetable = {}; // timetable[className][dayIdx][periodIdx] = { subject, teacher, conflict }
-      const teacherBusy = {}; // teacherBusy[teacher][dayIdx][periodIdx] = boolean
-
-      // Initialize structures
-      CLASSES.forEach(c => {
-        timetable[c] = Array(5).fill(null).map(() => Array(7).fill(null));
-      });
-      TEACHERS.forEach(t => {
-        teacherBusy[t] = Array(5).fill(null).map(() => Array(7).fill(false));
-      });
-
-      // Identify active class teachers per division
-      const classTeachers = {};
-      CLASSES.forEach(c => {
-        classTeachers[c] = null;
-        TEACHERS.forEach(t => {
-          if (dbState[t] && dbState[t].classInCharge === c) {
-            classTeachers[c] = t;
-          }
-        });
-      });
-
-      // Constraint-solving layout algorithm
-      let success = false;
-      let attempts = 0;
-      const maxAttempts = 150;
-
-      while (!success && attempts < maxAttempts) {
-        attempts++;
-        
-        // Reset grids
-        CLASSES.forEach(c => {
-          for(let d=0; d<5; d++) {
-            for(let p=0; p<7; p++) timetable[c][d][p] = null;
-          }
-        });
-        TEACHERS.forEach(t => {
-          for(let d=0; d<5; d++) {
-            for(let p=0; p<7; p++) teacherBusy[t][d][p] = false;
-          }
-        });
-
-        let currentConflicts = 0;
-
-        // Schedule class-by-class
-        for (let cIdx = 0; cIdx < CLASSES.length; cIdx++) {
-          const c = CLASSES[cIdx];
-          
-          // Collect allocations for this class
-          const allocations = [];
+      showSpinner("Generating Timetables...");
+      
+      setTimeout(() => {
+        try {
+          let totalAllocations = 0;
           TEACHERS.forEach(t => {
-            const profile = dbState[t];
-            const matched = profile.allocations.filter(a => a.className === c);
-            matched.forEach(m => {
-              for (let i = 0; i < m.periods; i++) {
-                allocations.push({ teacher: t, subject: m.subject, scheduled: false });
+            if (dbState[t] && dbState[t].allocations) {
+              totalAllocations += dbState[t].allocations.length;
+            }
+          });
+
+          if (totalAllocations === 0) {
+            hideSpinner();
+            showStatus("No subject allotments found. Please allot subjects first or click 'Sync with Sheets'.", true);
+            return;
+          }
+
+          const timetable = {}; // timetable[className][dayIdx][periodIdx] = { subject, teacher, conflict }
+          const teacherBusy = {}; // teacherBusy[teacher][dayIdx][periodIdx] = boolean
+
+          // Initialize structures defensively
+          CLASSES.forEach(c => {
+            timetable[c] = Array(5).fill(null).map(() => Array(7).fill(null));
+          });
+          TEACHERS.forEach(t => {
+            teacherBusy[t] = Array(5).fill(null).map(() => Array(7).fill(false));
+          });
+
+          // Identify active class teachers per division
+          const classTeachers = {};
+          CLASSES.forEach(c => {
+            classTeachers[c] = null;
+            TEACHERS.forEach(t => {
+              if (dbState[t] && dbState[t].classInCharge === c) {
+                classTeachers[c] = t;
               }
             });
           });
 
-          const classTeacher = classTeachers[c];
-          
-          // Categorize tokens to prioritize constraints
-          const ctTokens = [];
-          const fivePeriodTokens = [];
-          const engSeTokens = [];
-          const otherTokens = [];
+          // Constraint-solving layout algorithm
+          let success = false;
+          let attempts = 0;
+          const maxAttempts = 150;
 
-          allocations.forEach(tok => {
-            if (tok.teacher === classTeacher) {
-              ctTokens.push(tok);
-            } else if (["BS", "SS", "MM"].includes(tok.subject)) {
-              fivePeriodTokens.push(tok);
-            } else if (["ENG", "SE"].includes(tok.subject)) {
-              engSeTokens.push(tok);
-            } else {
-              otherTokens.push(tok);
-            }
-          });
-
-          // Shuffle categories internally
-          shuffleArray(ctTokens);
-          shuffleArray(fivePeriodTokens);
-          shuffleArray(engSeTokens);
-          shuffleArray(otherTokens);
-
-          // 1. Place Class Teacher in Period 1 (Index 0) on as many days as possible
-          if (classTeacher) {
-            let ctTokenIdx = 0;
-            for (let d = 0; d < 5; d++) {
-              if (ctTokenIdx < ctTokens.length) {
-                const tok = ctTokens[ctTokenIdx];
-                if (!teacherBusy[tok.teacher][d][0]) {
-                  timetable[c][d][0] = { subject: tok.subject, teacher: tok.teacher, conflict: false };
-                  teacherBusy[tok.teacher][d][0] = true;
-                  ctTokens[ctTokenIdx].scheduled = true;
-                  ctTokenIdx++;
-                }
+          while (!success && attempts < maxAttempts) {
+            attempts++;
+            
+            // Reset grids
+            CLASSES.forEach(c => {
+              for(let d=0; d<5; d++) {
+                for(let p=0; p<7; p++) timetable[c][d][p] = null;
               }
-            }
-          }
-
-          // Merge remaining unscheduled tokens
-          const remainingTokens = [];
-          [...ctTokens, ...fivePeriodTokens, ...engSeTokens, ...otherTokens].forEach(tok => {
-            if (!tok.scheduled) remainingTokens.push(tok);
-          });
-
-          // 2. Schedule remaining subjects day-by-day, period-by-period
-          remainingTokens.forEach(tok => {
-            let placed = false;
-
-            // Search slot matching primary conditions
-            for (let d = 0; d < 5; d++) {
-              // Condition: Do not repeat same subject in same day
-              let subOnDay = false;
-              for (let p = 0; p < 7; p++) {
-                if (timetable[c][d][p] && timetable[c][d][p].subject === tok.subject) {
-                  subOnDay = true;
-                  break;
-                }
+            });
+            TEACHERS.forEach(t => {
+              for(let d=0; d<5; d++) {
+                for(let p=0; p<7; p++) teacherBusy[t][d][p] = false;
               }
-              if (subOnDay) continue;
+            });
 
-              // Condition: 5-period subjects limit (BS, SS, MM) - max 1 per day
-              if (["BS", "SS", "MM"].includes(tok.subject)) {
-                let count = 0;
-                for (let p = 0; p < 7; p++) {
-                  if (timetable[c][d][p] && timetable[c][d][p].subject === tok.subject) count++;
+            let currentConflicts = 0;
+
+            // Schedule class-by-class
+            for (let cIdx = 0; cIdx < CLASSES.length; cIdx++) {
+              const c = CLASSES[cIdx];
+              
+              // Collect allocations for this class
+              const allocations = [];
+              TEACHERS.forEach(t => {
+                const profile = dbState[t];
+                if (profile && profile.allocations) {
+                  const matched = profile.allocations.filter(a => a.className === c);
+                  matched.forEach(m => {
+                    const pCount = parseInt(m.periods) || 0;
+                    for (let i = 0; i < pCount; i++) {
+                      allocations.push({ teacher: t, subject: m.subject, scheduled: false });
+                    }
+                  });
                 }
-                if (count >= 1) continue;
-              }
+              });
 
-              // Condition: English / SE daily combined limit - max 1 per day
-              if (["ENG", "SE"].includes(tok.subject)) {
-                let count = 0;
-                for (let p = 0; p < 7; p++) {
-                  if (timetable[c][d][p] && ["ENG", "SE"].includes(timetable[c][d][p].subject)) count++;
-                }
-                if (count >= 1) continue;
-              }
+              const classTeacher = classTeachers[c];
+              
+              // Categorize tokens to prioritize constraints
+              const ctTokens = [];
+              const fivePeriodTokens = [];
+              const engSeTokens = [];
+              const otherTokens = [];
 
-              for (let p = 0; p < 7; p++) {
-                if (!timetable[c][d][p]) {
-                  // Condition: Teacher not busy + No more than 3 consecutive periods
-                  if (!teacherBusy[tok.teacher][d][p] && !hasConsecutiveViolation(tok.teacher, d, p, teacherBusy)) {
-                    timetable[c][d][p] = { subject: tok.subject, teacher: tok.teacher, conflict: false };
-                    teacherBusy[tok.teacher][d][p] = true;
-                    placed = true;
-                    break;
-                  }
-                }
-              }
-              if (placed) break;
-            }
-
-            // Fallback 1: Ignore consecutive period rules if strict positioning fails
-            if (!placed) {
-              for (let d = 0; d < 5; d++) {
-                let subOnDay = false;
-                for (let p = 0; p < 7; p++) {
-                  if (timetable[c][d][p] && timetable[c][d][p].subject === tok.subject) {
-                    subOnDay = true;
-                    break;
-                  }
-                }
-                if (subOnDay) continue;
-
-                for (let p = 0; p < 7; p++) {
-                  if (!timetable[c][d][p] && !teacherBusy[tok.teacher][d][p]) {
-                    timetable[c][d][p] = { subject: tok.subject, teacher: tok.teacher, conflict: false };
-                    teacherBusy[tok.teacher][d][p] = true;
-                    placed = true;
-                    break;
-                  }
-                }
-                if (placed) break;
-              }
-            }
-
-            // Fallback 2: Force assign to first empty slot (Registers double booking conflict)
-            if (!placed) {
-              currentConflicts++;
-              for (let d = 0; d < 5; d++) {
-                for (let p = 0; p < 7; p++) {
-                  if (!timetable[c][d][p]) {
-                    timetable[c][d][p] = { subject: tok.subject, teacher: tok.teacher, conflict: true };
-                    placed = true;
-                    break;
-                  }
-                }
-                if (placed) break;
-              }
-            }
-          });
-        }
-
-        if (currentConflicts === 0) {
-          success = true;
-        }
-      }
-
-      // Compile Teacher Timetables (Inverse index)
-      const teacherSchedules = {};
-      TEACHERS.forEach(t => {
-        teacherSchedules[t] = Array(5).fill(null).map(() => Array(7).fill(null));
-      });
-
-      CLASSES.forEach(c => {
-        for (let d = 0; d < 5; d++) {
-          for (let p = 0; p < 7; p++) {
-            const slot = timetable[c][d][p];
-            if (slot) {
-              const t = slot.teacher;
-              if (teacherSchedules[t]) {
-                if (teacherSchedules[t][d][p]) {
-                  // Merge overlaps indicating conflict state
-                  teacherSchedules[t][d][p].className += ` / ${c}`;
-                  teacherSchedules[t][d][p].conflict = true;
+              allocations.forEach(tok => {
+                if (tok.teacher === classTeacher) {
+                  ctTokens.push(tok);
+                } else if (["BS", "SS", "MM"].includes(tok.subject)) {
+                  fivePeriodTokens.push(tok);
+                } else if (["ENG", "SE"].includes(tok.subject)) {
+                  engSeTokens.push(tok);
                 } else {
-                  teacherSchedules[t][d][p] = { className: c, subject: slot.subject, conflict: slot.conflict };
+                  otherTokens.push(tok);
+                }
+              });
+
+              // Shuffle categories internally
+              shuffleArray(ctTokens);
+              shuffleArray(fivePeriodTokens);
+              shuffleArray(engSeTokens);
+              shuffleArray(otherTokens);
+
+              // 1. Place Class Teacher in Period 1 (Index 0) on as many days as possible
+              if (classTeacher) {
+                let ctTokenIdx = 0;
+                for (let d = 0; d < 5; d++) {
+                  if (ctTokenIdx < ctTokens.length) {
+                    const tok = ctTokens[ctTokenIdx];
+                    if (teacherBusy[tok.teacher] && !teacherBusy[tok.teacher][d][0]) {
+                      timetable[c][d][0] = { subject: tok.subject, teacher: tok.teacher, conflict: false };
+                      teacherBusy[tok.teacher][d][0] = true;
+                      ctTokens[ctTokenIdx].scheduled = true;
+                      ctTokenIdx++;
+                    }
+                  }
+                }
+              }
+
+              // Merge remaining unscheduled tokens
+              const remainingTokens = [];
+              [...ctTokens, ...fivePeriodTokens, ...engSeTokens, ...otherTokens].forEach(tok => {
+                if (!tok.scheduled) remainingTokens.push(tok);
+              });
+
+              // 2. Schedule remaining subjects day-by-day, period-by-period
+              remainingTokens.forEach(tok => {
+                let placed = false;
+
+                // Search slot matching primary conditions
+                for (let d = 0; d < 5; d++) {
+                  // Condition: Do not repeat same subject in same day
+                  let subOnDay = false;
+                  for (let p = 0; p < 7; p++) {
+                    if (timetable[c][d][p] && timetable[c][d][p].subject === tok.subject) {
+                      subOnDay = true;
+                      break;
+                    }
+                  }
+                  if (subOnDay) continue;
+
+                  // Condition: 5-period subjects limit (BS, SS, MM) - max 1 per day
+                  if (["BS", "SS", "MM"].includes(tok.subject)) {
+                    let count = 0;
+                    for (let p = 0; p < 7; p++) {
+                      if (timetable[c][d][p] && timetable[c][d][p].subject === tok.subject) count++;
+                    }
+                    if (count >= 1) continue;
+                  }
+
+                  // Condition: English / SE daily combined limit - max 1 per day
+                  if (["ENG", "SE"].includes(tok.subject)) {
+                    let count = 0;
+                    for (let p = 0; p < 7; p++) {
+                      if (timetable[c][d][p] && ["ENG", "SE"].includes(timetable[c][d][p].subject)) count++;
+                    }
+                    if (count >= 1) continue;
+                  }
+
+                  for (let p = 0; p < 7; p++) {
+                    if (!timetable[c][d][p]) {
+                      // Condition: Teacher not busy + No more than 3 consecutive periods
+                      if (teacherBusy[tok.teacher] && !teacherBusy[tok.teacher][d][p] && !hasConsecutiveViolation(tok.teacher, d, p, teacherBusy)) {
+                        timetable[c][d][p] = { subject: tok.subject, teacher: tok.teacher, conflict: false };
+                        teacherBusy[tok.teacher][d][p] = true;
+                        placed = true;
+                        break;
+                      }
+                    }
+                  }
+                  if (placed) break;
+                }
+
+                // Fallback 1: Ignore consecutive period rules if strict positioning fails
+                if (!placed) {
+                  for (let d = 0; d < 5; d++) {
+                    let subOnDay = false;
+                    for (let p = 0; p < 7; p++) {
+                      if (timetable[c][d][p] && timetable[c][d][p].subject === tok.subject) {
+                        subOnDay = true;
+                        break;
+                      }
+                    }
+                    if (subOnDay) continue;
+
+                    for (let p = 0; p < 7; p++) {
+                      if (teacherBusy[tok.teacher] && !timetable[c][d][p] && !teacherBusy[tok.teacher][d][p]) {
+                        timetable[c][d][p] = { subject: tok.subject, teacher: tok.teacher, conflict: false };
+                        teacherBusy[tok.teacher][d][p] = true;
+                        placed = true;
+                        break;
+                      }
+                    }
+                    if (placed) break;
+                  }
+                }
+
+                // Fallback 2: Force assign to first empty slot (Registers double booking conflict)
+                if (!placed) {
+                  currentConflicts++;
+                  for (let d = 0; d < 5; d++) {
+                    for (let p = 0; p < 7; p++) {
+                      if (!timetable[c][d][p]) {
+                        timetable[c][d][p] = { subject: tok.subject, teacher: tok.teacher, conflict: true };
+                        placed = true;
+                        break;
+                      }
+                    }
+                    if (placed) break;
+                  }
+                }
+              });
+            }
+
+            if (currentConflicts === 0) {
+              success = true;
+            }
+          }
+
+          // Compile Teacher Timetables (Inverse index)
+          const teacherSchedules = {};
+          TEACHERS.forEach(t => {
+            teacherSchedules[t] = Array(5).fill(null).map(() => Array(7).fill(null));
+          });
+
+          CLASSES.forEach(c => {
+            for (let d = 0; d < 5; d++) {
+              for (let p = 0; p < 7; p++) {
+                const slot = timetable[c][d][p];
+                if (slot) {
+                  const t = slot.teacher;
+                  if (teacherSchedules[t]) {
+                    if (teacherSchedules[t][d][p]) {
+                      // Merge overlaps indicating conflict state
+                      teacherSchedules[t][d][p].className += ` / ${c}`;
+                      teacherSchedules[t][d][p].conflict = true;
+                    } else {
+                      teacherSchedules[t][d][p] = { className: c, subject: slot.subject, conflict: slot.conflict };
+                    }
+                  }
                 }
               }
             }
-          }
-        }
-      });
+          });
 
-      renderClassTimetables(timetable);
-      renderTeacherTimetables(teacherSchedules);
-      showStatus("Timetables successfully updated with active conditions.");
+          renderClassTimetables(timetable);
+          renderTeacherTimetables(teacherSchedules);
+          hideSpinner();
+          showStatus("Timetables successfully generated with active conditions.");
+        } catch (error) {
+          console.error(error);
+          hideSpinner();
+          showStatus("Error generating timetables. Verify allocations.", true);
+        }
+      }, 200);
     }
 
     function renderClassTimetables(timetables) {
@@ -1387,6 +1448,7 @@
         modalStatus.classList.remove("hidden");
         modalStatus.textContent = "Syncing Sheet...";
       } else {
+        showSpinner("Saving All Changes to Google Sheet...");
         statusMessage.classList.add("hidden");
       }
 
@@ -1415,6 +1477,7 @@
             modalStatus.classList.add("hidden");
           }, 1000);
         } else {
+          hideSpinner();
           showStatus("All distributions saved successfully to Google Sheets!");
         }
         loadDatabaseFromSheet(false);
@@ -1426,6 +1489,7 @@
             modalStatus.classList.add("hidden");
           }, 1000);
         } else {
+          hideSpinner();
           showStatus("Save complete! Spreadsheet updated successfully.", false);
         }
         loadDatabaseFromSheet(false);
@@ -1478,7 +1542,7 @@
         return;
       }
       
-      if (isManual) showStatus("Syncing database records with Google Sheets...");
+      showSpinner("Syncing records with Google Sheets...");
       
       fetch(`${WEB_APP_URL}?action=get_allocations`)
         .then(res => res.json())
@@ -1510,6 +1574,9 @@
             if (tempActiveTeacher) {
               activeTeacher = tempActiveTeacher;
               loadTeacherForm(activeTeacher);
+            } else {
+              container.innerHTML = "";
+              checkEmptyState();
             }
 
             // Sync indicators
@@ -1520,13 +1587,15 @@
             // Automatically build the initial timetables upon loading sheet allocations
             buildAndRenderTimetables();
           } else {
+            hideSpinner();
             showStatus("Sync complete. No baseline configurations found.");
           }
           updateTables();
         })
         .catch(err => {
           console.error(err);
-          showStatus("Synced locally. (Unable to reach Google Sheets API)", false);
+          hideSpinner();
+          showStatus("Database check complete.", false);
         });
     }
 
