@@ -22,7 +22,6 @@
         margin: 0 !important;
       }
 
-      /* Hide interactive headers, selectors, form containers, sync tools and share columns */
       header, 
       form, 
       #dbSyncControls,
@@ -36,7 +35,6 @@
         display: none !important;
       }
 
-      /* Force main container block to span entire canvas */
       .max-w-7xl {
         max-width: 100% !important;
         width: 100% !important;
@@ -44,7 +42,6 @@
         margin: 0 !important;
       }
 
-      /* FIRST TABLE CARD: Forces Page 1, spanning full width and max print viewport height */
       #teacherTableCard {
         width: 100% !important;
         height: 95vh !important; 
@@ -56,7 +53,6 @@
         margin: 0 0 20mm 0 !important;
       }
 
-      /* SECOND TABLE CARD: Forces Page 2, spanning full width and max print viewport height */
       #studentTableCard {
         width: 100% !important;
         height: 95vh !important;
@@ -66,7 +62,6 @@
         margin: 0 !important;
       }
 
-      /* Clear horizontal scroll constraints inside printable layout */
       .overflow-x-auto {
         overflow: visible !important;
         width: 100% !important;
@@ -99,7 +94,7 @@
         padding: 5px 4px !important;
       }
 
-      /* Layout switches for print targets */
+      /* View-dependent print layout overrides */
       body.print-default #teacherTableCard {
         page-break-after: always !important; 
         break-after: page !important;
@@ -246,11 +241,17 @@
         <!-- Card 2: Class & Subject Allotment -->
         <div class="bg-white rounded-lg shadow-sm border border-slate-200 p-4 sm:p-6 flex flex-col justify-between">
           <div>
-            <div class="flex items-center justify-between mb-4 border-b pb-2">
-              <h2 class="text-md font-bold text-slate-850 flex items-center gap-2">
-                <span class="bg-indigo-100 text-indigo-800 rounded-full w-5 h-5 flex items-center justify-center text-xs">2</span>
-                Class & Subject Allotment
-              </h2>
+            <div class="flex items-center justify-between mb-4 border-b pb-2 flex-wrap gap-2">
+              <div class="flex items-center gap-3 flex-wrap">
+                <h2 class="text-md font-bold text-slate-850 flex items-center gap-2">
+                  <span class="bg-indigo-100 text-indigo-800 rounded-full w-5 h-5 flex items-center justify-center text-xs">2</span>
+                  Class & Subject Allotment
+                </h2>
+                <!-- Dynamic instant allotted periods indicator -->
+                <span class="bg-indigo-100 text-indigo-800 text-xs px-2.5 py-1 rounded-full font-bold">
+                  Allotted: <span id="mainTotalPeriods">0</span> Periods
+                </span>
+              </div>
               <button type="button" id="addAllocationBtn" title="Add Subject Allocation" class="bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white w-11 h-11 rounded-full flex items-center justify-center shadow-md transition transform hover:scale-105">
                 <span class="text-xl font-bold">+</span>
               </button>
@@ -515,13 +516,13 @@
     // ==========================================
     // 1. CONFIGURE YOUR GOOGLE WEB APP URL HERE
     // ==========================================
-    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyDNLHsCc83Br9V8RDjfWfjOLaApcWfUfJrKY5G0UN3z971fpSBXU8VTkHsUkMXl-xb/exec";
+    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbz8wcWZikff425UknYmBocCa6ZjgK4DUtCQO_n3SOAgEgK_vidUw25Rwzf1h34p24mQ/exec";
 
     const TEACHERS = ["TAK", "SK", "ERJ", "BA", "VA", "SJS", "GMK", "SA", "KK", "KSPB", "NV", "SS", "SSR", "RR", "BUS", "ANM"];
     const CLASSES = ["5A", "5B", "5C", "5D", "6A", "6B", "6C", "6D", "7A", "7B", "7C", "7D"];
     const SUBJECTS = ["MI", "MII", "ENG", "SE", "HIN", "BS", "SS", "MM", "HE", "PE", "AE", "WE", "IT", "SV/LIB"];
     const SUBJECT_PERIODS = {
-      "ARB": 4, "MI": 4, "SKT": 4,"MII": 2, "ENG": 4, "SE": 1, 
+      "ARB": 4, "MI": 4, "SKT": 4, "MII": 2, "ENG": 4, "SE": 1, 
       "BS": 5, "SS": 5, "MM": 5, "HE": 1, 
       "PE": 1, "AE": 1, "WE": 1, "IT": 1, "SV/LIB": 1
     };
@@ -660,6 +661,7 @@
         periodsInput.value = val || "";
         saveCurrentFormToState();
         updateTables();
+        updateMainTotalPeriods();
       };
 
       classSelect.addEventListener("change", updatePeriodUi);
@@ -674,7 +676,21 @@
       checkEmptyState();
       saveCurrentFormToState();
       updateTables();
+      updateMainTotalPeriods();
     };
+
+    // Calculate and show total allotted periods in the main Class & Subject Allotment card header
+    function updateMainTotalPeriods() {
+      const rows = container.querySelectorAll(".allocation-row");
+      let total = 0;
+      rows.forEach(row => {
+        const pInput = row.querySelector(".periods-input");
+        if (pInput) {
+          total += (parseInt(pInput.value) || 0);
+        }
+      });
+      document.getElementById("mainTotalPeriods").textContent = total;
+    }
 
     // Populate profile selectors from active memory state
     function loadTeacherForm(teacherName) {
@@ -682,6 +698,7 @@
       if (!teacherName) {
         chargeDropdown.value = "None";
         checkEmptyState();
+        updateMainTotalPeriods();
         return;
       }
 
@@ -696,6 +713,7 @@
         createAllocationRow();
       }
       checkEmptyState();
+      updateMainTotalPeriods();
     }
 
     // Refresh dynamic visualizations in summary tables
@@ -1055,6 +1073,214 @@
       }
       
       return consecutive > 3;
+    }
+
+    // Silently calculates the full schedule and flattens it for Sheets transmission
+    function generateTimetableDataSilent() {
+      const timetable = {};
+      const teacherBusy = {};
+
+      CLASSES.forEach(c => {
+        timetable[c] = Array(5).fill(null).map(() => Array(7).fill(null));
+      });
+      TEACHERS.forEach(t => {
+        teacherBusy[t] = Array(5).fill(null).map(() => Array(7).fill(false));
+      });
+
+      const classTeachers = {};
+      CLASSES.forEach(c => {
+        classTeachers[c] = null;
+        TEACHERS.forEach(t => {
+          if (dbState[t] && dbState[t].classInCharge === c) {
+            classTeachers[c] = t;
+          }
+        });
+      });
+
+      let success = false;
+      let attempts = 0;
+      const maxAttempts = 100;
+
+      while (!success && attempts < maxAttempts) {
+        attempts++;
+        CLASSES.forEach(c => {
+          for(let d=0; d<5; d++) {
+            for(let p=0; p<7; p++) timetable[c][d][p] = null;
+          }
+        });
+        TEACHERS.forEach(t => {
+          for(let d=0; d<5; d++) {
+            for(let p=0; p<7; p++) teacherBusy[t][d][p] = false;
+          }
+        });
+
+        let currentConflicts = 0;
+
+        for (let cIdx = 0; cIdx < CLASSES.length; cIdx++) {
+          const c = CLASSES[cIdx];
+          const allocations = [];
+          TEACHERS.forEach(t => {
+            const profile = dbState[t];
+            if (profile && profile.allocations) {
+              const matched = profile.allocations.filter(a => a.className === c);
+              matched.forEach(m => {
+                const pCount = parseInt(m.periods) || 0;
+                for (let i = 0; i < pCount; i++) {
+                  allocations.push({ teacher: t, subject: m.subject, scheduled: false });
+                }
+              });
+            }
+          });
+
+          const classTeacher = classTeachers[c];
+          const ctTokens = [];
+          const fivePeriodTokens = [];
+          const engSeTokens = [];
+          const otherTokens = [];
+
+          allocations.forEach(tok => {
+            if (tok.teacher === classTeacher) {
+              ctTokens.push(tok);
+            } else if (["BS", "SS", "MM"].includes(tok.subject)) {
+              fivePeriodTokens.push(tok);
+            } else if (["ENG", "SE"].includes(tok.subject)) {
+              engSeTokens.push(tok);
+            } else {
+              otherTokens.push(tok);
+            }
+          });
+
+          shuffleArray(ctTokens);
+          shuffleArray(fivePeriodTokens);
+          shuffleArray(engSeTokens);
+          shuffleArray(otherTokens);
+
+          if (classTeacher) {
+            let ctTokenIdx = 0;
+            for (let d = 0; d < 5; d++) {
+              if (ctTokenIdx < ctTokens.length) {
+                const tok = ctTokens[ctTokenIdx];
+                if (teacherBusy[tok.teacher] && !teacherBusy[tok.teacher][d][0]) {
+                  timetable[c][d][0] = { subject: tok.subject, teacher: tok.teacher, conflict: false };
+                  teacherBusy[tok.teacher][d][0] = true;
+                  ctTokens[ctTokenIdx].scheduled = true;
+                  ctTokenIdx++;
+                }
+              }
+            }
+          }
+
+          const remainingTokens = [];
+          [...ctTokens, ...fivePeriodTokens, ...engSeTokens, ...otherTokens].forEach(tok => {
+            if (!tok.scheduled) remainingTokens.push(tok);
+          });
+
+          remainingTokens.forEach(tok => {
+            let placed = false;
+
+            for (let d = 0; d < 5; d++) {
+              let subOnDay = false;
+              for (let p = 0; p < 7; p++) {
+                if (timetable[c][d][p] && timetable[c][d][p].subject === tok.subject) {
+                  subOnDay = true;
+                  break;
+                }
+              }
+              if (subOnDay) continue;
+
+              if (["BS", "SS", "MM"].includes(tok.subject)) {
+                let count = 0;
+                for (let p = 0; p < 7; p++) {
+                  if (timetable[c][d][p] && timetable[c][d][p].subject === tok.subject) count++;
+                }
+                if (count >= 1) continue;
+              }
+
+              if (["ENG", "SE"].includes(tok.subject)) {
+                let count = 0;
+                for (let p = 0; p < 7; p++) {
+                  if (timetable[c][d][p] && ["ENG", "SE"].includes(timetable[c][d][p].subject)) count++;
+                }
+                if (count >= 1) continue;
+              }
+
+              for (let p = 0; p < 7; p++) {
+                if (!timetable[c][d][p]) {
+                  if (teacherBusy[tok.teacher] && !teacherBusy[tok.teacher][d][p] && !hasConsecutiveViolation(tok.teacher, d, p, teacherBusy)) {
+                    timetable[c][d][p] = { subject: tok.subject, teacher: tok.teacher, conflict: false };
+                    teacherBusy[tok.teacher][d][p] = true;
+                    placed = true;
+                    break;
+                  }
+                }
+              }
+              if (placed) break;
+            }
+
+            if (!placed) {
+              for (let d = 0; d < 5; d++) {
+                let subOnDay = false;
+                for (let p = 0; p < 7; p++) {
+                  if (timetable[c][d][p] && timetable[c][d][p].subject === tok.subject) {
+                    subOnDay = true;
+                    break;
+                  }
+                }
+                if (subOnDay) continue;
+
+                for (let p = 0; p < 7; p++) {
+                  if (teacherBusy[tok.teacher] && !timetable[c][d][p] && !teacherBusy[tok.teacher][d][p]) {
+                    timetable[c][d][p] = { subject: tok.subject, teacher: tok.teacher, conflict: false };
+                    teacherBusy[tok.teacher][d][p] = true;
+                    placed = true;
+                    break;
+                  }
+                }
+                if (placed) break;
+              }
+            }
+
+            if (!placed) {
+              currentConflicts++;
+              for (let d = 0; d < 5; d++) {
+                for (let p = 0; p < 7; p++) {
+                  if (!timetable[c][d][p]) {
+                    timetable[c][d][p] = { subject: tok.subject, teacher: tok.teacher, conflict: true };
+                    placed = true;
+                    break;
+                  }
+                }
+                if (placed) break;
+              }
+            }
+          });
+        }
+
+        if (currentConflicts === 0) {
+          success = true;
+        }
+      }
+
+      // Convert grid map to flattened list array
+      const flatList = [];
+      CLASSES.forEach(c => {
+        for (let d = 0; d < 5; d++) {
+          for (let p = 0; p < 7; p++) {
+            const slot = timetable[c][d][p];
+            flatList.push({
+              className: c,
+              day: DAYS[d],
+              period: p + 1,
+              timeSlot: PERIOD_TIMES[p],
+              subject: slot ? slot.subject : "Free",
+              teacher: slot ? slot.teacher : "N/A",
+              conflict: slot ? slot.conflict : false
+            });
+          }
+        }
+      });
+
+      return flatList;
     }
 
     function buildAndRenderTimetables() {
@@ -1452,6 +1678,9 @@
         statusMessage.classList.add("hidden");
       }
 
+      // Generate the flattened timetable array on the fly to write to sheets
+      const computedTimetableData = generateTimetableDataSilent();
+
       const payloadData = [];
       TEACHERS.forEach(t => {
         payloadData.push({
@@ -1467,7 +1696,10 @@
         headers: {
           "Content-Type": "text/plain;charset=utf-8"
         },
-        body: JSON.stringify({ allTeacherData: payloadData })
+        body: JSON.stringify({ 
+          allTeacherData: payloadData,
+          timetableData: computedTimetableData
+        })
       })
       .then(res => res.json().catch(() => ({ status: "success", message: "Saved" })))
       .then(data => {
