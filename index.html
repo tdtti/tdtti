@@ -10,6 +10,7 @@
   <style>
     /* NATIVE PRINT/PDF A4 LANDSCAPE FORMATTING */
     @media print {
+      /* Force landscape A4 page sizing and standard 10mm margins */
       @page {
         size: A4 landscape;
         margin: 10mm;
@@ -22,7 +23,7 @@
         margin: 0 !important;
       }
 
-      /* Hide interactive headers, selectors, forms, sync tools on print */
+      /* Hide interactive headers, selectors, form containers, sync tools and share columns */
       header, 
       form, 
       #dbSyncControls,
@@ -35,7 +36,7 @@
         display: none !important;
       }
 
-      /* Force container to match full canvas width */
+      /* Force main container block to span entire canvas */
       .max-w-7xl {
         max-width: 100% !important;
         width: 100% !important;
@@ -43,9 +44,64 @@
         margin: 0 !important;
       }
 
+      /* FIRST TABLE CARD: Forces Page 1, spanning full width and max print viewport height */
+      #teacherTableCard {
+        width: 100% !important;
+        height: 95vh !important; 
+        page-break-after: always !important; 
+        break-after: page !important;
+        box-shadow: none !important;
+        border: none !important;
+        padding: 0 !important;
+        margin: 0 0 20mm 0 !important;
+      }
+
+      /* SECOND TABLE CARD: Forces Page 2, spanning full width and max print viewport height */
+      #studentTableCard {
+        width: 100% !important;
+        height: 95vh !important;
+        box-shadow: none !important;
+        border: none !important;
+        padding: 0 !important;
+        margin: 0 !important;
+      }
+
+      /* Clear horizontal scroll constraints inside printable layout */
+      .overflow-x-auto {
+        overflow: visible !important;
+        width: 100% !important;
+      }
+
+      table {
+        table-layout: auto !important;
+        width: 100% !important;
+        font-size: 8pt !important; /* Optimal compact print scale */
+        border-collapse: collapse !important;
+      }
+
+      tr {
+        page-break-inside: avoid !important;
+        page-break-after: auto !important;
+      }
+
+      thead {
+        display: table-header-group !important;
+      }
+
+      /* Strip background shadows and sticky attributes which clip borders when printed */
+      .sticky {
+        position: static !important;
+        box-shadow: none !important;
+        background-color: white !important;
+      }
+
+      /* Ensure strict high-contrast grid lines for print readability */
+      td, th {
+        border: 1px solid #64748b !important;
+        padding: 5px 4px !important;
+      }
+
       /* Layout rule switches for specific print target states */
-      
-      /* Print Default: Only displays summary tables */
       body.print-default #teacherTableCard {
         page-break-after: always !important; 
         break-after: page !important;
@@ -60,7 +116,6 @@
         display: none !important;
       }
 
-      /* Print Student: Only prints class division timetables on individual pages */
       body.print-student #teacherTableCard,
       body.print-student #studentTableCard,
       body.print-student .teacher-timetable-card {
@@ -87,7 +142,6 @@
         margin: 0 0 15mm 0 !important;
       }
 
-      /* Print Teacher: Only prints teacher timetables on individual pages */
       body.print-teacher #teacherTableCard,
       body.print-teacher #studentTableCard,
       body.print-teacher .class-timetable-card {
@@ -112,38 +166,6 @@
         background: white !important;
         padding: 0 !important;
         margin: 0 0 15mm 0 !important;
-      }
-
-      .overflow-x-auto {
-        overflow: visible !important;
-        width: 100% !important;
-      }
-
-      table {
-        table-layout: auto !important;
-        width: 100% !important;
-        font-size: 8pt !important;
-        border-collapse: collapse !important;
-      }
-
-      tr {
-        page-break-inside: avoid !important;
-        page-break-after: auto !important;
-      }
-
-      thead {
-        display: table-header-group !important;
-      }
-
-      .sticky {
-        position: static !important;
-        box-shadow: none !important;
-        background-color: white !important;
-      }
-
-      td, th {
-        border: 1px solid #64748b !important;
-        padding: 5px 4px !important;
       }
     }
   </style>
@@ -179,23 +201,22 @@
               <div>
                 <label class="block text-xs sm:text-sm font-semibold text-slate-600 mb-1" for="teacher">Select Teacher</label>
                 <select id="teacher" required class="w-full px-3 py-2 border border-slate-300 rounded-md bg-white text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 h-11 sm:h-10">
-                  <option value="">-- Choose Teacher --</option>
-                  <option value="TAK">TAK</option>
-                  <option value="SK">SK</option>
-                  <option value="ERJ">ERJ</option>
+                  <option value="ANM">ANM</option>
                   <option value="BA">BA</option>
-                  <option value="VA">VA</option>
-                  <option value="SJS">SJS</option>
+                  <option value="BUS">BUS</option>
+                  <option value="ERJ">ERJ</option>
                   <option value="GMK">GMK</option>
-                  <option value="SA">SA</option>
                   <option value="KK">KK</option>
                   <option value="KSPB">KSPB</option>
                   <option value="NV">NV</option>
+                  <option value="RR">RR</option>
+                  <option value="SA">SA</option>
+                  <option value="SJS">SJS</option>
+                  <option value="SK">SK</option>
                   <option value="SS">SS</option>
                   <option value="SSR">SSR</option>
-                  <option value="RR">RR</option>
-                  <option value="BUS">BUS</option>
-                  <option value="ANM">ANM</option>
+                  <option value="TAK">TAK</option>
+                  <option value="VA">VA</option>
                 </select>
               </div>
 
@@ -465,7 +486,6 @@
       <div class="px-6 py-4 border-t border-slate-100 bg-slate-50 flex flex-col sm:flex-row items-center justify-between gap-3">
         <div id="modalStatusMessage" class="text-xs font-semibold text-emerald-600 hidden">Syncing with Sheets...</div>
         <div class="flex items-center gap-3 w-full sm:w-auto justify-end">
-          <!-- Button changes to simple Close trigger as edits are auto-saved on change -->
           <button type="button" onclick="closeTeacherModal()" class="px-5 py-2 bg-slate-800 text-white hover:bg-slate-900 rounded-md text-xs sm:text-sm font-semibold active:scale-95 transition">Done</button>
         </div>
       </div>
@@ -479,7 +499,7 @@
     // ==========================================
     const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyDNLHsCc83Br9V8RDjfWfjOLaApcWfUfJrKY5G0UN3z971fpSBXU8VTkHsUkMXl-xb/exec";
 
-    const TEACHERS = ["TAK", "SK", "ERJ", "BA", "VA", "SJS", "GMK", "SA", "KK", "KSPB", "NV", "SS", "SSR", "RR", "BUS", "ANM"];
+    const TEACHERS = ["ANM", "BA", "BUS", "ERJ", "GMK", "KK", "KSPB", "NV", "RR", "SA", "SJS", "SK", "SS", "SSR", "TAK", "VA"];
     const CLASSES = ["5A", "5B", "5C", "5D", "6A", "6B", "6C", "6D", "7A", "7B", "7C", "7D"];
     const SUBJECTS = ["MI", "MII", "ENG", "SE", "HIN", "BS", "SS", "MM", "HE", "PE", "AE", "WE", "IT", "SV/LIB"];
     const SUBJECT_PERIODS = {
@@ -711,7 +731,7 @@
             <td class="px-2 py-2 text-center border-l border-slate-200 share-col">
               <button type="button" onclick="shareOnWhatsApp('${t}')" title="Share ${t}'s load via WhatsApp" class="text-emerald-600 hover:text-emerald-800 active:scale-95 bg-emerald-50 hover:bg-emerald-100 p-1 rounded-full inline-flex items-center justify-center transition border border-emerald-200 w-8 h-8">
                 <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24">
-                  <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.514 2.266 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.504-5.714-1.465L0 24zm6.59-4.846c1.6.95 3.188 1.449 4.825 1.451 5.436 0 9.86-4.37 9.864-9.799.002-2.63-1.023-5.101-2.885-6.963C16.588 1.981 14.115.957(11.998.957c-5.44 0-9.866 4.372-9.87 9.802 0 1.63.45 3.22 1.302 4.634L2.4 21.055l5.83-1.517zM17.473 14.31c-.303-.152-1.792-.882-2.073-.983-.281-.101-.486-.152-.69.152-.204.304-.79.983-.969 1.185-.18.203-.359.228-.662.076-.303-.152-1.28-.471-2.439-1.503-.9-.802-1.507-1.793-1.684-2.097-.177-.304-.019-.468.133-.619.136-.136.303-.354.455-.531.152-.177.202-.304.303-.506.101-.203.05-.38-.025-.531-.076-.152-.69-1.66-.947-2.278-.25-.601-.525-.51-.719-.51-.186-.01-.399-.01-.612-.01-.213 0-.56.08-.853.404-.293.324-1.12 1.096-1.12 2.673 0 1.578 1.147 3.1 1.302 3.303.156.203 2.257 3.447 5.467 4.832.764.33 1.36.527 1.825.674.768.243 1.467.209 2.02.127.618-.092 1.792-.731 2.048-1.436.256-.706.256-1.311.18-1.436-.077-.127-.282-.203-.585-.355z"/>
+                  <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.514 2.266 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.504-5.714-1.465L0 24zm6.59-4.846c1.6.95 3.188 1.449 4.825 1.451 5.436 0 9.86-4.37 9.864-9.799.002-2.63-1.023-5.101-2.885-6.963C16.588 1.981 14.115.957c-5.44 0-9.866 4.372-9.87 9.802 0 1.63.45 3.22 1.302 4.634L2.4 21.055l5.83-1.517zM17.473 14.31c-.303-.152-1.792-.882-2.073-.983-.281-.101-.486-.152-.69.152-.204.304-.79.983-.969 1.185-.18.203-.359.228-.662.076-.303-.152-1.28-.471-2.439-1.503-.9-.802-1.507-1.793-1.684-2.097-.177-.304-.019-.468.133-.619.136-.136.303-.354.455-.531.152-.177.202-.304.303-.506.101-.203.05-.38-.025-.531-.076-.152-.69-1.66-.947-2.278-.25-.601-.525-.51-.719-.51-.186-.01-.399-.01-.612-.01-.213 0-.56.08-.853.404-.293.324-1.12 1.096-1.12 2.673 0 1.578 1.147 3.1 1.302 3.303.156.203 2.257 3.447 5.467 4.832.764.33 1.36.527 1.825.674.768.243 1.467.209 2.02.127.618-.092 1.792-.731 2.048-1.436.256-.706.256-1.311.18-1.436-.077-.127-.282-.203-.585-.355z"/>
                 </svg>
               </button>
             </td>
@@ -720,9 +740,9 @@
         tBody.insertAdjacentHTML('beforeend', teacherRowHtml);
       });
 
-      // =========================================================
-      // TABLE 2: SUBJECT VS CLASS SYSTEM GENERATION
-      // =========================================================
+      // ==========================================
+      // TABLE 2: SUBJECT SUMMARY GENERATION
+      // ==========================================
       
       // FIRST ROW IN TABLE 2: Class Teacher Name (Highlighted Sub-Header Row)
       let classTeacherRowHtml = `
@@ -796,6 +816,32 @@
         </tr>
       `;
       sFoot.innerHTML = footerHtml;
+    }
+
+    // WhatsApp Message Generator
+    function shareOnWhatsApp(teacherName) {
+      const profile = dbState[teacherName];
+      if (!profile) return;
+
+      const inCharge = profile.classInCharge !== "None" ? profile.classInCharge : "None";
+      let msg = `*Teacher Subject Distribution*\n\n`;
+      msg += `*Teacher:* ${teacherName}\n`;
+      msg += `*Class In-Charge:* ${inCharge}\n\n`;
+      msg += `*Class Subject Allotments:*\n`;
+
+      if (profile.allocations && profile.allocations.length > 0) {
+        profile.allocations.forEach(alloc => {
+          msg += `• Class ${alloc.className}: ${alloc.subject} (${alloc.periods} periods)\n`;
+        });
+      } else {
+        msg += `No active subject allocations.\n`;
+      }
+
+      const totalPeriods = profile.allocations.reduce((sum, a) => sum + (parseInt(a.periods) || 0), 0);
+      msg += `\n*Total Weekly Periods:* ${totalPeriods}`;
+
+      const encodedText = encodeURIComponent(msg);
+      window.open(`https://api.whatsapp.com/send?text=${encodedText}`, '_blank');
     }
 
     // ==========================================
@@ -945,7 +991,39 @@
       return array;
     }
 
+    // Helper to evaluate consecutive periods limit (> 3 consecutive periods)
+    function hasConsecutiveViolation(teacher, day, period, teacherBusy) {
+      let consecutive = 1;
+      
+      // Check backwards
+      let p = period - 1;
+      while (p >= 0 && teacherBusy[teacher][day][p]) {
+        consecutive++;
+        p--;
+      }
+      
+      // Check forwards
+      p = period + 1;
+      while (p < 7 && teacherBusy[teacher][day][p]) {
+        consecutive++;
+        p++;
+      }
+      
+      return consecutive > 3;
+    }
+
     function buildAndRenderTimetables() {
+      // 1. Verify we have some allocations before running
+      let totalAllocations = 0;
+      TEACHERS.forEach(t => {
+        totalAllocations += dbState[t].allocations.length;
+      });
+
+      if (totalAllocations === 0) {
+        showStatus("No subject allotments found. Please allot subjects first or click 'Sync with Sheets'.", true);
+        return;
+      }
+
       const timetable = {}; // timetable[className][dayIdx][periodIdx] = { subject, teacher, conflict }
       const teacherBusy = {}; // teacherBusy[teacher][dayIdx][periodIdx] = boolean
 
@@ -957,54 +1035,196 @@
         teacherBusy[t] = Array(5).fill(null).map(() => Array(7).fill(false));
       });
 
-      // Map allotments into weekly period tokens per class division
+      // Identify active class teachers per division
+      const classTeachers = {};
       CLASSES.forEach(c => {
-        const tokens = [];
+        classTeachers[c] = null;
         TEACHERS.forEach(t => {
-          const profile = dbState[t];
-          const matched = profile.allocations.filter(a => a.className === c);
-          matched.forEach(m => {
-            for (let i = 0; i < m.periods; i++) {
-              tokens.push({ teacher: t, subject: m.subject });
-            }
-          });
-        });
-
-        // Distribute subjects across week days randomly
-        const shuffledTokens = shuffleArray(tokens);
-
-        // Schedule class periods avoiding double bookings
-        shuffledTokens.forEach(token => {
-          let assigned = false;
-
-          // Attempt 1: Search conflict-free slots (Teacher is free)
-          for (let d = 0; d < 5; d++) {
-            for (let p = 0; p < 7; p++) {
-              if (!timetable[c][d][p] && !teacherBusy[token.teacher][d][p]) {
-                timetable[c][d][p] = { subject: token.subject, teacher: token.teacher, conflict: false };
-                teacherBusy[token.teacher][d][p] = true;
-                assigned = true;
-                break;
-              }
-            }
-            if (assigned) break;
-          }
-
-          // Attempt 2: If teacher is booked, assign anyway and flag conflict in red
-          if (!assigned) {
-            for (let d = 0; d < 5; d++) {
-              for (let p = 0; p < 7; p++) {
-                if (!timetable[c][d][p]) {
-                  timetable[c][d][p] = { subject: token.subject, teacher: token.teacher, conflict: true };
-                  assigned = true;
-                  break;
-                }
-              }
-              if (assigned) break;
-            }
+          if (dbState[t] && dbState[t].classInCharge === c) {
+            classTeachers[c] = t;
           }
         });
       });
+
+      // Constraint-solving layout algorithm
+      let success = false;
+      let attempts = 0;
+      const maxAttempts = 150;
+
+      while (!success && attempts < maxAttempts) {
+        attempts++;
+        
+        // Reset grids
+        CLASSES.forEach(c => {
+          for(let d=0; d<5; d++) {
+            for(let p=0; p<7; p++) timetable[c][d][p] = null;
+          }
+        });
+        TEACHERS.forEach(t => {
+          for(let d=0; d<5; d++) {
+            for(let p=0; p<7; p++) teacherBusy[t][d][p] = false;
+          }
+        });
+
+        let currentConflicts = 0;
+
+        // Schedule class-by-class
+        for (let cIdx = 0; cIdx < CLASSES.length; cIdx++) {
+          const c = CLASSES[cIdx];
+          
+          // Collect allocations for this class
+          const allocations = [];
+          TEACHERS.forEach(t => {
+            const profile = dbState[t];
+            const matched = profile.allocations.filter(a => a.className === c);
+            matched.forEach(m => {
+              for (let i = 0; i < m.periods; i++) {
+                allocations.push({ teacher: t, subject: m.subject, scheduled: false });
+              }
+            });
+          });
+
+          const classTeacher = classTeachers[c];
+          
+          // Categorize tokens to prioritize constraints
+          const ctTokens = [];
+          const fivePeriodTokens = [];
+          const engSeTokens = [];
+          const otherTokens = [];
+
+          allocations.forEach(tok => {
+            if (tok.teacher === classTeacher) {
+              ctTokens.push(tok);
+            } else if (["BS", "SS", "MM"].includes(tok.subject)) {
+              fivePeriodTokens.push(tok);
+            } else if (["ENG", "SE"].includes(tok.subject)) {
+              engSeTokens.push(tok);
+            } else {
+              otherTokens.push(tok);
+            }
+          });
+
+          // Shuffle categories internally
+          shuffleArray(ctTokens);
+          shuffleArray(fivePeriodTokens);
+          shuffleArray(engSeTokens);
+          shuffleArray(otherTokens);
+
+          // 1. Place Class Teacher in Period 1 (Index 0) on as many days as possible
+          if (classTeacher) {
+            let ctTokenIdx = 0;
+            for (let d = 0; d < 5; d++) {
+              if (ctTokenIdx < ctTokens.length) {
+                const tok = ctTokens[ctTokenIdx];
+                if (!teacherBusy[tok.teacher][d][0]) {
+                  timetable[c][d][0] = { subject: tok.subject, teacher: tok.teacher, conflict: false };
+                  teacherBusy[tok.teacher][d][0] = true;
+                  ctTokens[ctTokenIdx].scheduled = true;
+                  ctTokenIdx++;
+                }
+              }
+            }
+          }
+
+          // Merge remaining unscheduled tokens
+          const remainingTokens = [];
+          [...ctTokens, ...fivePeriodTokens, ...engSeTokens, ...otherTokens].forEach(tok => {
+            if (!tok.scheduled) remainingTokens.push(tok);
+          });
+
+          // 2. Schedule remaining subjects day-by-day, period-by-period
+          remainingTokens.forEach(tok => {
+            let placed = false;
+
+            // Search slot matching primary conditions
+            for (let d = 0; d < 5; d++) {
+              // Condition: Do not repeat same subject in same day
+              let subOnDay = false;
+              for (let p = 0; p < 7; p++) {
+                if (timetable[c][d][p] && timetable[c][d][p].subject === tok.subject) {
+                  subOnDay = true;
+                  break;
+                }
+              }
+              if (subOnDay) continue;
+
+              // Condition: 5-period subjects limit (BS, SS, MM) - max 1 per day
+              if (["BS", "SS", "MM"].includes(tok.subject)) {
+                let count = 0;
+                for (let p = 0; p < 7; p++) {
+                  if (timetable[c][d][p] && timetable[c][d][p].subject === tok.subject) count++;
+                }
+                if (count >= 1) continue;
+              }
+
+              // Condition: English / SE daily combined limit - max 1 per day
+              if (["ENG", "SE"].includes(tok.subject)) {
+                let count = 0;
+                for (let p = 0; p < 7; p++) {
+                  if (timetable[c][d][p] && ["ENG", "SE"].includes(timetable[c][d][p].subject)) count++;
+                }
+                if (count >= 1) continue;
+              }
+
+              for (let p = 0; p < 7; p++) {
+                if (!timetable[c][d][p]) {
+                  // Condition: Teacher not busy + No more than 3 consecutive periods
+                  if (!teacherBusy[tok.teacher][d][p] && !hasConsecutiveViolation(tok.teacher, d, p, teacherBusy)) {
+                    timetable[c][d][p] = { subject: tok.subject, teacher: tok.teacher, conflict: false };
+                    teacherBusy[tok.teacher][d][p] = true;
+                    placed = true;
+                    break;
+                  }
+                }
+              }
+              if (placed) break;
+            }
+
+            // Fallback 1: Ignore consecutive period rules if strict positioning fails
+            if (!placed) {
+              for (let d = 0; d < 5; d++) {
+                let subOnDay = false;
+                for (let p = 0; p < 7; p++) {
+                  if (timetable[c][d][p] && timetable[c][d][p].subject === tok.subject) {
+                    subOnDay = true;
+                    break;
+                  }
+                }
+                if (subOnDay) continue;
+
+                for (let p = 0; p < 7; p++) {
+                  if (!timetable[c][d][p] && !teacherBusy[tok.teacher][d][p]) {
+                    timetable[c][d][p] = { subject: tok.subject, teacher: tok.teacher, conflict: false };
+                    teacherBusy[tok.teacher][d][p] = true;
+                    placed = true;
+                    break;
+                  }
+                }
+                if (placed) break;
+              }
+            }
+
+            // Fallback 2: Force assign to first empty slot (Registers double booking conflict)
+            if (!placed) {
+              currentConflicts++;
+              for (let d = 0; d < 5; d++) {
+                for (let p = 0; p < 7; p++) {
+                  if (!timetable[c][d][p]) {
+                    timetable[c][d][p] = { subject: tok.subject, teacher: tok.teacher, conflict: true };
+                    placed = true;
+                    break;
+                  }
+                }
+                if (placed) break;
+              }
+            }
+          });
+        }
+
+        if (currentConflicts === 0) {
+          success = true;
+        }
+      }
 
       // Compile Teacher Timetables (Inverse index)
       const teacherSchedules = {};
@@ -1034,7 +1254,7 @@
 
       renderClassTimetables(timetable);
       renderTeacherTimetables(teacherSchedules);
-      showStatus("Timetables built successfully.");
+      showStatus("Timetables successfully updated with active conditions.");
     }
 
     function renderClassTimetables(timetables) {
@@ -1296,6 +1516,9 @@
             const now = new Date();
             syncTimestamp.textContent = `Last Synced: ${now.toLocaleTimeString()}`;
             showStatus("Database sync complete.");
+
+            // Automatically build the initial timetables upon loading sheet allocations
+            buildAndRenderTimetables();
           } else {
             showStatus("Sync complete. No baseline configurations found.");
           }
