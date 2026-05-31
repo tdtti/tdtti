@@ -4,662 +4,229 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Teacher Subject Distribution System</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
   
   <style>
-    /* ==========================================
-       MANUALLY ADJUSTABLE CSS VARIABLES
-       ========================================== */
-    :root {
-      /* Colors */
-      --primary-color: #4f46e5;       /* Primary Indigo theme */
-      --primary-hover: #4338ca;
-      --secondary-color: #0d9488;     /* Secondary Teal theme */
-      --success-color: #059669;       /* Emerald theme for save buttons */
-      --success-hover: #047857;
-      --danger-color: #dc2626;        /* Red theme for deletes */
-      --danger-hover: #b91c1c;
-      --bg-color: #f8fafc;            /* Page background color */
-      --text-color: #1e293b;          /* Baseline body text color */
-      --border-color: #e2e8f0;        /* Card and input border colors */
-      --card-bg: #ffffff;             /* Background for form cards */
-      
-      /* Typography & Padding */
-      --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      --container-max-width: 1200px;
-    }
-
-    /* Standard Base Resets */
-    body {
-      background-color: var(--bg-color);
-      color: var(--text-color);
-      font-family: var(--font-family);
-      margin: 0;
-      padding-bottom: 4rem;
-      line-height: 1.5;
-    }
-
-    .container {
-      max-width: var(--container-max-width);
-      margin: 0 auto;
-      padding: 1.5rem 1rem;
-      box-sizing: border-box;
-    }
-
-    .space-y-6 > * + * {
-      margin-top: 1.5rem;
-    }
-
-    .text-center {
-      text-align: center;
-    }
-
-    header h1 {
-      color: #1e1b4b;
-      font-size: 1.75rem;
-      font-weight: 800;
-      margin: 0 0 0.25rem 0;
-    }
-
-    header p {
-      color: #475569;
-      font-size: 0.875rem;
-      margin: 0;
-    }
-
-    /* Inline Flex Form Section Container */
-    .form-section-container {
-      display: flex;
-      flex-direction: column;
-      gap: 1.5rem;
-    }
-
-    @media (min-w: 1024px) {
-      .form-section-container {
-        flex-direction: row;
-        align-items: stretch; /* Cards will have equal height when inline */
+    /* NATIVE PRINT/PDF EXPORT FORMATTING */
+    @media print {
+      body {
+        background: white !important;
+        color: black !important;
+        padding: 0 !important;
+        margin: 0 !important;
       }
-      .card-basic {
-        flex: 1;
-        min-width: 320px;
+      /* Hide all forms, buttons, header, and configuration panels on print */
+      header, 
+      form, 
+      #dbSyncControls,
+      .no-print,
+      .share-col {
+        display: none !important;
       }
-      .card-allotment {
-        flex: 2;
+      /* Force tables to stretch to full print container without truncation */
+      .overflow-x-auto {
+        overflow: visible !important;
+        width: 100% !important;
       }
-    }
-
-    /* Cards Layout */
-    .card {
-      background-color: var(--card-bg);
-      border: 1px solid var(--border-color);
-      border-radius: 0.5rem;
-      padding: 1.25rem;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-      box-sizing: border-box;
-    }
-
-    @media (min-w: 640px) {
-      .card {
-        padding: 1.5rem;
+      .max-w-7xl {
+        max-width: 100% !important;
+        width: 100% !important;
+        padding: 0 !important;
+        margin: 0 !important;
       }
-    }
-
-    .card-title {
-      font-size: 1rem;
-      font-weight: 700;
-      margin-top: 0;
-      margin-bottom: 1rem;
-      padding-bottom: 0.5rem;
-      border-bottom: 1px solid var(--border-color);
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-
-    .badge {
-      background-color: #e0e7ff;
-      color: #3730a3;
-      border-radius: 9999px;
-      width: 1.25rem;
-      height: 1.25rem;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 0.75rem;
-      font-weight: 700;
-    }
-
-    /* Form Grids */
-    .form-grid {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 1rem;
-    }
-
-    @media (min-w: 640px) {
-      .form-grid {
-        grid-template-columns: 1fr;
-        gap: 1.25rem;
-      }
-    }
-
-    .form-group {
-      display: flex;
-      flex-direction: column;
-    }
-
-    .form-label {
-      font-size: 0.75rem;
-      @media (min-w: 640px) { font-size: 0.875rem; }
-      font-weight: 600;
-      color: #475569;
-      margin-bottom: 0.25rem;
-    }
-
-    .form-control {
-      width: 100%;
-      padding: 0.5rem 0.75rem;
-      border: 1px solid #cbd5e1;
-      border-radius: 0.375rem;
-      background-color: #ffffff;
-      font-size: 0.875rem;
-      height: 2.75rem;
-      box-sizing: border-box;
-      transition: border-color 0.15s ease, background-color 0.15s ease;
-    }
-
-    .form-control:focus {
-      outline: none;
-      border-color: var(--primary-color);
-      box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.2);
-    }
-
-    .form-control:disabled {
-      background-color: #f1f5f9;
-      color: #94a3b8;
-      cursor: not-allowed;
-    }
-
-    /* Dynamic Grid Rows (Class & Subject Allotment) */
-    .allocation-row {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 0.75rem;
-      align-items: center;
-      background-color: #f8fafc;
-      padding: 0.75rem;
-      border-radius: 0.375rem;
-      border: 1px solid var(--border-color);
-      margin-bottom: 0.75rem;
-      box-sizing: border-box;
-    }
-
-    @media (min-w: 640px) {
-      .allocation-row {
-        grid-template-columns: repeat(12, minmax(0, 1fr));
-      }
-      .col-span-4 { grid-column: span 4 / span 4; }
-      .col-span-2 { grid-column: span 2 / span 2; }
-    }
-
-    .mobile-label {
-      display: block;
-      font-size: 10px;
-      font-weight: bold;
-      color: #94a3b8;
-      margin-bottom: 0.125rem;
-      text-transform: uppercase;
-    }
-
-    @media (min-w: 640px) {
-      .mobile-label {
-        display: none;
-      }
-    }
-
-    /* Buttons Configuration */
-    .btn {
-      cursor: pointer;
-      font-weight: 600;
-      transition: all 0.15s ease;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      box-sizing: border-box;
-      border: none;
-    }
-
-    .btn:active {
-      transform: scale(0.95);
-    }
-
-    .btn:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-    }
-
-    .btn-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 1rem;
-      padding-bottom: 0.5rem;
-      border-bottom: 1px solid var(--border-color);
-    }
-
-    .btn-circle {
-      width: 2.75rem;
-      height: 2.75rem;
-      border-radius: 9999px;
-      font-size: 1.25rem;
-      background-color: var(--primary-color);
-      color: #ffffff;
-      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-    }
-
-    .btn-circle:hover:not(:disabled) {
-      background-color: var(--primary-hover);
-    }
-
-    .btn-danger-circle {
-      width: 2.75rem;
-      height: 2.75rem;
-      min-width: 2.75rem;
-      border-radius: 9999px;
-      background-color: #fee2e2;
-      color: var(--danger-color);
-      border: 1px solid #fecaca;
-      font-size: 1rem;
-    }
-
-    .btn-danger-circle:hover:not(:disabled) {
-      background-color: #fecaca;
-      color: var(--danger-hover);
-    }
-
-    .btn-success {
-      background-color: var(--success-color);
-      color: #ffffff;
-      width: 100%;
-      padding: 0.875rem;
-      border-radius: 0.5rem;
-      font-size: 0.875rem;
-      @media (min-w: 640px) { font-size: 1rem; }
-    }
-
-    .btn-success:hover:not(:disabled) {
-      background-color: var(--success-hover);
-    }
-
-    /* Sync controls banner */
-    .sync-banner {
-      display: flex;
-      flex-direction: column;
-      gap: 0.75rem;
-      background-color: #f1f5f9;
-      padding: 1rem;
-      border-radius: 0.5rem;
-      border: 1px solid var(--border-color);
-      box-sizing: border-box;
-    }
-
-    @media (min-w: 640px) {
-      .sync-banner {
-        flex-direction: row;
-        justify-content: space-between;
-        align-items: center;
-      }
-    }
-
-    .sync-title {
-      font-size: 0.875rem;
-      font-weight: 700;
-      color: #1e293b;
-      margin: 0;
-    }
-
-    .sync-description {
-      font-size: 0.75rem;
-      color: #64748b;
-      margin: 0;
-    }
-
-    .sync-meta {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      width: 100%;
-      justify-content: space-between;
-    }
-
-    @media (min-w: 640px) {
-      .sync-meta {
-        width: auto;
-        justify-content: flex-end;
-      }
-    }
-
-    .btn-outline {
-      background-color: #e0e7ff;
-      color: var(--primary-color);
-      border: 1px solid #c7d2fe;
-      padding: 0.5rem 0.75rem;
-      border-radius: 0.375rem;
-      font-size: 0.75rem;
-    }
-
-    .btn-outline:hover {
-      background-color: #c7d2fe;
-    }
-
-    /* Tables & Responsive overflow viewports */
-    .table-viewport {
-      position: relative;
-    }
-
-    .swipe-helper {
-      display: block;
-      text-align: right;
-      font-size: 10px;
-      font-weight: bold;
-      color: var(--primary-color);
-      margin-bottom: 0.25rem;
-      animation: pulse 2s infinite;
-    }
-
-    @media (min-w: 1024px) {
-      .swipe-helper {
-        display: none;
-      }
-    }
-
-    .table-container {
-      overflow-x: auto;
-      border: 1px solid var(--border-color);
-      border-radius: 0.375rem;
-      background-color: #ffffff;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 11px;
-    }
-
-    @media (min-w: 640px) {
       table {
-        font-size: 12px;
+        table-layout: auto !important;
+        width: 100% !important;
+        page-break-inside: avoid !important;
+        font-size: 8pt !important; /* Smaller text for compact print grid spacing */
+        border-collapse: collapse !important;
       }
-    }
-
-    .min-w-table {
-      min-width: 950px;
-    }
-
-    th, td {
-      padding: 0.5rem;
-      border-bottom: 1px solid #f1f5f9;
-      border-right: 1px solid var(--border-color);
-      box-sizing: border-box;
-    }
-
-    th {
-      background-color: #f1f5f9;
-      color: #475569;
-      font-weight: 600;
-      text-transform: uppercase;
-      text-align: left;
-    }
-
-    td.text-center, th.text-center {
-      text-align: center;
-    }
-
-    /* Fixed first column freeze styling */
-    .sticky-col {
-      position: sticky;
-      left: 0;
-      background-color: #ffffff;
-      z-index: 10;
-      box-shadow: 2px 0 5px rgba(0,0,0,0.05);
-      font-weight: 600;
-    }
-
-    th.sticky-col {
-      background-color: #f1f5f9 !important; /* Fix horizontal scroll transparency bug on dynamic header */
-    }
-
-    tr:hover .sticky-col {
-      background-color: #f8fafc;
-    }
-
-    /* Row style targets */
-    .bg-indigo-light {
-      background-color: rgba(79, 70, 229, 0.05);
-      color: #1e1b4b;
-      font-weight: 700;
-    }
-
-    .bg-teal-light {
-      background-color: rgba(13, 148, 136, 0.05);
-      color: #042f2e;
-      font-weight: 700;
-    }
-
-    .bg-complete {
-      background-color: #d1fae5;
-      color: #065f46;
-      font-weight: 700;
-    }
-
-    .bg-incomplete {
-      background-color: #fef3c7;
-      color: #92400e;
-    }
-
-    /* Alerts and status notifications */
-    .status-alert {
-      padding: 0.75rem 1rem;
-      border-radius: 0.375rem;
-      font-size: 0.75rem;
-      font-weight: 600;
-      border: 1px solid transparent;
-      display: none;
-      box-sizing: border-box;
-    }
-
-    .status-success {
-      background-color: #ecfdf5;
-      color: #065f46;
-      border-color: #a7f3d0;
-      display: block;
-    }
-
-    .status-error {
-      background-color: #fef2f2;
-      color: #991b1b;
-      border-color: #fca5a5;
-      display: block;
-    }
-
-    .empty-placeholder {
-      text-align: center;
-      padding: 1.5rem 0;
-      color: #94a3b8;
-      font-size: 0.875rem;
-    }
-
-    .hidden {
-      display: none !important;
-    }
-
-    /* Helper Animations */
-    .animate-pulse {
-      animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-    }
-
-    @keyframes pulse {
-      0%, 100% { opacity: 1; }
-      50% { opacity: .5; }
+      tr {
+        page-break-inside: avoid !important;
+        page-break-after: auto !important;
+      }
+      thead {
+        display: table-header-group !important;
+      }
+      td, th {
+        padding: 4px 6px !important;
+        border: 1px solid #cbd5e1 !important;
+      }
+      /* Remove sticky background styling layers during print */
+      .sticky {
+        position: static !important;
+        box-shadow: none !important;
+        background-color: white !important;
+      }
     }
   </style>
 </head>
-<body>
+<body class="bg-slate-50 min-h-screen text-slate-800 font-sans pb-16">
 
-  <div class="container space-y-6">
+  <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:py-10 space-y-8">
     
     <!-- Header -->
-    <header class="text-center">
-      <h1>Teacher Subject Distribution System</h1>
-      <p>Live allocation visualizer & schedule planner</p>
+    <header class="text-center px-2">
+      <h1 class="text-2xl sm:text-3xl font-extrabold text-indigo-950">Teacher Subject Distribution System</h1>
+      <p class="text-sm text-slate-600 mt-1">Live allocation visualizer & schedule planner</p>
     </header>
 
     <!-- ========================================== -->
-    <!-- SECTION 1: FORM ENTRY (INLINE SIDE-BY-SIDE)-->
+    <!-- SECTION 1: INLINE FORM ENTRIES (TOP AREA)  -->
     <!-- ========================================== -->
     <form id="distributionForm" class="space-y-6">
       
-      <div class="form-section-container">
+      <!-- Side-by-Side Form Grid Container on Desktop -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 items-stretch">
         
-        <!-- Basic Details Card -->
-        <div class="card card-basic">
-          <h2 class="card-title">
-            <span class="badge">1</span>
-            Basic Details
-          </h2>
-          
-          <div class="form-grid">
-            <!-- Teacher Selection -->
-            <div class="form-group">
-              <label class="form-label" for="teacher">Select Teacher</label>
-              <select id="teacher" required class="form-control">
-                <option value="">-- Choose Teacher --</option>
-                <option value="TAK">TAK</option>
-                <option value="SK">SK</option>
-                <option value="ERJ">ERJ</option>
-                <option value="BA">BA</option>
-                <option value="VA">VA</option>
-                <option value="SJS">SJS</option>
-                <option value="GMK">GMK</option>
-                <option value="SA">SA</option>
-                <option value="KK">KK</option>
-                <option value="KSPB">KSPB</option>
-                <option value="NV">NV</option>
-                <option value="SS">SS</option>
-                <option value="SSR">SSR</option>
-                <option value="RR">RR</option>
-                <option value="BUS">BUS</option>
-                <option value="ANM">ANM</option>
-              </select>
-            </div>
+        <!-- Card 1: Basic Details -->
+        <div class="bg-white rounded-lg shadow-sm border border-slate-200 p-4 sm:p-6 flex flex-col justify-between">
+          <div>
+            <h2 class="text-md font-bold text-slate-800 mb-4 border-b pb-2 flex items-center gap-2">
+              <span class="bg-indigo-100 text-indigo-800 rounded-full w-5 h-5 flex items-center justify-center text-xs">1</span>
+              Basic Details
+            </h2>
+            
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <!-- Teacher Selection -->
+              <div>
+                <label class="block text-xs sm:text-sm font-semibold text-slate-600 mb-1" for="teacher">Select Teacher</label>
+                <select id="teacher" required class="w-full px-3 py-2 border border-slate-300 rounded-md bg-white text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 h-11 sm:h-10">
+                  <option value="">-- Choose Teacher --</option>
+                  <option value="ANM">ANM</option>
+<option value="BA">BA</option>
+<option value="BUS">BUS</option>
+<option value="ERJ">ERJ</option>
+<option value="GMK">GMK</option>
+<option value="KK">KK</option>
+<option value="KSPB">KSPB</option>
+<option value="NV">NV</option>
+<option value="RR">RR</option>
+<option value="SA">SA</option>
+<option value="SJS">SJS</option>
+<option value="SK">SK</option>
+<option value="SS">SS</option>
+<option value="SSR">SSR</option>
+<option value="TAK">TAK</option>
+<option value="VA">VA</option>
+                </select>
+              </div>
 
-            <!-- Class In Charge Selection -->
-            <div class="form-group">
-              <label class="form-label" for="classInCharge">Class In-Charge</label>
-              <select id="classInCharge" class="form-control" disabled>
-                <option value="None">None</option>
-                <option value="5A">5A</option>
-                <option value="5B">5B</option>
-                <option value="5C">5C</option>
-                <option value="5D">5D</option>
-                <option value="6A">6A</option>
-                <option value="6B">6B</option>
-                <option value="6C">6C</option>
-                <option value="6D">6D</option>
-                <option value="7A">7A</option>
-                <option value="7B">7B</option>
-                <option value="7C">7C</option>
-                <option value="7D">7D</option>
-              </select>
+              <!-- Class In Charge Selection -->
+              <div>
+                <label class="block text-xs sm:text-sm font-semibold text-slate-600 mb-1" for="classInCharge">Class In-Charge</label>
+                <select id="classInCharge" class="w-full px-3 py-2 border border-slate-300 rounded-md bg-white text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 h-11 sm:h-10">
+                  <option value="None">None</option>
+                  <option value="5A">5A</option>
+                  <option value="5B">5B</option>
+                  <option value="5C">5C</option>
+                  <option value="5D">5D</option>
+                  <option value="6A">6A</option>
+                  <option value="6B">6B</option>
+                  <option value="6C">6C</option>
+                  <option value="6D">6D</option>
+                  <option value="7A">7A</option>
+                  <option value="7B">7B</option>
+                  <option value="7C">7C</option>
+                  <option value="7D">7D</option>
+                </select>
+              </div>
             </div>
           </div>
+          <div class="mt-4 text-xs text-slate-400 italic">Select a teacher above to begin configuring or viewing current distributions.</div>
         </div>
 
-        <!-- Class & Subject Allotment Card -->
-        <div class="card card-allotment">
-          <div class="btn-header">
-            <h2 class="card-title" style="margin: 0; padding: 0; border: none;">
-              <span class="badge">2</span>
-              Class & Subject Allotment
-            </h2>
-            <button type="button" id="addAllocationBtn" title="Add Subject Allocation" class="btn btn-circle" disabled>
-              +
-            </button>
-          </div>
+        <!-- Card 2: Class & Subject Allotment -->
+        <div class="bg-white rounded-lg shadow-sm border border-slate-200 p-4 sm:p-6 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-4 border-b pb-2">
+              <h2 class="text-md font-bold text-slate-850 flex items-center gap-2">
+                <span class="bg-indigo-100 text-indigo-800 rounded-full w-5 h-5 flex items-center justify-center text-xs">2</span>
+                Class & Subject Allotment
+              </h2>
+              <button type="button" id="addAllocationBtn" title="Add Subject Allocation" class="bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white w-11 h-11 rounded-full flex items-center justify-center shadow-md transition transform hover:scale-105">
+                <span class="text-xl font-bold">+</span>
+              </button>
+            </div>
 
-          <p class="sync-description" style="margin-bottom: 1rem;">Select the class and corresponding subject. The system determines standard weekly period configurations dynamically based on your curriculum rules.</p>
+            <div id="allocationsContainer" class="space-y-3 max-h-[220px] overflow-y-auto pr-1">
+              <!-- Dynamic grid rows inject here -->
+            </div>
 
-          <div id="allocationsContainer">
-            <!-- Dynamic grid rows inject here -->
-          </div>
-
-          <div id="emptyState" class="empty-placeholder">
-            Please select a teacher from Step 1 to begin mapping configurations.
+            <div id="emptyState" class="text-center py-6 text-slate-400 text-sm hidden">
+              No configurations assigned. Click the circular "+" button to begin.
+            </div>
           </div>
         </div>
 
       </div>
 
       <!-- Save & Status Interface -->
-      <div class="space-y-6">
-        <div id="statusMessage" class="status-alert"></div>
-        <button type="submit" id="submitBtn" class="btn btn-success" disabled>
+      <div class="flex flex-col gap-3">
+        <div id="statusMessage" class="text-xs font-semibold px-4 py-3 rounded-md hidden"></div>
+        <button type="submit" id="submitBtn" class="w-full bg-emerald-600 hover:bg-emerald-700 active:scale-95 text-white font-semibold py-3.5 rounded-lg shadow-md transition duration-150 text-sm sm:text-base">
           Save Full School Distribution
         </button>
       </div>
     </form>
 
-    <!-- ========================================== -->
-    <!-- SECTION 2: LIVE SUMMARY TABLES (FOLLOW AREA) -->
-    <!-- ========================================== -->
-    <div class="space-y-6" style="margin-top: 2rem;">
+    <!-- ========================================================== -->
+    <!-- SECTION 2: LIVE SUMMARY TABLES (FOLLOW AREA - FULL WIDTH) -->
+    <!-- ========================================================== -->
+    <div class="space-y-6 pt-4 w-full">
       
       <!-- Table Controls & Sync Indicator -->
-      <div class="sync-banner">
+      <div id="dbSyncControls" class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-slate-100 p-4 rounded-lg border border-slate-200">
         <div>
-          <h3 class="sync-title">Database Synchronization</h3>
-          <p id="previewBannerNotice" class="sync-description">The tables below reflect data fetched directly from Google Sheets.</p>
+          <h3 class="text-sm font-bold text-slate-800">Database Synchronization & Actions</h3>
+          <p class="text-xs text-slate-500">View real-time configurations fetched directly from Google Sheets.</p>
         </div>
-        <div class="sync-meta">
-          <span id="syncTimestamp" class="sync-description" style="font-style: italic;">Last Synced: Never</span>
-          <button type="button" id="manualSyncBtn" class="btn btn-outline">
+        <div class="flex flex-wrap items-center gap-3 w-full sm:w-auto justify-between sm:justify-end">
+          <span id="syncTimestamp" class="text-[11px] text-slate-500 italic mr-2">Last Synced: Never</span>
+          <button type="button" id="manualSyncBtn" class="bg-indigo-50 text-indigo-700 hover:bg-indigo-100 border border-indigo-200 active:scale-95 px-3 py-1.5 rounded-md text-xs font-semibold transition">
             Sync with Sheets 🔄
+          </button>
+          <button type="button" id="printBtn" class="bg-slate-800 text-white hover:bg-slate-900 active:scale-95 px-3 py-1.5 rounded-md text-xs font-semibold transition">
+            Print / PDF 🖨️
           </button>
         </div>
       </div>
       
       <!-- Live Teacher Table Card -->
-      <div class="card">
-        <h2 class="card-title" style="border: none; margin-bottom: 0.25rem;">
-          <span style="color: var(--primary-color)">📊</span> Live Teachers Summary Table
+      <div class="bg-white rounded-lg shadow-sm border border-slate-200 p-4 sm:p-6 w-full">
+        <h2 class="text-base sm:text-lg font-bold text-slate-950 mb-1 flex items-center gap-2">
+          <span class="text-indigo-600">📊</span> Live Teachers Summary Table
         </h2>
-        <p class="sync-description" style="margin-bottom: 1rem;">Displays mapped configurations and calculations per teacher.</p>
+        <p class="text-xs text-slate-500 mb-4">Displays mapped configurations, charges, and subject loads per teacher.</p>
         
-        <div class="table-viewport">
-          <div class="swipe-helper">
+        <div class="relative w-full">
+          <div class="block lg:hidden text-right text-[10px] text-indigo-600 font-bold mb-1 animate-pulse no-print">
             Swipe left/right to view full columns ↔
           </div>
-          <div class="table-container">
-            <table class="min-w-table" id="teacherSummaryTable">
-              <thead>
+          <div class="overflow-x-auto border border-slate-200 rounded-md w-full">
+            <table class="min-w-[1020px] text-[11px] sm:text-xs text-left divide-y divide-slate-200 w-full" id="teacherSummaryTable">
+              <thead class="bg-slate-100 text-slate-700 uppercase font-semibold">
                 <tr>
-                  <th class="sticky-col" style="width: 100px;">Teacher</th>
-                  <th class="text-center" style="width: 80px;">Charge</th>
-                  <th class="text-center">5A</th>
-                  <th class="text-center">5B</th>
-                  <th class="text-center">5C</th>
-                  <th class="text-center">5D</th>
-                  <th class="text-center">6A</th>
-                  <th class="text-center">6B</th>
-                  <th class="text-center">6C</th>
-                  <th class="text-center">6D</th>
-                  <th class="text-center">7A</th>
-                  <th class="text-center">7B</th>
-                  <th class="text-center">7C</th>
-                  <th class="text-center">7D</th>
-                  <th class="text-center bg-indigo-light" style="width: 80px;">Total</th>
+                  <th class="px-3 py-2.5 border-r border-slate-200 sticky left-0 bg-slate-100 z-10 shadow-[2px_0_5px_rgba(0,0,0,0.05)] w-24">Teacher</th>
+                  <th class="px-2 py-2.5 text-center border-r border-slate-200 w-20">Charge</th>
+                  <th class="px-1 py-2.5 text-center border-r border-slate-200">5A</th>
+                  <th class="px-1 py-2.5 text-center border-r border-slate-200">5B</th>
+                  <th class="px-1 py-2.5 text-center border-r border-slate-200">5C</th>
+                  <th class="px-1 py-2.5 text-center border-r border-slate-200">5D</th>
+                  <th class="px-1 py-2.5 text-center border-r border-slate-200">6A</th>
+                  <th class="px-1 py-2.5 text-center border-r border-slate-200">6B</th>
+                  <th class="px-1 py-2.5 text-center border-r border-slate-200">6C</th>
+                  <th class="px-1 py-2.5 text-center border-r border-slate-200">6D</th>
+                  <th class="px-1 py-2.5 text-center border-r border-slate-200">7A</th>
+                  <th class="px-1 py-2.5 text-center border-r border-slate-200">7B</th>
+                  <th class="px-1 py-2.5 text-center border-r border-slate-200">7C</th>
+                  <th class="px-1 py-2.5 text-center border-r border-slate-200">7D</th>
+                  <th class="px-3 py-2.5 text-center bg-indigo-50 text-indigo-900 font-bold w-16">Total</th>
+                  <th class="px-2 py-2.5 text-center bg-slate-50 text-slate-700 font-semibold w-16 share-col">Share</th>
                 </tr>
               </thead>
-              <tbody id="teacherTableBody">
+              <tbody class="divide-y divide-slate-100 bg-white" id="teacherTableBody">
                 <!-- Dynamically populated -->
               </tbody>
             </table>
@@ -668,40 +235,40 @@
       </div>
 
       <!-- Live Student Table Card -->
-      <div class="card">
-        <h2 class="card-title" style="border: none; margin-bottom: 0.25rem;">
-          <span style="color: var(--secondary-color)">🎓</span> Live Students Period Allocation Table
+      <div class="bg-white rounded-lg shadow-sm border border-slate-200 p-4 sm:p-6 w-full">
+        <h2 class="text-base sm:text-lg font-bold text-slate-950 mb-1 flex items-center gap-2">
+          <span class="text-teal-600">🎓</span> Live Students Period Allocation Table
         </h2>
-        <p class="sync-description" style="margin-bottom: 1rem;">Displays mapped numbers of active student periods (standard target: ~34-35 periods/week).</p>
+        <p class="text-xs text-slate-500 mb-4">Displays mapped numbers of active student periods (standard target: ~34-35 periods/week).</p>
         
-        <div class="table-viewport">
-          <div class="swipe-helper">
+        <div class="relative w-full">
+          <div class="block lg:hidden text-right text-[10px] text-teal-600 font-bold mb-1 animate-pulse no-print">
             Swipe left/right to view full columns ↔
           </div>
-          <div class="table-container">
-            <table class="min-w-table" id="studentSummaryTable">
-              <thead>
+          <div class="overflow-x-auto border border-slate-200 rounded-md w-full">
+            <table class="min-w-[950px] text-[11px] sm:text-xs text-left divide-y divide-slate-200 w-full" id="studentSummaryTable">
+              <thead class="bg-slate-100 text-slate-700 uppercase font-semibold">
                 <tr>
-                  <th class="sticky-col" style="width: 100px;">Teacher</th>
-                  <th class="text-center">5A</th>
-                  <th class="text-center">5B</th>
-                  <th class="text-center">5C</th>
-                  <th class="text-center">5D</th>
-                  <th class="text-center">6A</th>
-                  <th class="text-center">6B</th>
-                  <th class="text-center">6C</th>
-                  <th class="text-center">6D</th>
-                  <th class="text-center">7A</th>
-                  <th class="text-center">7B</th>
-                  <th class="text-center">7C</th>
-                  <th class="text-center">7D</th>
-                  <th class="text-center bg-teal-light" style="width: 80px;">Total</th>
+                  <th class="px-3 py-2.5 border-r border-slate-200 sticky left-0 bg-slate-100 z-10 shadow-[2px_0_5px_rgba(0,0,0,0.05)] w-24">Teacher</th>
+                  <th class="px-1 py-2.5 text-center border-r border-slate-200">5A</th>
+                  <th class="px-1 py-2.5 text-center border-r border-slate-200">5B</th>
+                  <th class="px-1 py-2.5 text-center border-r border-slate-200">5C</th>
+                  <th class="px-1 py-2.5 text-center border-r border-slate-200">5D</th>
+                  <th class="px-1 py-2.5 text-center border-r border-slate-200">6A</th>
+                  <th class="px-1 py-2.5 text-center border-r border-slate-200">6B</th>
+                  <th class="px-1 py-2.5 text-center border-r border-slate-200">6C</th>
+                  <th class="px-1 py-2.5 text-center border-r border-slate-200">6D</th>
+                  <th class="px-1 py-2.5 text-center border-r border-slate-200">7A</th>
+                  <th class="px-1 py-2.5 text-center border-r border-slate-200">7B</th>
+                  <th class="px-1 py-2.5 text-center border-r border-slate-200">7C</th>
+                  <th class="px-1 py-2.5 text-center border-r border-slate-200">7D</th>
+                  <th class="px-3 py-2.5 text-center bg-teal-50 text-teal-900 font-bold w-20">Total</th>
                 </tr>
               </thead>
-              <tbody id="studentTableBody">
+              <tbody class="divide-y divide-slate-100 bg-white" id="studentTableBody">
                 <!-- Dynamically populated -->
               </tbody>
-              <tfoot id="studentTableFooter" style="font-weight: 700; background-color: #e2e8f0;">
+              <tfoot class="bg-slate-200 text-slate-900 font-bold" id="studentTableFooter">
                 <!-- Summary row populated via JS -->
               </tfoot>
             </table>
@@ -719,7 +286,7 @@
     // ==========================================
     const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyDNLHsCc83Br9V8RDjfWfjOLaApcWfUfJrKY5G0UN3z971fpSBXU8VTkHsUkMXl-xb/exec";
 
-    const TEACHERS = ["TAK", "SK", "ERJ", "BA", "VA", "SJS", "GMK", "SA", "KK", "KSPB", "NV", "SS", "SSR", "RR", "BUS", "ANM"];
+    const TEACHERS = ["ANM", "BA", "BUS", "ERJ", "GMK", "KK", "KSPB", "NV", "RR", "SA", "SJS", "SK", "SS", "SSR", "TAK", "VA"];
     const CLASSES = ["5A", "5B", "5C", "5D", "6A", "6B", "6C", "6D", "7A", "7B", "7C", "7D"];
     const SUBJECT_PERIODS = {
       "MI": 4, "MII": 2, "ENG": 4, "SE": 1, 
@@ -727,7 +294,7 @@
       "PE": 1, "AE": 1, "WE": 1, "IT": 1, "SV/LIB": 1
     };
 
-    // Client-side state object
+    // Client-side state database
     const dbState = {};
     TEACHERS.forEach(t => {
       dbState[t] = {
@@ -748,47 +315,18 @@
     const chargeDropdown = document.getElementById("classInCharge");
     const syncTimestamp = document.getElementById("syncTimestamp");
     const manualSyncBtn = document.getElementById("manualSyncBtn");
-    const previewBannerNotice = document.getElementById("previewBannerNotice");
-
-    // Form element control locks
-    function toggleFormState(enabled) {
-      chargeDropdown.disabled = !enabled;
-      addBtn.disabled = !enabled;
-      submitBtn.disabled = !enabled;
-      
-      const selectElements = container.querySelectorAll("select");
-      const buttonElements = container.querySelectorAll("button");
-      
-      selectElements.forEach(s => s.disabled = !enabled);
-      buttonElements.forEach(b => b.disabled = !enabled);
-    }
+    const printBtn = document.getElementById("printBtn");
 
     // Dynamic checks
     function checkEmptyState() {
-      if (!activeTeacher) {
-        emptyState.textContent = "Please select a teacher from Step 1 to begin mapping configurations.";
+      if (container.children.length === 0) {
         emptyState.classList.remove("hidden");
-        container.classList.add("hidden");
-      } else if (container.children.length === 0) {
-        emptyState.textContent = "No configurations assigned. Click the circular \"+\" button to begin.";
-        emptyState.classList.remove("hidden");
-        container.classList.add("hidden");
       } else {
         emptyState.classList.add("hidden");
-        container.classList.remove("hidden");
       }
     }
 
-    // Standard client side preview alert
-    function markTableAsPreview() {
-      previewBannerNotice.innerHTML = `<span style="color: var(--danger-color); font-weight: 700;">⚠️ Client Edit Preview:</span> You have unsaved changes. Click "Save Full School Distribution" to update your Sheet.`;
-    }
-
-    function resetTableBanner() {
-      previewBannerNotice.innerHTML = `The tables below reflect data fetched directly from Google Sheets.`;
-    }
-
-    // Curriculum calculation standard
+    // Curriculum calculation rules engine
     function calculatePeriods(subject, className) {
       if (!subject) return 0;
       if (subject === "HIN") {
@@ -824,12 +362,12 @@
       };
     }
 
-    // Dynamic grid row rendering (Matches desktop horizontal layouts)
+    // Dynamic grid row rendering
     function createAllocationRow(className = "", subject = "", periods = "") {
       const rowId = 'row-' + Date.now() + Math.random().toString(36).substring(2, 7);
       const div = document.createElement("div");
       div.id = rowId;
-      div.className = "allocation-row";
+      div.className = "allocation-row grid grid-cols-1 sm:grid-cols-12 gap-3 items-center bg-slate-50 p-3 rounded-md border border-slate-200 relative";
 
       let classOptions = `<option value="">-- Class --</option>`;
       CLASSES.forEach(c => classOptions += `<option value="${c}" ${c === className ? 'selected' : ''}>${c}</option>`);
@@ -839,25 +377,25 @@
       subjectOptions += `<option value="HIN" ${subject === "HIN" ? 'selected' : ''}>HIN</option>`;
 
       div.innerHTML = `
-        <div class="col-span-4">
-          <label class="mobile-label">Class</label>
-          <select required class="class-select form-control">
+        <div class="sm:col-span-4">
+          <label class="block text-[10px] font-bold text-slate-400 mb-0.5 sm:hidden uppercase">Class</label>
+          <select required class="class-select w-full px-2 py-2 border border-slate-300 rounded-md bg-white text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 h-10">
             ${classOptions}
           </select>
         </div>
-        <div class="col-span-4">
-          <label class="mobile-label">Subject</label>
-          <select required class="subject-select form-control">
+        <div class="sm:col-span-4">
+          <label class="block text-[10px] font-bold text-slate-400 mb-0.5 sm:hidden uppercase">Subject</label>
+          <select required class="subject-select w-full px-2 py-2 border border-slate-300 rounded-md bg-white text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 h-10">
             ${subjectOptions}
           </select>
         </div>
-        <div class="col-span-2">
-          <label class="mobile-label">Periods</label>
-          <input type="number" readonly class="periods-input form-control" style="background-color: #f1f5f9; text-align: center; font-weight: 600;" placeholder="0" value="${periods}">
+        <div class="sm:col-span-2">
+          <label class="block text-[10px] font-bold text-slate-400 mb-0.5 sm:hidden uppercase">Periods</label>
+          <input type="number" readonly class="periods-input w-full px-1 py-2 border border-slate-300 rounded-md bg-slate-100 text-slate-600 text-xs sm:text-sm text-center font-semibold h-10" placeholder="0" value="${periods}">
         </div>
-        <div class="col-span-2" style="display: flex; justify-content: flex-end; align-items: center; justify-self: center;">
-          <button type="button" onclick="removeRow('${rowId}')" title="Remove row" class="btn btn-danger-circle">
-            ✕
+        <div class="sm:col-span-2 flex justify-end sm:justify-center pt-2 sm:pt-0">
+          <button type="button" onclick="removeRow('${rowId}')" title="Remove row" class="text-red-500 hover:text-red-700 bg-red-50 hover:bg-red-100 w-11 h-11 min-w-[44px] rounded-full flex items-center justify-center transition border border-red-200 active:scale-95">
+            <span class="font-bold text-base">✕</span>
           </button>
         </div>
       `;
@@ -874,7 +412,6 @@
         periodsInput.value = val || "";
         saveCurrentFormToState();
         updateTables();
-        markTableAsPreview();
       };
 
       classSelect.addEventListener("change", updatePeriodUi);
@@ -889,7 +426,6 @@
       checkEmptyState();
       saveCurrentFormToState();
       updateTables();
-      markTableAsPreview();
     };
 
     // Populate profile selectors from active memory state
@@ -897,12 +433,10 @@
       container.innerHTML = "";
       if (!teacherName) {
         chargeDropdown.value = "None";
-        toggleFormState(false);
         checkEmptyState();
         return;
       }
 
-      toggleFormState(true);
       const profile = dbState[teacherName];
       chargeDropdown.value = profile.classInCharge || "None";
       
@@ -934,9 +468,9 @@
         
         // 1. Compile Teacher calculations
         let teacherRowHtml = `
-          <tr class="${t === activeTeacher ? 'bg-indigo-light' : ''}">
-            <td class="sticky-col">${t}</td>
-            <td class="text-center" style="color: var(--primary-color); font-weight: 600;">${inCharge}</td>
+          <tr class="hover:bg-slate-50 border-b border-slate-100 ${t === activeTeacher ? 'bg-indigo-50/50 font-medium' : ''}">
+            <td class="px-3 py-2 font-semibold border-r border-slate-100 bg-white sticky left-0 z-10 shadow-[2px_0_5px_rgba(0,0,0,0.02)]">${t}</td>
+            <td class="px-2 py-2 text-center border-r border-slate-100 text-indigo-700 font-semibold">${inCharge}</td>
         `;
 
         let teacherTotalPeriods = 0;
@@ -945,23 +479,31 @@
           const matched = profile.allocations.filter(a => a.className === c);
           if (matched.length > 0) {
             const displayStr = matched.map(m => `${m.subject}(${m.periods})`).join(", ");
-            teacherRowHtml += `<td class="text-center" style="font-size: 10px; color: #1e293b;">${displayStr}</td>`;
+            teacherRowHtml += `<td class="px-1 py-2 text-center border-r border-slate-100 text-[10px] text-slate-800">${displayStr}</td>`;
             matched.forEach(m => teacherTotalPeriods += parseInt(m.periods) || 0);
           } else {
-            teacherRowHtml += `<td class="text-center text-slate-300" style="color: #cbd5e1;">-</td>`;
+            teacherRowHtml += `<td class="px-1 py-2 text-center border-r border-slate-100 text-slate-300">-</td>`;
           }
         });
 
+        // WhatsApp trigger link in the final column block
         teacherRowHtml += `
-            <td class="text-center bg-indigo-light" style="font-weight: 700;">${teacherTotalPeriods}</td>
+            <td class="px-3 py-2 text-center bg-indigo-50/50 font-bold text-indigo-950">${teacherTotalPeriods}</td>
+            <td class="px-2 py-2 text-center border-l border-slate-200 share-col">
+              <button type="button" onclick="shareOnWhatsApp('${t}')" title="Share ${t}'s load via WhatsApp" class="text-emerald-600 hover:text-emerald-800 active:scale-95 bg-emerald-50 hover:bg-emerald-100 p-1 rounded-full inline-flex items-center justify-center transition border border-emerald-200 w-8 h-8">
+                <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24">
+                  <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.514 2.266 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.504-5.714-1.465L0 24zm6.59-4.846c1.6.95 3.188 1.449 4.825 1.451 5.436 0 9.86-4.37 9.864-9.799.002-2.63-1.023-5.101-2.885-6.963C16.588 1.981 14.115.957 11.998.957c-5.44 0-9.866 4.372-9.87 9.802 0 1.63.45 3.22 1.302 4.634L2.4 21.055l5.83-1.517zM17.473 14.31c-.303-.152-1.792-.882-2.073-.983-.281-.101-.486-.152-.69.152-.204.304-.79.983-.969 1.185-.18.203-.359.228-.662.076-.303-.152-1.28-.471-2.439-1.503-.9-.802-1.507-1.793-1.684-2.097-.177-.304-.019-.468.133-.619.136-.136.303-.354.455-.531.152-.177.202-.304.303-.506.101-.203.05-.38-.025-.531-.076-.152-.69-1.66-.947-2.278-.25-.601-.525-.51-.719-.51-.186-.01-.399-.01-.612-.01-.213 0-.56.08-.853.404-.293.324-1.12 1.096-1.12 2.673 0 1.578 1.147 3.1 1.302 3.303.156.203 2.257 3.447 5.467 4.832.764.33 1.36.527 1.825.674.768.243 1.467.209 2.02.127.618-.092 1.792-.731 2.048-1.436.256-.706.256-1.311.18-1.436-.077-.127-.282-.203-.585-.355z"/>
+                </svg>
+              </button>
+            </td>
           </tr>
         `;
         tBody.insertAdjacentHTML('beforeend', teacherRowHtml);
 
         // 2. Compile Student period calculations
         let studentRowHtml = `
-          <tr class="${t === activeTeacher ? 'bg-teal-light' : ''}">
-            <td class="sticky-col">${t}</td>
+          <tr class="hover:bg-slate-50 border-b border-slate-100 ${t === activeTeacher ? 'bg-teal-50/30' : ''}">
+            <td class="px-3 py-2 font-semibold border-r border-slate-100 bg-white sticky left-0 z-10 shadow-[2px_0_5px_rgba(0,0,0,0.02)]">${t}</td>
         `;
 
         let studentTeacherRowTotal = 0;
@@ -972,16 +514,16 @@
           matched.forEach(m => classSum += parseInt(m.periods) || 0);
 
           if (classSum > 0) {
-            studentRowHtml += `<td class="text-center font-semibold" style="color: var(--secondary-color);">${classSum}</td>`;
+            studentRowHtml += `<td class="px-1 py-2 text-center border-r border-slate-100 font-semibold text-teal-800">${classSum}</td>`;
             studentClassTotals[c] += classSum;
             studentTeacherRowTotal += classSum;
           } else {
-            studentRowHtml += `<td class="text-center" style="color: #cbd5e1;">-</td>`;
+            studentRowHtml += `<td class="px-1 py-2 text-center border-r border-slate-100 text-slate-300">-</td>`;
           }
         });
 
         studentRowHtml += `
-            <td class="text-center bg-teal-light" style="font-weight: 700;">${studentTeacherRowTotal}</td>
+            <td class="px-3 py-2 text-center bg-teal-50/50 font-bold text-teal-950">${studentTeacherRowTotal}</td>
           </tr>
         `;
         sBody.insertAdjacentHTML('beforeend', studentRowHtml);
@@ -990,22 +532,48 @@
       // 3. Render Student summary values
       let footerHtml = `
         <tr>
-          <td class="sticky-col" style="background-color: #cbd5e1;">Grand Total</td>
+          <td class="px-3 py-2 border-r border-slate-300 text-left uppercase sticky left-0 bg-slate-200 z-10">Grand Total</td>
       `;
       let grandTotalSum = 0;
 
       CLASSES.forEach(c => {
         const total = studentClassTotals[c];
         grandTotalSum += total;
-        const bgStyle = total >= 34 ? 'bg-complete' : 'bg-incomplete';
-        footerHtml += `<td class="text-center ${bgStyle}">${total}</td>`;
+        const bgStyle = total >= 34 ? 'bg-emerald-100 text-emerald-900 font-bold' : 'bg-amber-100 text-amber-950';
+        footerHtml += `<td class="px-1 py-2 text-center border-r border-slate-300 ${bgStyle}">${total}</td>`;
       });
 
       footerHtml += `
-          <td class="text-center bg-teal-light" style="font-size: 13px; font-weight: 900;">${grandTotalSum}</td>
+          <td class="px-3 py-2 text-center bg-teal-100 text-teal-950 text-xs sm:text-sm font-black">${grandTotalSum}</td>
         </tr>
       `;
       sFoot.innerHTML = footerHtml;
+    }
+
+    // WhatsApp Message Generator
+    function shareOnWhatsApp(teacherName) {
+      const profile = dbState[teacherName];
+      if (!profile) return;
+
+      const inCharge = profile.classInCharge !== "None" ? profile.classInCharge : "None";
+      let msg = `*Teacher Subject Distribution*\n\n`;
+      msg += `*Teacher:* ${teacherName}\n`;
+      msg += `*Class In-Charge:* ${inCharge}\n\n`;
+      msg += `*Class Subject Allotments:*\n`;
+
+      if (profile.allocations && profile.allocations.length > 0) {
+        profile.allocations.forEach(alloc => {
+          msg += `• Class ${alloc.className}: ${alloc.subject} (${alloc.periods} periods)\n`;
+        });
+      } else {
+        msg += `No active subject allocations.\n`;
+      }
+
+      const totalPeriods = profile.allocations.reduce((sum, a) => sum + (parseInt(a.periods) || 0), 0);
+      msg += `\n*Total Weekly Periods:* ${totalPeriods}`;
+
+      const encodedText = encodeURIComponent(msg);
+      window.open(`https://api.whatsapp.com/send?text=${encodedText}`, '_blank');
     }
 
     // Event binding controls
@@ -1019,27 +587,34 @@
     chargeDropdown.addEventListener("change", function() {
       saveCurrentFormToState();
       updateTables();
-      markTableAsPreview();
     });
 
     addBtn.addEventListener("click", () => {
-      if (!activeTeacher) return;
+      if (!activeTeacher) {
+        showStatus("Please choose a teacher first.", true);
+        return;
+      }
       createAllocationRow();
       saveCurrentFormToState();
       updateTables();
-      markTableAsPreview();
     });
 
-    // Refresh button event
+    // Refresh database button click event
     manualSyncBtn.addEventListener("click", () => {
       loadDatabaseFromSheet(true);
+    });
+
+    // Native PDF / Print window call
+    printBtn.addEventListener("click", () => {
+      window.print();
     });
 
     updateTables();
 
     function showStatus(message, isError = false) {
       statusMessage.textContent = message;
-      statusMessage.className = `status-alert ${isError ? 'status-error' : 'status-success'}`;
+      statusMessage.className = `text-xs font-semibold px-4 py-3 rounded-md border ${isError ? 'bg-red-50 text-red-600 border-red-200' : 'bg-green-50 text-green-700 border-green-200'}`;
+      statusMessage.classList.remove("hidden");
     }
 
     // GET Request to restore database allocations directly from the spreadsheet
@@ -1055,10 +630,10 @@
         .then(res => res.json())
         .then(res => {
           if (res.status === "success" && res.data.length > 0) {
-            // Backup current working teacher form variables to avoid overwriting ongoing changes
+            // Backup active teacher to restore current editing context
             const tempActiveTeacher = activeTeacher;
             
-            // Clean local state config before mapping fresh sheet database values
+            // Clean local memory before mapping fresh values from database
             TEACHERS.forEach(t => {
               dbState[t] = { classInCharge: "None", allocations: [] };
             });
@@ -1077,16 +652,15 @@
               }
             });
 
-            // Reload active teacher view if one was selected
+            // Restore active working context
             if (tempActiveTeacher) {
               activeTeacher = tempActiveTeacher;
               loadTeacherForm(activeTeacher);
             }
 
-            // Timestamp tracking
+            // Sync indicators
             const now = new Date();
             syncTimestamp.textContent = `Last Synced: ${now.toLocaleTimeString()}`;
-            resetTableBanner();
             showStatus("Database sync complete.");
           } else {
             showStatus("Sync complete. No baseline configurations found.");
@@ -1113,7 +687,7 @@
 
       submitBtn.disabled = true;
       submitBtn.textContent = "Uploading configurations...";
-      statusMessage.style.display = "none";
+      statusMessage.classList.add("hidden");
 
       const payloadData = [];
       TEACHERS.forEach(t => {
@@ -1124,7 +698,7 @@
         });
       });
 
-      // Bypasses preflight failures by targeting raw plain-text content
+      // Plain-text target type configuration bypasses preflight restrictions
       fetch(WEB_APP_URL, {
         method: "POST",
         redirect: "follow", 
@@ -1138,7 +712,6 @@
       })
       .then(data => {
         showStatus("All distributions saved successfully to Google Sheets!");
-        // Refresh tables directly from sheets to verify database consistency
         loadDatabaseFromSheet(false);
       })
       .catch(error => {
