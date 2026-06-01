@@ -30,6 +30,7 @@
       #timetableSection .tab-container,
       #timetableSection .section-controls,
       #loadingOverlay,
+      nav,
       .no-print,
       .share-col {
         display: none !important;
@@ -94,7 +95,7 @@
         padding: 5px 4px !important;
       }
 
-      /* View-dependent print layout overrides */
+      /* Layout switches for print targets */
       body.print-default #teacherTableCard {
         page-break-after: always !important; 
         break-after: page !important;
@@ -165,142 +166,150 @@
 </head>
 <body class="bg-slate-50 min-h-screen text-slate-800 font-sans pb-16 print-default">
 
-  <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:py-10 space-y-8">
-    
-    <!-- Header -->
-    <header class="text-center px-2">
-      <h1 class="text-2xl sm:text-3xl font-extrabold text-indigo-950">Teacher Subject Distribution System</h1>
-      <p class="text-sm text-slate-600 mt-1">Live allocation visualizer & schedule planner</p>
-    </header>
+  <!-- Header (Preserved Above Tab Navigation Area) -->
+  <header class="text-center px-2 py-4 no-print bg-slate-50">
+    <h1 class="text-2xl sm:text-3xl font-extrabold text-indigo-950">Teacher Subject Distribution System</h1>
+    <p class="text-sm text-slate-600 mt-1">Live allocation visualizer & schedule planner</p>
+  </header>
 
-    <!-- ========================================== -->
-    <!-- SECTION 1: INLINE FORM ENTRIES (TOP AREA)  -->
-    <!-- ========================================== -->
-    <form id="distributionForm" class="space-y-6">
-      
-      <!-- Side-by-Side Form Grid Container on Desktop -->
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 items-stretch">
-        
-        <!-- Card 1: Basic Details -->
-        <div class="bg-white rounded-lg shadow-sm border border-slate-200 p-4 sm:p-6 flex flex-col justify-between">
-          <div>
-            <h2 class="text-md font-bold text-slate-800 mb-4 border-b pb-2 flex items-center gap-2">
-              <span class="bg-indigo-100 text-indigo-800 rounded-full w-5 h-5 flex items-center justify-center text-xs">1</span>
-              Basic Details
-            </h2>
-            
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <!-- Teacher Selection -->
-              <div>
-                <label class="block text-xs sm:text-sm font-semibold text-slate-600 mb-1" for="teacher">Select Teacher</label>
-                <select id="teacher" required class="w-full px-3 py-2 border border-slate-300 rounded-md bg-white text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 h-11 sm:h-10">
-                  <option value="">-- Choose Teacher --</option>
-                  <option value="TAK">TAK</option>
-                  <option value="SK">SK</option>
-                  <option value="ERJ">ERJ</option>
-                  <option value="BA">BA</option>
-                  <option value="VA">VA</option>
-                  <option value="SJS">SJS</option>
-                  <option value="GMK">GMK</option>
-                  <option value="SA">SA</option>
-                  <option value="KK">KK</option>
-                  <option value="KSPB">KSPB</option>
-                  <option value="NV">NV</option>
-                  <option value="SS">SS</option>
-                  <option value="SSR">SSR</option>
-                  <option value="RR">RR</option>
-                  <option value="BUS">BUS</option>
-                  <option value="ANM">ANM</option>
-                </select>
-              </div>
-
-              <!-- Class In Charge Selection -->
-              <div>
-                <label class="block text-xs sm:text-sm font-semibold text-slate-600 mb-1" for="classInCharge">Class In-Charge</label>
-                <select id="classInCharge" class="w-full px-3 py-2 border border-slate-300 rounded-md bg-white text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 h-11 sm:h-10">
-                  <option value="None">None</option>
-                  <option value="5A">5A</option>
-                  <option value="5B">5B</option>
-                  <option value="5C">5C</option>
-                  <option value="5D">5D</option>
-                  <option value="6A">6A</option>
-                  <option value="6B">6B</option>
-                  <option value="6C">6C</option>
-                  <option value="6D">6D</option>
-                  <option value="7A">7A</option>
-                  <option value="7B">7B</option>
-                  <option value="7C">7C</option>
-                  <option value="7D">7D</option>
-                </select>
-              </div>
-            </div>
-          </div>
-          <div class="mt-4 text-xs text-slate-400 italic font-medium">Select a teacher above to begin configuring or viewing current distributions.</div>
-        </div>
-
-        <!-- Card 2: Class & Subject Allotment -->
-        <div class="bg-white rounded-lg shadow-sm border border-slate-200 p-4 sm:p-6 flex flex-col justify-between">
-          <div>
-            <div class="flex items-center justify-between mb-4 border-b pb-2 flex-wrap gap-2">
-              <div class="flex items-center gap-3 flex-wrap">
-                <h2 class="text-md font-bold text-slate-850 flex items-center gap-2">
-                  <span class="bg-indigo-100 text-indigo-800 rounded-full w-5 h-5 flex items-center justify-center text-xs">2</span>
-                  Class & Subject Allotment
-                </h2>
-                <!-- Dynamic instant allotted periods indicator -->
-                <span class="bg-indigo-100 text-indigo-800 text-xs px-2.5 py-1 rounded-full font-bold">
-                  Allotted: <span id="mainTotalPeriods">0</span> Periods
-                </span>
-              </div>
-              <button type="button" id="addAllocationBtn" title="Add Subject Allocation" class="bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white w-11 h-11 rounded-full flex items-center justify-center shadow-md transition transform hover:scale-105">
-                <span class="text-xl font-bold">+</span>
-              </button>
-            </div>
-
-            <div id="allocationsContainer" class="space-y-3 max-h-[220px] overflow-y-auto pr-1">
-              <!-- Dynamic grid rows inject here -->
-            </div>
-
-            <div id="emptyState" class="text-center py-6 text-slate-400 text-sm hidden">
-              No configurations assigned. Click the circular "+" button to begin.
-            </div>
-          </div>
-        </div>
-
-      </div>
-
-      <!-- Save & Status Interface -->
-      <div class="flex flex-col gap-3">
-        <div id="statusMessage" class="text-xs font-semibold px-4 py-3 rounded-md hidden"></div>
-        <button type="submit" id="submitBtn" class="w-full bg-emerald-600 hover:bg-emerald-700 active:scale-95 text-white font-semibold py-3.5 rounded-lg shadow-md transition duration-150 text-sm sm:text-base">
-          Save Full School Distribution
+  <!-- ========================================== -->
+  <!-- Sleek Top Symbol-Only Tab Bar (No Text Heads) -->
+  <!-- ========================================== -->
+  <nav class="bg-white border-b border-slate-200 sticky top-0 z-40 no-print shadow-sm mb-6">
+    <div class="max-w-7xl mx-auto px-4">
+      <div class="flex justify-center space-x-3 py-3">
+        <button onclick="switchMainTab(1)" id="mainTabBtn-1" title="allotment form (Basic Details & Subject Allotment)" class="w-12 h-12 rounded-full flex items-center justify-center text-lg transition duration-150 shadow-sm bg-indigo-600 text-white font-bold active:scale-95">
+          📝
+        </button>
+        <button onclick="switchMainTab(2)" id="mainTabBtn-2" title="Live Teachers Summary Table" class="w-12 h-12 rounded-full flex items-center justify-center text-lg transition duration-150 shadow-sm bg-white text-slate-700 border border-slate-200 active:scale-95">
+          📊
+        </button>
+        <button onclick="switchMainTab(3)" id="mainTabBtn-3" title="Live Students Period Allocation Table" class="w-12 h-12 rounded-full flex items-center justify-center text-lg transition duration-150 shadow-sm bg-white text-slate-700 border border-slate-200 active:scale-95">
+          🎓
+        </button>
+        <button onclick="switchMainTab(4)" id="mainTabBtn-4" title="Database Synchronization & Actions" class="w-12 h-12 rounded-full flex items-center justify-center text-lg transition duration-150 shadow-sm bg-white text-slate-700 border border-slate-200 active:scale-95">
+          🔄
+        </button>
+        <button onclick="switchMainTab(5)" id="mainTabBtn-5" title="Temporary Timetable View" class="w-12 h-12 rounded-full flex items-center justify-center text-lg transition duration-150 shadow-sm bg-white text-slate-700 border border-slate-200 active:scale-95">
+          📅
         </button>
       </div>
-    </form>
+    </div>
+  </nav>
 
-    <!-- ========================================================== -->
-    <!-- SECTION 2: LIVE SUMMARY TABLES (FOLLOW AREA - FULL WIDTH) -->
-    <!-- ========================================================== -->
-    <div class="space-y-6 pt-4 w-full">
-      
-      <!-- Table Controls & Sync Indicator -->
-      <div id="dbSyncControls" class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-slate-100 p-4 rounded-lg border border-slate-200">
-        <div>
-          <h3 class="text-sm font-bold text-slate-800">Database Synchronization & Actions</h3>
-          <p class="text-xs text-slate-500">View real-time configurations fetched directly from Google Sheets.</p>
+  <div class="max-w-7xl mx-auto py-4 px-4 sm:px-6">
+
+    <!-- ========================================== -->
+    <!-- TAB 1: ALLOTMENT FORM CONTAINER            -->
+    <!-- ========================================== -->
+    <div id="mainTabContent-1" class="space-y-6">
+      <form id="distributionForm" class="space-y-6">
+        
+        <!-- Side-by-Side Form Grid Container on Desktop -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 items-stretch">
+          
+          <!-- Card 1: Basic Details -->
+          <div class="bg-white rounded-lg shadow-sm border border-slate-200 p-4 sm:p-6 flex flex-col justify-between">
+            <div>
+              <h2 class="text-md font-bold text-slate-800 mb-4 border-b pb-2 flex items-center gap-2">
+                <span class="bg-indigo-100 text-indigo-800 rounded-full w-5 h-5 flex items-center justify-center text-xs">1</span>
+                Basic Details
+              </h2>
+              
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <!-- Teacher Selection -->
+                <div>
+                  <label class="block text-xs sm:text-sm font-semibold text-slate-600 mb-1" for="teacher">Select Teacher</label>
+                  <select id="teacher" required class="w-full px-3 py-2 border border-slate-300 rounded-md bg-white text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 h-11 sm:h-10">
+                    <option value="">-- Choose Teacher --</option>
+                    <option value="TAK">TAK</option>
+                    <option value="SK">SK</option>
+                    <option value="ERJ">ERJ</option>
+                    <option value="BA">BA</option>
+                    <option value="VA">VA</option>
+                    <option value="SJS">SJS</option>
+                    <option value="GMK">GMK</option>
+                    <option value="SA">SA</option>
+                    <option value="KK">KK</option>
+                    <option value="KSPB">KSPB</option>
+                    <option value="NV">NV</option>
+                    <option value="SS">SS</option>
+                    <option value="SSR">SSR</option>
+                    <option value="RR">RR</option>
+                    <option value="BUS">BUS</option>
+                    <option value="ANM">ANM</option>
+                  </select>
+                </div>
+
+                <!-- Class In Charge Selection -->
+                <div>
+                  <label class="block text-xs sm:text-sm font-semibold text-slate-600 mb-1" for="classInCharge">Class In-Charge</label>
+                  <select id="classInCharge" class="w-full px-3 py-2 border border-slate-300 rounded-md bg-white text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 h-11 sm:h-10">
+                    <option value="None">None</option>
+                    <option value="5A">5A</option>
+                    <option value="5B">5B</option>
+                    <option value="5C">5C</option>
+                    <option value="5D">5D</option>
+                    <option value="6A">6A</option>
+                    <option value="6B">6B</option>
+                    <option value="6C">6C</option>
+                    <option value="6D">6D</option>
+                    <option value="7A">7A</option>
+                    <option value="7B">7B</option>
+                    <option value="7C">7C</option>
+                    <option value="7D">7D</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="mt-4 text-xs text-slate-400 italic font-medium">Select a teacher above to begin configuring or viewing current distributions.</div>
+          </div>
+
+          <!-- Card 2: Class & Subject Allotment -->
+          <div class="bg-white rounded-lg shadow-sm border border-slate-200 p-4 sm:p-6 flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between mb-4 border-b pb-2 flex-wrap gap-2">
+                <div class="flex items-center gap-3 flex-wrap">
+                  <h2 class="text-md font-bold text-slate-850 flex items-center gap-2">
+                    <span class="bg-indigo-100 text-indigo-800 rounded-full w-5 h-5 flex items-center justify-center text-xs">2</span>
+                    Class & Subject Allotment
+                  </h2>
+                  <!-- Main Form dynamic period counter badge -->
+                  <span class="bg-indigo-100 text-indigo-800 text-xs px-2.5 py-1 rounded-full font-bold">
+                    Allotted: <span id="mainTotalPeriods">0</span> Periods
+                  </span>
+                </div>
+                <button type="button" id="addAllocationBtn" title="Add Subject Allocation" class="bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white w-11 h-11 rounded-full flex items-center justify-center shadow-md transition transform hover:scale-105">
+                  <span class="text-xl font-bold">+</span>
+                </button>
+              </div>
+
+              <div id="allocationsContainer" class="space-y-3 max-h-[220px] overflow-y-auto pr-1">
+                <!-- Dynamic grid rows inject here -->
+              </div>
+
+              <div id="emptyState" class="text-center py-6 text-slate-400 text-sm hidden">
+                No configurations assigned. Click the circular "+" button to begin.
+              </div>
+            </div>
+          </div>
+
         </div>
-        <div class="flex flex-wrap items-center gap-3 w-full sm:w-auto justify-between sm:justify-end">
-          <span id="syncTimestamp" class="text-[11px] text-slate-500 italic mr-2">Last Synced: Never</span>
-          <button type="button" id="manualSyncBtn" class="bg-indigo-50 text-indigo-700 hover:bg-indigo-100 border border-indigo-200 active:scale-95 px-3 py-1.5 rounded-md text-xs font-semibold transition">
-            Sync with Sheets 🔄
-          </button>
-          <button type="button" id="printBtn" class="bg-slate-800 text-white hover:bg-slate-900 active:scale-95 px-3 py-1.5 rounded-md text-xs font-semibold transition">
-            Print Summary Tables 🖨️
+
+        <!-- Save & Status Interface -->
+        <div class="flex flex-col gap-3">
+          <div id="statusMessage" class="text-xs font-semibold px-4 py-3 rounded-md hidden"></div>
+          <button type="submit" id="submitBtn" class="w-full bg-emerald-600 hover:bg-emerald-700 active:scale-95 text-white font-semibold py-3.5 rounded-lg shadow-md transition duration-150 text-sm sm:text-base">
+            Save Full School Distribution
           </button>
         </div>
-      </div>
-      
-      <!-- Live Teacher Table Card (Page 1 in PDF print-layout) -->
+      </form>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- TAB 2: LIVE TEACHERS SUMMARY TABLE         -->
+    <!-- ========================================== -->
+    <div id="mainTabContent-2" class="hidden">
       <div id="teacherTableCard" class="bg-white rounded-lg shadow-sm border border-slate-200 p-4 sm:p-6 w-full">
         <h2 class="text-base sm:text-lg font-bold text-slate-950 mb-1 flex items-center gap-2">
           <span class="text-indigo-600">📊</span> Live Teachers Summary Table
@@ -308,9 +317,6 @@
         <p class="text-xs text-slate-500 mb-4">Displays mapped configurations, charges, and subject loads per teacher. <span class="font-semibold text-indigo-700">Click a teacher's name to edit.</span></p>
         
         <div class="relative w-full">
-          <div class="block lg:hidden text-right text-[10px] text-indigo-600 font-bold mb-1 animate-pulse no-print">
-            Swipe left/right to view full columns ↔
-          </div>
           <div class="overflow-x-auto border border-slate-200 rounded-md w-full">
             <table class="min-w-[1020px] text-[11px] sm:text-xs text-left divide-y divide-slate-200 w-full" id="teacherSummaryTable">
               <thead class="bg-slate-100 text-slate-700 uppercase font-semibold">
@@ -340,8 +346,12 @@
           </div>
         </div>
       </div>
+    </div>
 
-      <!-- Live Student Table Card (Page 2 in PDF print-layout) -->
+    <!-- ========================================== -->
+    <!-- TAB 3: LIVE STUDENTS ALLOCATION TABLE      -->
+    <!-- ========================================== -->
+    <div id="mainTabContent-3" class="hidden">
       <div id="studentTableCard" class="bg-white rounded-lg shadow-sm border border-slate-200 p-4 sm:p-6 w-full">
         <h2 class="text-base sm:text-lg font-bold text-slate-950 mb-1 flex items-center gap-2">
           <span class="text-teal-600">🎓</span> Live Students Period Allocation Table
@@ -349,9 +359,6 @@
         <p class="text-xs text-slate-500 mb-4">Displays mapped numbers of active student periods (standard target: ~34-35 periods/week).</p>
         
         <div class="relative w-full">
-          <div class="block lg:hidden text-right text-[10px] text-teal-600 font-bold mb-1 animate-pulse no-print">
-            Swipe left/right to view full columns ↔
-          </div>
           <div class="overflow-x-auto border border-slate-200 rounded-md w-full">
             <table class="min-w-[950px] text-[11px] sm:text-xs text-left divide-y divide-slate-200 w-full" id="studentSummaryTable">
               <thead class="bg-slate-100 text-slate-700 uppercase font-semibold">
@@ -382,50 +389,89 @@
           </div>
         </div>
       </div>
-
     </div>
 
-    <!-- ========================================================== -->
-    <!-- SECTION 3: TEMPORARY TIMETABLE SECTION (FOLLOW AREA)       -->
-    <!-- ========================================================== -->
-    <div id="timetableSection" class="bg-white rounded-lg shadow-sm border border-slate-200 p-4 sm:p-6 w-full no-print">
-      <header class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b pb-4 mb-4">
+    <!-- ========================================== -->
+    <!-- TAB 4: DATABASE SYNC & GLOBAL ACTIONS      -->
+    <!-- ========================================== -->
+    <div id="mainTabContent-4" class="hidden">
+      <div id="dbSyncCard" class="bg-white rounded-lg shadow-sm border border-slate-200 p-6 w-full space-y-6">
         <div>
-          <h2 class="text-base sm:text-lg font-bold text-slate-950 flex items-center gap-2">
-            <span class="text-amber-500">🗓️</span> Temporary Timetable View
+          <h2 class="text-lg font-bold text-slate-900 flex items-center gap-2">
+            <span>🔄</span> Database Synchronization & Actions
           </h2>
-          <p class="text-xs text-slate-500">Builds a weekly schedule using available subject period allotments.</p>
+          <p class="text-xs text-slate-500 mt-1">Force update memory states and export layouts to standard landscape outputs.</p>
         </div>
-        <div class="section-controls flex flex-wrap gap-2 w-full sm:w-auto justify-between sm:justify-end">
-          <button type="button" onclick="buildAndRenderTimetables()" class="bg-amber-600 hover:bg-amber-700 active:scale-95 text-white px-3 py-1.5 rounded-md text-xs font-semibold transition shadow-sm">
-            Generate Timetable ⚡
-          </button>
-          <button type="button" onclick="printTimetables('student')" class="bg-indigo-50 text-indigo-700 hover:bg-indigo-100 border border-indigo-200 active:scale-95 px-3 py-1.5 rounded-md text-xs font-semibold transition">
-            Print Divisions 🖨️
-          </button>
-          <button type="button" onclick="printTimetables('teacher')" class="bg-teal-50 text-teal-700 hover:bg-teal-100 border border-teal-200 active:scale-95 px-3 py-1.5 rounded-md text-xs font-semibold transition">
-            Print Teachers 🖨️
-          </button>
+        
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <!-- Sync Option Box -->
+          <div class="bg-slate-50 p-4 border border-slate-200 rounded-lg flex flex-col justify-between items-start gap-3">
+            <div>
+              <h3 class="text-sm font-bold text-slate-800">Retrieve Spreadsheet Updates</h3>
+              <p class="text-xs text-slate-500 mt-1">Triggers a strict get request to force pull coordinates from sheets.</p>
+            </div>
+            <button type="button" id="tabSyncBtn" onclick="loadDatabaseFromSheet(true)" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-md text-xs font-semibold active:scale-95 transition">
+              Sync with Sheets 🔄
+            </button>
+          </div>
+          
+          <!-- Print Option Box -->
+          <div class="bg-slate-50 p-4 border border-slate-200 rounded-lg flex flex-col justify-between items-start gap-3">
+            <div>
+              <h3 class="text-sm font-bold text-slate-800">Print Summary Views</h3>
+              <p class="text-xs text-slate-500 mt-1">Hides the controls and triggers layout processing for A4 Landscape.</p>
+            </div>
+            <button type="button" onclick="printTimetables('default')" class="bg-slate-800 text-white hover:bg-slate-900 px-4 py-2 rounded-md text-xs font-semibold active:scale-95 transition">
+              Print Summary Tables 🖨️
+            </button>
+          </div>
         </div>
-      </header>
-
-      <!-- View Selector Tabs -->
-      <div class="tab-container flex border-b border-slate-200 mb-6">
-        <button id="tabClassBtn" onclick="switchTimetableTab('class')" class="px-4 py-2 border-b-2 border-indigo-600 text-indigo-600 font-semibold text-xs sm:text-sm active:scale-95 transition">Class View (Division wise)</button>
-        <button id="tabTeacherBtn" onclick="switchTimetableTab('teacher')" class="px-4 py-2 border-b-2 border-transparent text-slate-500 hover:text-slate-700 font-semibold text-xs sm:text-sm active:scale-95 transition ml-2">Teacher View</button>
       </div>
+    </div>
 
-      <!-- Class Schedules Grid -->
-      <div id="classTimetableContainer" class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div class="col-span-full text-center py-8 text-slate-400 text-sm">
-          No timetables generated yet. Click "Generate Timetable" to build.
+    <!-- ========================================== -->
+    <!-- TAB 5: TEMPORARY TIMETABLE SECTION         -->
+    <!-- ========================================== -->
+    <div id="mainTabContent-5" class="hidden">
+      <div id="timetableSection" class="bg-white rounded-lg shadow-sm border border-slate-200 p-4 sm:p-6 w-full">
+        <header class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b pb-4 mb-4">
+          <div>
+            <h2 class="text-base sm:text-lg font-bold text-slate-950 flex items-center gap-2">
+              <span class="text-amber-500">🗓️</span> Temporary Timetable View
+            </h2>
+            <p class="text-xs text-slate-500">Builds and saves a weekly schedule using available subject period allotments.</p>
+          </div>
+          <div class="section-controls flex flex-wrap gap-2 w-full sm:w-auto justify-between sm:justify-end">
+            <button type="button" onclick="buildAndRenderTimetables()" class="bg-amber-600 hover:bg-amber-700 active:scale-95 text-white px-3 py-1.5 rounded-md text-xs font-semibold transition shadow-sm">
+              Generate Timetable ⚡
+            </button>
+            <button type="button" onclick="printTimetables('student')" class="bg-indigo-50 text-indigo-700 hover:bg-indigo-100 border border-indigo-200 active:scale-95 px-3 py-1.5 rounded-md text-xs font-semibold transition">
+              Print Divisions 🖨️
+            </button>
+            <button type="button" onclick="printTimetables('teacher')" class="bg-teal-50 text-teal-700 hover:bg-teal-100 border border-teal-200 active:scale-95 px-3 py-1.5 rounded-md text-xs font-semibold transition">
+              Print Teachers 🖨️
+            </button>
+          </div>
+        </header>
+
+        <!-- View Selector Tabs -->
+        <div class="tab-container flex border-b border-slate-200 mb-6">
+          <button id="tabClassBtn" onclick="switchTimetableTab('class')" class="px-4 py-2 border-b-2 border-indigo-600 text-indigo-600 font-semibold text-xs sm:text-sm active:scale-95 transition">Class View (Division wise)</button>
+          <button id="tabTeacherBtn" onclick="switchTimetableTab('teacher')" class="px-4 py-2 border-b-2 border-transparent text-slate-500 hover:text-slate-700 font-semibold text-xs sm:text-sm active:scale-95 transition ml-2">Teacher View</button>
         </div>
-      </div>
 
-      <!-- Teacher Schedules Grid -->
-      <div id="teacherTimetableContainer" class="grid grid-cols-1 md:grid-cols-2 gap-6 hidden">
-        <div class="col-span-full text-center py-8 text-slate-400 text-sm">
-          No timetables generated yet. Click "Generate Timetable" to build.
+        <!-- Class Schedules Grid -->
+        <div id="classTimetableContainer" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="col-span-full text-center py-8 text-slate-400 text-sm">
+            No timetables generated yet. Click "Generate Timetable" to build.
+          </div>
+        </div>
+
+        <!-- Teacher Schedules Grid -->
+        <div id="teacherTimetableContainer" class="grid grid-cols-1 md:grid-cols-2 gap-6 hidden">
+          <div class="col-span-full text-center py-8 text-slate-400 text-sm">
+            No timetables generated yet. Click "Generate Timetable" to build.
+          </div>
         </div>
       </div>
     </div>
@@ -516,13 +562,13 @@
     // ==========================================
     // 1. CONFIGURE YOUR GOOGLE WEB APP URL HERE
     // ==========================================
-    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbz8wcWZikff425UknYmBocCa6ZjgK4DUtCQO_n3SOAgEgK_vidUw25Rwzf1h34p24mQ/exec";
+    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzJLmKJ7YAdxFtAnv-ZnXGNcRyi6GyHC-mXBqXzuvRqXqoJNT_wnH3PjHZlubpq6UMF/exec";
 
     const TEACHERS = ["TAK", "SK", "ERJ", "BA", "VA", "SJS", "GMK", "SA", "KK", "KSPB", "NV", "SS", "SSR", "RR", "BUS", "ANM"];
     const CLASSES = ["5A", "5B", "5C", "5D", "6A", "6B", "6C", "6D", "7A", "7B", "7C", "7D"];
     const SUBJECTS = ["MI", "MII", "ENG", "SE", "HIN", "BS", "SS", "MM", "HE", "PE", "AE", "WE", "IT", "SV/LIB"];
     const SUBJECT_PERIODS = {
-      "ARB": 4, "MI": 4, "SKT": 4, "MII": 2, "ENG": 4, "SE": 1, 
+      "MI": 4, "MII": 2, "ENG": 4, "SE": 1, 
       "BS": 5, "SS": 5, "MM": 5, "HE": 1, 
       "PE": 1, "AE": 1, "WE": 1, "IT": 1, "SV/LIB": 1
     };
@@ -555,6 +601,21 @@
     const syncTimestamp = document.getElementById("syncTimestamp");
     const manualSyncBtn = document.getElementById("manualSyncBtn");
     const printBtn = document.getElementById("printBtn");
+
+    // Main Tab Navigation Control
+    function switchMainTab(tabIndex) {
+      for (let i = 1; i <= 5; i++) {
+        const content = document.getElementById(`mainTabContent-${i}`);
+        const btn = document.getElementById(`mainTabBtn-${i}`);
+        if (i === tabIndex) {
+          content.classList.remove("hidden");
+          btn.className = "w-12 h-12 rounded-full flex items-center justify-center text-lg transition duration-150 shadow-sm bg-indigo-600 text-white font-bold active:scale-95";
+        } else {
+          content.classList.add("hidden");
+          btn.className = "w-12 h-12 rounded-full flex items-center justify-center text-lg transition duration-150 shadow-sm bg-white text-slate-700 border border-slate-200 active:scale-95";
+        }
+      }
+    }
 
     // Spinner Utility Controls
     function showSpinner(text = "Please wait...") {
@@ -1663,15 +1724,18 @@
 
     // Handles the POST API transaction for both primary and modal save operations
     function postFullStateToSheets(isFromModal = false) {
-      const btn = isFromModal ? document.getElementById("modalSaveBtn") : submitBtn;
-      const prevText = btn.textContent;
+      const btn = isFromModal ? null : submitBtn;
+      const prevText = btn ? btn.textContent : "";
       const modalStatus = document.getElementById("modalStatusMessage");
       
-      btn.disabled = true;
-      btn.textContent = "Saving...";
+      if (btn) {
+        btn.disabled = true;
+        btn.textContent = "Saving...";
+      }
       
       if (isFromModal) {
         modalStatus.classList.remove("hidden");
+        modalStatus.className = "text-xs font-semibold text-amber-600 animate-pulse";
         modalStatus.textContent = "Syncing Sheet...";
       } else {
         showSpinner("Saving All Changes to Google Sheet...");
@@ -1704,6 +1768,7 @@
       .then(res => res.json().catch(() => ({ status: "success", message: "Saved" })))
       .then(data => {
         if (isFromModal) {
+          modalStatus.className = "text-xs font-semibold text-emerald-600";
           modalStatus.textContent = "Synced Successfully!";
           setTimeout(() => {
             modalStatus.classList.add("hidden");
@@ -1716,6 +1781,7 @@
       })
       .catch(error => {
         if (isFromModal) {
+          modalStatus.className = "text-xs font-semibold text-emerald-600";
           modalStatus.textContent = "Synced Successfully!";
           setTimeout(() => {
             modalStatus.classList.add("hidden");
@@ -1727,8 +1793,10 @@
         loadDatabaseFromSheet(false);
       })
       .finally(() => {
-        btn.disabled = false;
-        btn.textContent = prevText;
+        if (btn) {
+          btn.disabled = false;
+          btn.textContent = prevText;
+        }
       });
     }
 
