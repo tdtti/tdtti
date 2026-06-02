@@ -178,13 +178,20 @@
       <p class="text-sm text-slate-600 mt-1">Live allocation visualizer & schedule planner</p>
     </header>
 
-    <!-- Symbol-Only Navigation Bar -->
-    <div class="tab-navigation flex justify-center items-center gap-3 py-2 border border-slate-200 bg-white shadow-sm rounded-xl max-w-sm mx-auto no-print">
-      <button id="tab1-btn" onclick="switchMainTab(1)" title="Basic Details & Allocation Form" class="w-11 h-11 rounded-full flex items-center justify-center transition focus:outline-none focus:ring-2 focus:ring-indigo-500 text-2xl">📝</button>
-      <button id="tab2-btn" onclick="switchMainTab(2)" title="Live Teachers Summary Table" class="w-11 h-11 rounded-full flex items-center justify-center transition focus:outline-none focus:ring-2 focus:ring-indigo-500 text-2xl">📊</button>
-      <button id="tab3-btn" onclick="switchMainTab(3)" title="Live Students Period Allocation Table" class="w-11 h-11 rounded-full flex items-center justify-center transition focus:outline-none focus:ring-2 focus:ring-indigo-500 text-2xl">🎓</button>
-      <button id="tab4-btn" onclick="switchMainTab(4)" title="Database Sync & Actions" class="w-11 h-11 rounded-full flex items-center justify-center transition focus:outline-none focus:ring-2 focus:ring-indigo-500 text-2xl">⚙️</button>
-      <button id="tab5-btn" onclick="switchMainTab(5)" title="Generate & View Timetable" class="w-11 h-11 rounded-full flex items-center justify-center transition focus:outline-none focus:ring-2 focus:ring-indigo-500 text-2xl">🗓️</button>
+    <!-- Symbol-Only Navigation Bar with Separator & Universal Actions -->
+    <div class="tab-navigation flex flex-wrap justify-center items-center gap-2.5 sm:gap-3 py-2 px-3 border border-slate-200 bg-white shadow-sm rounded-xl max-w-lg mx-auto no-print">
+      <button id="tab1-btn" onclick="switchMainTab(1)" title="Basic Details & Allocation Form" class="w-10 h-10 sm:w-11 sm:h-11 rounded-full flex items-center justify-center transition focus:outline-none focus:ring-2 focus:ring-indigo-500 text-2xl">📝</button>
+      <button id="tab2-btn" onclick="switchMainTab(2)" title="Live Teachers Summary Table" class="w-10 h-10 sm:w-11 sm:h-11 rounded-full flex items-center justify-center transition focus:outline-none focus:ring-2 focus:ring-indigo-500 text-2xl">📊</button>
+      <button id="tab3-btn" onclick="switchMainTab(3)" title="Live Students Period Allocation Table" class="w-10 h-10 sm:w-11 sm:h-11 rounded-full flex items-center justify-center transition focus:outline-none focus:ring-2 focus:ring-indigo-500 text-2xl">🎓</button>
+      <button id="tab4-btn" onclick="switchMainTab(4)" title="Database Sync & Actions" class="w-10 h-10 sm:w-11 sm:h-11 rounded-full flex items-center justify-center transition focus:outline-none focus:ring-2 focus:ring-indigo-500 text-2xl">⚙️</button>
+      <button id="tab5-btn" onclick="switchMainTab(5)" title="Generate & View Timetable" class="w-10 h-10 sm:w-11 sm:h-11 rounded-full flex items-center justify-center transition focus:outline-none focus:ring-2 focus:ring-indigo-500 text-2xl">🗓️</button>
+      
+      <!-- Divider Line -->
+      <div class="h-6 w-[1px] bg-slate-200 mx-1"></div>
+
+      <!-- Universal Utilities -->
+      <button type="button" onclick="loadDatabaseFromSheet(true)" title="Sync / Refresh from Sheets" class="w-10 h-10 sm:w-11 sm:h-11 rounded-full flex items-center justify-center transition bg-indigo-50 text-indigo-700 hover:bg-indigo-100 text-xl active:scale-95 focus:outline-none">🔄</button>
+      <button type="button" id="fullscreenToggleBtn" onclick="toggleFullscreenView()" title="Enter Fullscreen" class="w-10 h-10 sm:w-11 sm:h-11 rounded-full flex items-center justify-center transition bg-slate-100 text-slate-700 hover:bg-slate-200 text-xl active:scale-95 focus:outline-none">🖥️</button>
     </div>
 
     <!-- ========================================================== -->
@@ -562,9 +569,9 @@
 
     const TEACHERS = ["TAK", "SK", "ERJ", "BA", "VA", "SJS", "GMK", "SA", "KK", "KSPB", "NV", "SS", "SSR", "RR", "BUS", "ANM"];
     const CLASSES = ["5A", "5B", "5C", "5D", "6A", "6B", "6C", "6D", "7A", "7B", "7C", "7D"];
-    const SUBJECTS = ["ARB","MI","SKT", "MII", "ENG",  "HIN", "BS", "SS", "MM", "HE", "PE", "AE", "WE", "IT", "SV/LIB"];
+    const SUBJECTS = ["MI", "MII", "ENG", "HIN", "BS", "SS", "MM", "HE", "PE", "AE", "WE", "IT", "SV/LIB"];
     const SUBJECT_PERIODS = {
-      "ARB": 4, "MI": 4, "SKT": 4, "MII": 2, "ENG": 5,  
+      "ARB": 4, "MI": 4, "SKT": 4,"MII": 2, "ENG": 5,  
       "BS": 5, "SS": 5, "MM": 5, "HE": 1, 
       "PE": 1, "AE": 1, "WE": 1, "IT": 1, "SV/LIB": 1
     };
@@ -623,16 +630,56 @@
         const btn = document.getElementById(`tab${i}-btn`);
         if (pane) pane.classList.add("hidden");
         if (btn) {
-          btn.className = "w-11 h-11 rounded-full flex items-center justify-center transition focus:outline-none focus:ring-2 focus:ring-indigo-500 text-2xl bg-slate-100 text-slate-500 hover:bg-slate-200";
+          btn.className = "w-10 h-10 sm:w-11 sm:h-11 rounded-full flex items-center justify-center transition focus:outline-none focus:ring-2 focus:ring-indigo-500 text-2xl bg-slate-100 text-slate-500 hover:bg-slate-200";
         }
       }
       const activePane = document.getElementById(`tab${tabNum}-content`);
       const activeBtn = document.getElementById(`tab${tabNum}-btn`);
       if (activePane) activePane.classList.remove("hidden");
       if (activeBtn) {
-        activeBtn.className = "w-11 h-11 rounded-full flex items-center justify-center transition focus:outline-none focus:ring-2 focus:ring-indigo-500 text-2xl bg-indigo-600 text-white shadow-md transform scale-110";
+        activeBtn.className = "w-10 h-10 sm:w-11 sm:h-11 rounded-full flex items-center justify-center transition focus:outline-none focus:ring-2 focus:ring-indigo-500 text-2xl bg-indigo-600 text-white shadow-md transform scale-110";
       }
     }
+
+    // Native HTML5 Fullscreen Controller
+    function toggleFullscreenView() {
+      const btn = document.getElementById("fullscreenToggleBtn");
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen()
+          .then(() => {
+            if (btn) {
+              btn.textContent = "✖️";
+              btn.title = "Exit Fullscreen";
+            }
+          })
+          .catch(err => {
+            console.error(`Fullscreen mode access block: ${err.message}`);
+            showStatus("Fullscreen view not supported or restricted by browser.", true);
+          });
+      } else {
+        document.exitFullscreen()
+          .then(() => {
+            if (btn) {
+              btn.textContent = "🖥️";
+              btn.title = "Enter Fullscreen";
+            }
+          });
+      }
+    }
+
+    // Escape listener to keep fullscreen icon aligned with document browser state
+    document.addEventListener("fullscreenchange", () => {
+      const btn = document.getElementById("fullscreenToggleBtn");
+      if (btn) {
+        if (document.fullscreenElement) {
+          btn.textContent = "✖️";
+          btn.title = "Exit Fullscreen";
+        } else {
+          btn.textContent = "🖥️";
+          btn.title = "Enter Fullscreen";
+        }
+      }
+    });
 
     // Dynamic status helper to output clean user response logs
     function showStatus(message, isError = false) {
@@ -1794,7 +1841,7 @@
         return;
       }
       
-      showSpinner("Please Wait.Fetching Records...");
+      showSpinner("Fetching database records from Google Sheets...");
       
       fetch(`${WEB_APP_URL}?action=get_allocations`)
         .then(res => res.json())
