@@ -22,48 +22,105 @@
         margin: 0 !important;
       }
 
-      /* Force display summary tables and hide everything else on print */
-      #tab2-content,
-      #tab3-content {
-        display: block !important;
-      }
-
-      #tab1-content,
-      #tab4-content,
-      .tab-navigation,
+      /* Hide menus, modals, and headers during printing */
       header, 
       form, 
+      #dbSyncControls,
       #teacherModal,
+      #tab5-content header,
+      #tab5-content .tab-container,
+      #tab5-content .section-controls,
+      .tab-navigation,
       .no-print,
       .share-col {
         display: none !important;
       }
 
-      /* Force summary cards into page layouts */
-      #teacherTableCard {
-        page-break-after: always !important; 
-        break-after: page !important;
-        display: block !important;
-        border: none !important;
-        box-shadow: none !important;
-        padding: 0 !important;
-        margin: 0 0 10mm 0 !important;
-      }
-
-      #studentTableCard {
-        display: block !important;
-        border: none !important;
-        box-shadow: none !important;
-        padding: 0 !important;
-        margin: 0 !important;
-      }
-
-      /* Force container to match full canvas width */
+      /* Force full canvas width */
       .max-w-7xl {
         max-width: 100% !important;
         width: 100% !important;
         padding: 0 !important;
         margin: 0 !important;
+      }
+
+      /* Print Rule 1: Default summary tables print layout */
+      body.print-default #tab2-content,
+      body.print-default #tab3-content {
+        display: block !important;
+      }
+      body.print-default #teacherTableCard {
+        page-break-after: always !important; 
+        break-after: page !important;
+        display: block !important;
+      }
+      body.print-default #studentTableCard {
+        display: block !important;
+      }
+      body.print-default #tab1-content,
+      body.print-default #tab4-content,
+      body.print-default #tab5-content,
+      body.print-default .class-timetable-card,
+      body.print-default .teacher-timetable-card {
+        display: none !important;
+      }
+
+      /* Print Rule 2: Student Division Timetables */
+      body.print-student #tab1-content,
+      body.print-student #tab2-content,
+      body.print-student #tab3-content,
+      body.print-student #tab4-content,
+      body.print-student .teacher-timetable-card {
+        display: none !important;
+      }
+      body.print-student #tab5-content {
+        display: block !important;
+        border: none !important;
+        padding: 0 !important;
+      }
+      body.print-student #classTimetableContainer {
+        display: block !important;
+      }
+      body.print-student .class-timetable-card {
+        page-break-after: always !important; 
+        break-after: page !important;
+        display: block !important;
+        width: 100% !important;
+        height: 100% !important;
+        border: none !important;
+        box-shadow: none !important;
+        background: white !important;
+        padding: 0 !important;
+        margin: 0 0 15mm 0 !important;
+      }
+
+      /* Print Rule 3: Teacher Timetables */
+      body.print-teacher #tab1-content,
+      body.print-teacher #tab2-content,
+      body.print-teacher #tab3-content,
+      body.print-teacher #tab4-content,
+      body.print-teacher .class-timetable-card {
+        display: none !important;
+      }
+      body.print-teacher #tab5-content {
+        display: block !important;
+        border: none !important;
+        padding: 0 !important;
+      }
+      body.print-teacher #teacherTimetableContainer {
+        display: block !important;
+      }
+      body.print-teacher .teacher-timetable-card {
+        page-break-after: always !important; 
+        break-after: page !important;
+        display: block !important;
+        width: 100% !important;
+        height: 100% !important;
+        border: none !important;
+        box-shadow: none !important;
+        background: white !important;
+        padding: 0 !important;
+        margin: 0 0 15mm 0 !important;
       }
 
       .overflow-x-auto {
@@ -100,7 +157,7 @@
     }
   </style>
 </head>
-<body class="bg-slate-50 min-h-screen text-slate-800 font-sans pb-16">
+<body class="bg-slate-50 min-h-screen text-slate-800 font-sans pb-16 print-default">
 
   <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:py-10 space-y-8">
     
@@ -111,11 +168,12 @@
     </header>
 
     <!-- Symbol-Only Navigation Bar -->
-    <div class="tab-navigation flex justify-center items-center gap-4 py-2 border border-slate-200 bg-white shadow-sm rounded-xl max-w-sm mx-auto no-print">
-      <button id="tab1-btn" onclick="switchMainTab(1)" title="Basic Details & Allocation Form" class="w-12 h-12 rounded-full flex items-center justify-center transition focus:outline-none focus:ring-2 focus:ring-indigo-500 text-2xl">📝</button>
-      <button id="tab2-btn" onclick="switchMainTab(2)" title="Live Teachers Summary Table" class="w-12 h-12 rounded-full flex items-center justify-center transition focus:outline-none focus:ring-2 focus:ring-indigo-500 text-2xl">📊</button>
-      <button id="tab3-btn" onclick="switchMainTab(3)" title="Live Students Period Allocation Table" class="w-12 h-12 rounded-full flex items-center justify-center transition focus:outline-none focus:ring-2 focus:ring-indigo-500 text-2xl">🎓</button>
-      <button id="tab4-btn" onclick="switchMainTab(4)" title="Database Sync & Actions" class="w-12 h-12 rounded-full flex items-center justify-center transition focus:outline-none focus:ring-2 focus:ring-indigo-500 text-2xl">⚙️</button>
+    <div class="tab-navigation flex justify-center items-center gap-3 py-2 border border-slate-200 bg-white shadow-sm rounded-xl max-w-sm mx-auto no-print">
+      <button id="tab1-btn" onclick="switchMainTab(1)" title="Basic Details & Allocation Form" class="w-11 h-11 rounded-full flex items-center justify-center transition focus:outline-none focus:ring-2 focus:ring-indigo-500 text-2xl">📝</button>
+      <button id="tab2-btn" onclick="switchMainTab(2)" title="Live Teachers Summary Table" class="w-11 h-11 rounded-full flex items-center justify-center transition focus:outline-none focus:ring-2 focus:ring-indigo-500 text-2xl">📊</button>
+      <button id="tab3-btn" onclick="switchMainTab(3)" title="Live Students Period Allocation Table" class="w-11 h-11 rounded-full flex items-center justify-center transition focus:outline-none focus:ring-2 focus:ring-indigo-500 text-2xl">🎓</button>
+      <button id="tab4-btn" onclick="switchMainTab(4)" title="Database Sync & Actions" class="w-11 h-11 rounded-full flex items-center justify-center transition focus:outline-none focus:ring-2 focus:ring-indigo-500 text-2xl">⚙️</button>
+      <button id="tab5-btn" onclick="switchMainTab(5)" title="Generate & View Timetable" class="w-11 h-11 rounded-full flex items-center justify-center transition focus:outline-none focus:ring-2 focus:ring-indigo-500 text-2xl">🗓️</button>
     </div>
 
     <!-- ========================================================== -->
@@ -123,7 +181,6 @@
     <!-- ========================================================== -->
     <div id="tab1-content" class="tab-pane space-y-6">
       <form id="distributionForm" class="space-y-6">
-        <!-- Side-by-Side Form Grid Container on Desktop -->
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 items-stretch">
           
           <!-- Card 1: Basic Details -->
@@ -180,7 +237,7 @@
                 </div>
               </div>
             </div>
-            <div class="mt-4 text-xs text-slate-400 italic font-medium">Select a teacher above to begin configuring or viewing current distributions.</div>
+            <div class="mt-4 text-xs text-slate-400 italic font-medium">Select a teacher above to configure distributions.</div>
           </div>
 
           <!-- Card 2: Class & Subject Allotment -->
@@ -197,11 +254,11 @@
               </div>
 
               <div id="allocationsContainer" class="space-y-3 max-h-[220px] overflow-y-auto pr-1">
-                <!-- Dynamic grid rows inject here -->
+                <!-- Dynamic grid rows -->
               </div>
 
               <div id="emptyState" class="text-center py-6 text-slate-400 text-sm hidden">
-                No configurations assigned. Click the circular "+" button to begin.
+                No configurations assigned. Click "+" to begin.
               </div>
             </div>
           </div>
@@ -226,7 +283,7 @@
         <h2 class="text-base sm:text-lg font-bold text-slate-950 mb-1 flex items-center gap-2">
           <span class="text-indigo-600">📊</span> Live Teachers Summary Table
         </h2>
-        <p class="text-xs text-slate-500 mb-4">Displays mapped configurations, charges, and subject loads per teacher. <span class="font-semibold text-indigo-700">Click a teacher's name to edit.</span></p>
+        <p class="text-xs text-slate-500 mb-4">Displays mapped configurations, charges, and loads per teacher. <span class="font-semibold text-indigo-700">Click name to edit.</span></p>
         
         <div class="relative w-full">
           <div class="block lg:hidden text-right text-[10px] text-indigo-600 font-bold mb-1 animate-pulse no-print">
@@ -301,7 +358,7 @@
                 <!-- Dynamically populated -->
               </tbody>
               <tfoot class="bg-slate-200 text-slate-900 font-bold" id="studentTableFooter">
-                <!-- Summary row populated via JS -->
+                <!-- Summary row -->
               </tfoot>
             </table>
           </div>
@@ -326,6 +383,53 @@
           <button type="button" id="printBtn" class="bg-slate-800 text-white hover:bg-slate-900 active:scale-95 px-3 py-1.5 rounded-md text-xs font-semibold transition">
             Print Summary Tables 🖨️
           </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========================================================== -->
+    <!-- TAB 5: TIMETABLE GENERATION AND VIEWS                      -->
+    <!-- ========================================================== -->
+    <div id="tab5-content" class="tab-pane hidden space-y-6">
+      <div class="bg-white rounded-lg shadow-sm border border-slate-200 p-4 sm:p-6 w-full">
+        <header class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b pb-4 mb-4">
+          <div>
+            <h2 class="text-base sm:text-lg font-bold text-slate-950 flex items-center gap-2">
+              <span class="text-indigo-600">🗓️</span> Temporary Timetable View
+            </h2>
+            <p class="text-xs text-slate-500">Generates conflict-free weekly schedules according to strict structural conditions.</p>
+          </div>
+          <div class="section-controls flex flex-wrap gap-2 w-full sm:w-auto justify-between sm:justify-end no-print">
+            <button type="button" onclick="buildAndRenderTimetables()" class="bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white px-3.5 py-2 rounded-md text-xs font-semibold transition shadow-sm">
+              Generate Timetable ⚡
+            </button>
+            <button type="button" onclick="printTimetables('student')" class="bg-indigo-50 text-indigo-700 hover:bg-indigo-100 border border-indigo-200 active:scale-95 px-3.5 py-2 rounded-md text-xs font-semibold transition">
+              Print Divisions 🖨️
+            </button>
+            <button type="button" onclick="printTimetables('teacher')" class="bg-teal-50 text-teal-700 hover:bg-teal-100 border border-teal-200 active:scale-95 px-3.5 py-2 rounded-md text-xs font-semibold transition">
+              Print Teachers 🖨️
+            </button>
+          </div>
+        </header>
+
+        <!-- View Selector Tabs -->
+        <div class="tab-container flex border-b border-slate-200 mb-6 no-print">
+          <button id="tabClassBtn" onclick="switchTimetableTab('class')" class="px-4 py-2 border-b-2 border-indigo-600 text-indigo-600 font-semibold text-xs sm:text-sm active:scale-95 transition">Class View (Division wise)</button>
+          <button id="tabTeacherBtn" onclick="switchTimetableTab('teacher')" class="px-4 py-2 border-b-2 border-transparent text-slate-500 hover:text-slate-700 font-semibold text-xs sm:text-sm active:scale-95 transition ml-2">Teacher View</button>
+        </div>
+
+        <!-- Class Schedules Grid -->
+        <div id="classTimetableContainer" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="col-span-full text-center py-8 text-slate-400 text-sm">
+            No timetables generated yet. Click "Generate Timetable" to build.
+          </div>
+        </div>
+
+        <!-- Teacher Schedules Grid -->
+        <div id="teacherTimetableContainer" class="grid grid-cols-1 md:grid-cols-2 gap-6 hidden">
+          <div class="col-span-full text-center py-8 text-slate-400 text-sm">
+            No timetables generated yet. Click "Generate Timetable" to build.
+          </div>
         </div>
       </div>
     </div>
@@ -371,12 +475,11 @@
         <div>
           <div class="flex items-center justify-between mb-3">
             <h4 class="text-sm font-bold text-slate-700">Allotted Classes & Subjects</h4>
-            <!-- Circular add button inside modal -->
             <button type="button" onclick="addModalAllocationRow()" title="Add allocation row" class="bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white w-9 h-9 rounded-full flex items-center justify-center shadow-md transition font-bold text-xl">+</button>
           </div>
           
           <div id="modalAllocationsContainer" class="space-y-3">
-            <!-- Dynamic modal rows go here -->
+            <!-- Dynamic modal rows -->
           </div>
         </div>
 
@@ -397,7 +500,7 @@
     // ==========================================
     // 1. CONFIGURE YOUR GOOGLE WEB APP URL HERE
     // ==========================================
-    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwqWrI8PhFijcX1YOsYUmjxYf3AXZJSXNWxmerTKrTi8lYB9AdNW3AaVzVPAOIaMMQ4IQ/exec";
+    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxqnBNlnv61VT5EcBzzXZwckxuT4gQhtcQLBfZQyz6gZ6pR_V4_dd-rU6fG4IzTTTCvww/exec";
 
     const TEACHERS = ["TAK", "SK", "ERJ", "BA", "VA", "SJS", "GMK", "SA", "KK", "KSPB", "NV", "SS", "SSR", "RR", "BUS", "ANM"];
     const CLASSES = ["5A", "5B", "5C", "5D", "6A", "6B", "6C", "6D", "7A", "7B", "7C", "7D"];
@@ -439,19 +542,19 @@
 
     // Dynamic Navigation Tab switching script
     function switchMainTab(tabNum) {
-      for (let i = 1; i <= 4; i++) {
+      for (let i = 1; i <= 5; i++) {
         const pane = document.getElementById(`tab${i}-content`);
         const btn = document.getElementById(`tab${i}-btn`);
         if (pane) pane.classList.add("hidden");
         if (btn) {
-          btn.className = "w-12 h-12 rounded-full flex items-center justify-center transition focus:outline-none focus:ring-2 focus:ring-indigo-500 text-2xl bg-slate-100 text-slate-500 hover:bg-slate-200";
+          btn.className = "w-11 h-11 rounded-full flex items-center justify-center transition focus:outline-none focus:ring-2 focus:ring-indigo-500 text-2xl bg-slate-100 text-slate-500 hover:bg-slate-200";
         }
       }
       const activePane = document.getElementById(`tab${tabNum}-content`);
       const activeBtn = document.getElementById(`tab${tabNum}-btn`);
       if (activePane) activePane.classList.remove("hidden");
       if (activeBtn) {
-        activeBtn.className = "w-12 h-12 rounded-full flex items-center justify-center transition focus:outline-none focus:ring-2 focus:ring-indigo-500 text-2xl bg-indigo-600 text-white shadow-md transform scale-110";
+        activeBtn.className = "w-11 h-11 rounded-full flex items-center justify-center transition focus:outline-none focus:ring-2 focus:ring-indigo-500 text-2xl bg-indigo-600 text-white shadow-md transform scale-110";
       }
     }
 
@@ -469,7 +572,7 @@
       }
       statusEl.classList.remove("hidden");
       
-      // Auto-hide status banner unless displaying warnings/saving sequences
+      // Auto-hide status banner
       if (!isError && !message.includes("Syncing") && !message.includes("saving") && !message.includes("complete with Google Sheets")) {
         setTimeout(() => {
           statusEl.classList.add("hidden");
@@ -669,7 +772,7 @@
         const profile = dbState[t];
         const inCharge = profile.classInCharge !== "None" ? profile.classInCharge : "-";
         
-        // Dynamically build the subject allocations summary list for the first column
+        // Dynamically build allocations summary
         const subjectsSummary = profile.allocations.map(a => `${a.subject}(${a.periods})`).join(", ");
         
         let teacherRowHtml = `
@@ -694,7 +797,7 @@
           }
         });
 
-        // WhatsApp trigger link in the final column block
+        // WhatsApp trigger link
         teacherRowHtml += `
             <td class="px-3 py-2 text-center bg-indigo-50/50 font-bold text-indigo-950">${teacherTotalPeriods}</td>
             <td class="px-2 py-2 text-center border-l border-slate-200 share-col">
@@ -712,8 +815,6 @@
       // =========================================================
       // TABLE 2: SUBJECT VS CLASS SYSTEM GENERATION
       // =========================================================
-      
-      // FIRST ROW IN TABLE 2: Class Teacher Name (Highlighted Sub-Header Row)
       let classTeacherRowHtml = `
         <tr class="bg-indigo-50/30 border-b border-slate-200">
           <td class="px-3 py-2.5 font-bold border-r border-slate-100 bg-indigo-50/50 sticky left-0 z-10 shadow-[2px_0_5px_rgba(0,0,0,0.02)] text-indigo-950">Class Teacher</td>
@@ -727,7 +828,7 @@
       `;
       sBody.insertAdjacentHTML('beforeend', classTeacherRowHtml);
 
-      // FOLLOWING ROWS: Subject Rows
+      // Subject Rows
       SUBJECTS.forEach(sub => {
         let studentRowHtml = `
           <tr class="hover:bg-slate-50 border-b border-slate-100">
@@ -740,7 +841,6 @@
           let cellAllocations = [];
           let cellPeriodsSum = 0;
 
-          // Search across all teachers to collect active allocations for this subject and class
           TEACHERS.forEach(t => {
             const profile = dbState[t];
             const matched = profile.allocations.filter(a => a.className === c && a.subject === sub);
@@ -766,7 +866,7 @@
         sBody.insertAdjacentHTML('beforeend', studentRowHtml);
       });
 
-      // 3. Render Student summary totals values (footer)
+      // Render Student summary totals values (footer)
       let footerHtml = `
         <tr>
           <td class="px-3 py-2 border-r border-slate-300 text-left uppercase sticky left-0 bg-slate-200 z-10 text-xs font-bold">Grand Total</td>
@@ -814,7 +914,7 @@
 
     // Handles modal closure and forces immediate synchronous Sheets update
     function closeTeacherModal() {
-      saveModalChangesAuto(true); // Triggers an instant, non-debounced database update
+      saveModalChangesAuto(true); // Triggers immediate structural push to DB
       document.getElementById("teacherModal").classList.add("hidden");
       modalActiveTeacher = "";
     }
@@ -825,7 +925,7 @@
       saveModalChangesAuto(false);
     }
 
-    // Generates structural allocation selection interfaces inside the overlay
+    // Generates structural allocation selection interfaces inside overlay
     function createModalAllocationRow(className = "", subject = "", periods = "") {
       const rowId = 'modal-row-' + Date.now() + Math.random().toString(36).substring(2, 7);
       const div = document.createElement("div");
@@ -917,7 +1017,7 @@
       
       updateTables();
       
-      // Instantly push to sheets or trigger quick debounce sequence
+      // Push to sheets directly or queue up micro debounce session
       if (forceImmediate) {
         clearTimeout(autoSaveTimeout);
         postFullStateToSheets(true);
@@ -925,13 +1025,393 @@
         clearTimeout(autoSaveTimeout);
         autoSaveTimeout = setTimeout(() => {
           postFullStateToSheets(true);
-        }, 300); // Shorter debounce for faster instant feedback
+        }, 300);
+      }
+    }
+
+    // ==========================================
+    // TAB 5: TIMETABLE SOLVER ENGINE
+    // ==========================================
+
+    function shuffleArray(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[array[j]]] = [array[array[j]], array[i]];
+      }
+      return array;
+    }
+
+    function buildAndRenderTimetables() {
+      // Build a local reference mapping remaining lessons per division class
+      const classAllotments = {};
+      CLASSES.forEach(c => {
+        classAllotments[c] = [];
+      });
+
+      TEACHERS.forEach(t => {
+        const profile = dbState[t];
+        if (profile && profile.allocations) {
+          profile.allocations.forEach(alloc => {
+            const c = alloc.className;
+            if (CLASSES.includes(c)) {
+              classAllotments[c].push({
+                teacher: t,
+                subject: alloc.subject,
+                total: parseInt(alloc.periods) || 0,
+                remaining: parseInt(alloc.periods) || 0
+              });
+            }
+          });
+        }
+      });
+
+      // Map division class teachers
+      const classTeachers = {};
+      CLASSES.forEach(c => {
+        classTeachers[c] = null;
+        TEACHERS.forEach(t => {
+          if (dbState[t] && dbState[t].classInCharge === c) {
+            classTeachers[c] = t;
+          }
+        });
+      });
+
+      // Constraint-satisfier variables
+      let timetable = null;
+      let teacherBusy = null;
+      let success = false;
+      let attempts = 0;
+
+      while (!success && attempts < 200) {
+        attempts++;
+        
+        // Reset remainders
+        CLASSES.forEach(c => {
+          classAllotments[c].forEach(alloc => {
+            alloc.remaining = alloc.total;
+          });
+        });
+
+        // Initialize structures
+        timetable = {};
+        CLASSES.forEach(c => {
+          timetable[c] = Array(5).fill(null).map(() => Array(7).fill(null));
+        });
+
+        teacherBusy = {};
+        TEACHERS.forEach(t => {
+          teacherBusy[t] = Array(5).fill(null).map(() => Array(7).fill(false));
+        });
+
+        // Setup daily requirements (ENG/SE and 5-period subjects)
+        const dayDemands = {};
+        CLASSES.forEach(c => {
+          dayDemands[c] = Array(5).fill(null).map(() => []);
+          
+          // Inject 5-period subjects to daily demands
+          const fivePeriodAllocations = classAllotments[c].filter(a => a.total >= 5);
+          fivePeriodAllocations.forEach(alloc => {
+            for (let d = 0; d < 5; d++) {
+              dayDemands[c][d].push(alloc.subject);
+            }
+          });
+
+          // Pre-assign ENG & SE daily demand distribution
+          const engAlloc = classAllotments[c].find(a => a.subject === "ENG");
+          const seAlloc = classAllotments[c].find(a => a.subject === "SE");
+          if (engAlloc || seAlloc) {
+            const seDay = Math.floor(Math.random() * 5);
+            for (let d = 0; d < 5; d++) {
+              if (d === seDay) {
+                if (seAlloc) dayDemands[c][d].push("SE");
+              } else {
+                if (engAlloc) dayDemands[c][d].push("ENG");
+              }
+            }
+          }
+        });
+
+        // PHASE 1: Class Teacher compulsory Period 1
+        let phaseSuccess = true;
+        for (let d = 0; d < 5; d++) {
+          for (let c of CLASSES) {
+            const ct = classTeachers[c];
+            if (ct) {
+              const ctAlloc = classAllotments[c].find(a => a.teacher === ct && a.remaining > 0);
+              if (ctAlloc) {
+                timetable[c][d][0] = { subject: ctAlloc.subject, teacher: ct, conflict: false };
+                teacherBusy[ct][d][0] = true;
+                ctAlloc.remaining--;
+
+                const idx = dayDemands[c][d].indexOf(ctAlloc.subject);
+                if (idx > -1) {
+                  dayDemands[c][d].splice(idx, 1);
+                }
+              }
+            }
+          }
+        }
+
+        // PHASE 2: SV/LIB strictly scheduled in Period 7 (index 6) only
+        for (let c of CLASSES) {
+          const svAlloc = classAllotments[c].find(a => a.subject === "SV/LIB" && a.remaining > 0);
+          if (svAlloc) {
+            let scheduled = false;
+            const daysToTry = shuffleArray([0, 1, 2, 3, 4]);
+            for (let d of daysToTry) {
+              if (!timetable[c][d][6] && !teacherBusy[svAlloc.teacher][d][6]) {
+                timetable[c][d][6] = { subject: "SV/LIB", teacher: svAlloc.teacher, conflict: false };
+                teacherBusy[svAlloc.teacher][d][6] = true;
+                svAlloc.remaining--;
+                scheduled = true;
+                break;
+              }
+            }
+            if (!scheduled) {
+              phaseSuccess = false;
+            }
+          }
+        }
+        if (!phaseSuccess) continue;
+
+        // Constraint: Check continuous periods limit (P1-P3 teaching prevents P4 assignment)
+        function isTeacherConsecutiveLimitReached(teacher, d, p) {
+          let consecutive = 0;
+          for (let prevP = p - 1; prevP >= 0; prevP--) {
+            if (teacherBusy[teacher][d][prevP]) {
+              consecutive++;
+            } else {
+              break;
+            }
+          }
+          return consecutive >= 3;
+        }
+
+        // Constraint: Subject duplicates on same day
+        function isSubjectAlreadyScheduledOnDay(c, d, sub) {
+          for (let prevP = 0; prevP < 7; prevP++) {
+            if (timetable[c][d][prevP] && timetable[c][d][prevP].subject === sub) {
+              return true;
+            }
+          }
+          return false;
+        }
+
+        // PHASE 3: Slot-filling step-by-step
+        let fillSuccess = true;
+        for (let d = 0; d < 5; d++) {
+          for (let p = 0; p < 7; p++) {
+            for (let c of CLASSES) {
+              if (timetable[c][d][p]) continue; // Already scheduled
+
+              let candidates = classAllotments[c].filter(a => a.remaining > 0);
+
+              // Apply rules
+              candidates = candidates.filter(alloc => {
+                if (teacherBusy[alloc.teacher][d][p]) return false;
+                if (isSubjectAlreadyScheduledOnDay(c, d, alloc.subject)) return false;
+                if (isTeacherConsecutiveLimitReached(alloc.teacher, d, p)) return false;
+                if (alloc.subject === "SV/LIB") return false; // Handled in phase 2
+
+                // ENG/SE matching demand structure
+                if (alloc.subject === "ENG" || alloc.subject === "SE") {
+                  if (!dayDemands[c][d].includes(alloc.subject)) return false;
+                }
+                return true;
+              });
+
+              if (candidates.length === 0) {
+                const totalRem = classAllotments[c].reduce((sum, a) => sum + a.remaining, 0);
+                if (totalRem > 0 && (35 - (p + d*7)) < totalRem) {
+                  fillSuccess = false;
+                }
+                continue;
+              }
+
+              // Prioritize daily demands (5-period subject, daily ENG/SE)
+              let selectedAlloc = null;
+              const demandCandidates = candidates.filter(a => dayDemands[c][d].includes(a.subject));
+              if (demandCandidates.length > 0) {
+                selectedAlloc = demandCandidates[Math.floor(Math.random() * demandCandidates.length)];
+              } else {
+                selectedAlloc = candidates[Math.floor(Math.random() * candidates.length)];
+              }
+
+              timetable[c][d][p] = { subject: selectedAlloc.subject, teacher: selectedAlloc.teacher, conflict: false };
+              teacherBusy[selectedAlloc.teacher][d][p] = true;
+              selectedAlloc.remaining--;
+
+              const idx = dayDemands[c][d].indexOf(selectedAlloc.subject);
+              if (idx > -1) {
+                dayDemands[c][d].splice(idx, 1);
+              }
+            }
+          }
+        }
+
+        // Verify scheduled total lesson balances
+        let remainingPeriodsTotal = 0;
+        CLASSES.forEach(c => {
+          classAllotments[c].forEach(alloc => {
+            remainingPeriodsTotal += alloc.remaining;
+          });
+        });
+
+        if (fillSuccess && remainingPeriodsTotal === 0) {
+          success = true;
+        }
+      }
+
+      if (!success) {
+        showStatus("Unable to fully compile timetable matching all strict conditions with current allotments.", true);
+        return;
+      }
+
+      // Render views
+      renderClassTimetables(timetable);
+
+      // Invert mappings to construct Teacher Schedules
+      const teacherSchedules = {};
+      TEACHERS.forEach(t => {
+        teacherSchedules[t] = Array(5).fill(null).map(() => Array(7).fill(null));
+      });
+
+      CLASSES.forEach(c => {
+        for (let d = 0; d < 5; d++) {
+          for (let p = 0; p < 7; p++) {
+            const slot = timetable[c][d][p];
+            if (slot) {
+              const t = slot.teacher;
+              if (teacherSchedules[t]) {
+                if (teacherSchedules[t][d][p]) {
+                  teacherSchedules[t][d][p].className += ` / ${c}`;
+                  teacherSchedules[t][d][p].conflict = true;
+                } else {
+                  teacherSchedules[t][d][p] = { className: c, subject: slot.subject, conflict: false };
+                }
+              }
+            }
+          }
+        }
+      });
+
+      renderTeacherTimetables(teacherSchedules);
+      showStatus("Conflict-free Timetables generated successfully according to strict rules.");
+    }
+
+    function renderClassTimetables(timetables) {
+      const container = document.getElementById("classTimetableContainer");
+      container.innerHTML = "";
+
+      CLASSES.forEach(c => {
+        let cardHtml = `
+          <div class="class-timetable-card bg-slate-50 p-4 rounded-lg border border-slate-200 shadow-sm space-y-3">
+            <div class="flex justify-between items-center border-b pb-2">
+              <h3 class="text-sm font-bold text-indigo-950">Division Class: ${c}</h3>
+              <span class="text-[10px] bg-slate-200 text-slate-800 px-2 py-0.5 rounded font-semibold no-print">Student View</span>
+            </div>
+            <div class="overflow-x-auto">
+              <table class="w-full text-[10px] text-center border-collapse">
+                <thead>
+                  <tr class="bg-slate-200 text-slate-700 font-semibold">
+                    <th class="border border-slate-300 p-1">Day</th>
+                    ${PERIOD_TIMES.map((t, idx) => `<th class="border border-slate-300 p-1 font-semibold">P${idx+1}<br><span class="text-[8px] font-normal">${t}</span></th>`).join("")}
+                  </tr>
+                </thead>
+                <tbody>
+        `;
+
+        DAYS.forEach((day, dIdx) => {
+          cardHtml += `<tr><td class="border border-slate-300 p-1 font-semibold bg-slate-100">${day}</td>`;
+          for (let pIdx = 0; pIdx < 7; pIdx++) {
+            const slot = timetables[c][dIdx][pIdx];
+            if (slot) {
+              const style = slot.conflict ? 'bg-red-50 text-red-700 font-bold border-red-300' : 'bg-white text-slate-800';
+              cardHtml += `<td class="border border-slate-300 p-1 ${style}" title="${slot.conflict ? 'Overlap' : ''}">${slot.subject}<br><span class="text-[8px] text-slate-500">${slot.teacher}</span></td>`;
+            } else {
+              cardHtml += `<td class="border border-slate-300 p-1 bg-white text-slate-300">-</td>`;
+            }
+          }
+          cardHtml += `</tr>`;
+        });
+
+        cardHtml += `
+                </tbody>
+              </table>
+            </div>
+          </div>
+        `;
+        container.insertAdjacentHTML("beforeend", cardHtml);
+      });
+    }
+
+    function renderTeacherTimetables(schedules) {
+      const container = document.getElementById("teacherTimetableContainer");
+      container.innerHTML = "";
+
+      TEACHERS.forEach(t => {
+        let cardHtml = `
+          <div class="teacher-timetable-card bg-slate-50 p-4 rounded-lg border border-slate-200 shadow-sm space-y-3">
+            <div class="flex justify-between items-center border-b pb-2">
+              <h3 class="text-sm font-bold text-slate-900">Teacher: ${t}</h3>
+              <span class="text-[10px] bg-indigo-100 text-indigo-800 px-2 py-0.5 rounded font-semibold no-print">Teacher View</span>
+            </div>
+            <div class="overflow-x-auto">
+              <table class="w-full text-[10px] text-center border-collapse">
+                <thead>
+                  <tr class="bg-slate-200 text-slate-700 font-semibold">
+                    <th class="border border-slate-300 p-1">Day</th>
+                    ${PERIOD_TIMES.map((time, idx) => `<th class="border border-slate-300 p-1 font-semibold">P${idx+1}<br><span class="text-[8px] font-normal">${time}</span></th>`).join("")}
+                  </tr>
+                </thead>
+                <tbody>
+        `;
+
+        DAYS.forEach((day, dIdx) => {
+          cardHtml += `<tr><td class="border border-slate-300 p-1 font-semibold bg-slate-100">${day}</td>`;
+          for (let pIdx = 0; pIdx < 7; pIdx++) {
+            const slot = schedules[t][dIdx][pIdx];
+            if (slot) {
+              const style = slot.conflict ? 'bg-red-50 text-red-700 font-bold border-red-300' : 'bg-white text-slate-800';
+              cardHtml += `<td class="border border-slate-300 p-1 ${style}" title="${slot.conflict ? 'Overlap' : ''}">Class ${slot.className}<br><span class="text-[8px] text-slate-500">${slot.subject}</span></td>`;
+            } else {
+              cardHtml += `<td class="border border-slate-300 p-1 bg-white text-slate-300">-</td>`;
+            }
+          }
+          cardHtml += `</tr>`;
+        });
+
+        cardHtml += `
+                </tbody>
+              </table>
+            </div>
+          </div>
+        `;
+        container.insertAdjacentHTML("beforeend", cardHtml);
+      });
+    }
+
+    function switchTimetableTab(type) {
+      const classBtn = document.getElementById("tabClassBtn");
+      const teacherBtn = document.getElementById("tabTeacherBtn");
+      const classCont = document.getElementById("classTimetableContainer");
+      const teacherCont = document.getElementById("teacherTimetableContainer");
+
+      if (type === 'class') {
+        classBtn.className = "px-4 py-2 border-b-2 border-indigo-600 text-indigo-600 font-semibold text-xs sm:text-sm active:scale-95 transition";
+        teacherBtn.className = "px-4 py-2 border-b-2 border-transparent text-slate-500 hover:text-slate-700 font-semibold text-xs sm:text-sm active:scale-95 transition ml-2";
+        classCont.classList.remove("hidden");
+        teacherCont.classList.add("hidden");
+      } else {
+        teacherBtn.className = "px-4 py-2 border-b-2 border-teal-600 text-teal-600 font-semibold text-xs sm:text-sm active:scale-95 transition ml-2";
+        classBtn.className = "px-4 py-2 border-b-2 border-transparent text-slate-500 hover:text-slate-700 font-semibold text-xs sm:text-sm active:scale-95 transition";
+        classCont.classList.add("hidden");
+        teacherCont.classList.remove("hidden");
       }
     }
 
     // Handles the POST API transaction for both primary and modal save operations
     function postFullStateToSheets(isFromModal = false) {
-      // Safely manage the trigger element; the modal has no submitBtn, so we handle it without crashing
       const btn = isFromModal ? null : submitBtn;
       const prevText = btn ? btn.textContent : "";
       const modalStatus = document.getElementById("modalStatusMessage");
@@ -1035,12 +1515,14 @@
       printTimetables("default");
     });
 
-    // Prints both tables neatly onto individual pages
+    // Prints summary tables, class views, or teacher schedules onto individual pages
     function printTimetables(target) {
+      document.body.className = "bg-slate-50 min-h-screen text-slate-800 font-sans pb-16";
+      document.body.classList.add(`print-${target}`);
       window.print();
     }
 
-    // GET Request to restore database allocations directly from the spreadsheet
+    // GET Request to restore database allocations directly from spreadsheet
     function loadDatabaseFromSheet(isManual = false) {
       if (!WEB_APP_URL || WEB_APP_URL === "YOUR_GOOGLE_WEB_APP_URL_HERE") {
         if (isManual) showStatus("Configuration Error: Missing Web App URL.", true);
@@ -1053,10 +1535,8 @@
         .then(res => res.json())
         .then(res => {
           if (res.status === "success" && res.data.length > 0) {
-            // Backup active teacher to restore current editing context
             const tempActiveTeacher = activeTeacher;
             
-            // Clean local memory before mapping fresh values from database
             TEACHERS.forEach(t => {
               dbState[t] = { classInCharge: "None", allocations: [] };
             });
@@ -1075,13 +1555,11 @@
               }
             });
 
-            // Restore active working context
             if (tempActiveTeacher) {
               activeTeacher = tempActiveTeacher;
               loadTeacherForm(activeTeacher);
             }
 
-            // Sync indicators
             const now = new Date();
             syncTimestamp.textContent = `Last Synced: ${now.toLocaleTimeString()}`;
             showStatus("Database sync complete.");
