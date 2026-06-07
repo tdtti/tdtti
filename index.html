@@ -566,18 +566,19 @@
     // ==========================================
     // 1. CONFIGURE YOUR GOOGLE WEB APP URL HERE
     // ==========================================
-    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzFZHrczPsNS_yNdjdmepjvrV_4EgiW_kkLfFI18sKehU1nG9dfol1q8KURWCjjkWYW/exec";
+    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwss5dbWIPL6HIUxrvF2fsTukhGxicQFuz_pwevC-lLajV2V5npNDMtCxn3WTckiYDTTQ/exec";
 
-    const TEACHERS = ["TAK", "SK", "ERJ", "BA", "VA", "SJS", "GMK", "SA", "KK", "KSPB", "NV", "SS", "SSR", "RR", "BUS","VRK", "ANM"];
+    // App registers teachers including VRK
+    const TEACHERS = ["TAK", "SK", "ERJ", "BA", "VA", "SJS", "GMK", "SA", "KK", "KSPB", "NV", "SS", "SSR", "RR", "BUS", "ANM", "VRK"];
     const CLASSES = ["5A", "5B", "5C", "5D", "6A", "6B", "6C", "6D", "7A", "7B", "7C", "7D"];
-    const SUBJECTS = ["ARB", "MI", "SKT", "MII", "ENG", "HIN", "BS", "SS", "MM", "HE", "PE", "AE", "WE", "IT", "SV/LIB"];
+    const SUBJECTS = ["MI", "MII", "ENG", "HIN", "BS", "SS", "MM", "HE", "PE", "AE", "WE", "IT", "SV/LIB"];
     const SUBJECT_PERIODS = {
-      "ARB": 4, "MI": 4, "SKT": 4,"MII": 2, "ENG": 5,  
+      "MI": 4, "MII": 2, "ENG": 5, 
       "BS": 5, "SS": 5, "MM": 5, "HE": 1, 
       "PE": 1, "AE": 1, "WE": 1, "IT": 1, "SV/LIB": 1
     };
     const PERIOD_TIMES = [
-      "09:30-10:10", "10:10-10:50", "11:00-11:40", "11:40-12:20", "01:20-02:00", "02:00-02:40", "02:50-03:20"
+      "09:20-10:00", "10:00-10:40", "10:50-11:30", "11:30-12:10", "01:10-01:50", "01:50-02:30", "02:40-03:20"
     ];
     const DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri"];
 
@@ -594,6 +595,7 @@
     let modalActiveTeacher = ""; // Context tracker for active modal editor
     let autoSaveTimeout = null;
     let activeCustomRules = [];  // Array of parsed rules from custom prompts
+    let teacherPhones = {};      // Populated dynamically from "Teacher_Phones" sheet
 
     const container = document.getElementById("allocationsContainer");
     const addBtn = document.getElementById("addAllocationBtn");
@@ -617,6 +619,7 @@
       }
     }
 
+    // Hide overlay
     function hideSpinner() {
       const spinner = document.getElementById("globalSpinner");
       if (spinner) {
@@ -729,7 +732,19 @@
         message += `_No active subdivisions or classes configured._`;
       }
       
-      const targetUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(message)}`;
+      // Pull number dynamically retrieved from Google Sheet database
+      const mobile = teacherPhones[teacherName];
+      let targetUrl;
+      if (mobile) {
+        // Strip any spaces or brackets, prepending the direct WhatsApp deep-linking base
+        let cleanMobile = String(mobile).replace(/\D/g, '');
+        if (cleanMobile.length === 10) {
+          cleanMobile = "91" + cleanMobile; // default to India country code
+        }
+        targetUrl = `https://wa.me/${cleanMobile}?text=${encodeURIComponent(message)}`;
+      } else {
+        targetUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(message)}`;
+      }
       window.open(targetUrl, "_blank");
     }
 
@@ -747,7 +762,7 @@
       if (!subject) return 0;
       if (subject === "HIN") {
         if (className) {
-          if (className.startsWith("5")) return 3;
+          if (className.startsWith("5")) return 2;
           if (className.startsWith("6") || className.startsWith("7")) return 3;
         }
         return 0;
@@ -936,9 +951,9 @@
         tBody.insertAdjacentHTML('beforeend', teacherRowHtml);
       });
 
-      // =========================================================
+      // ==========================================
       // TABLE 2: SUBJECT VS CLASS SYSTEM GENERATION
-      // =========================================================
+      // ==========================================
       let classTeacherRowHtml = `
         <tr class="bg-indigo-50/30 border-b border-slate-200">
           <td class="px-3 py-2.5 font-bold border-r border-slate-100 bg-indigo-50/50 sticky left-0 z-10 shadow-[2px_0_5px_rgba(0,0,0,0.02)] text-indigo-950">Class Teacher</td>
@@ -1847,26 +1862,31 @@
       fetch(`${WEB_APP_URL}?action=get_allocations`)
         .then(res => res.json())
         .then(res => {
-          if (res.status === "success" && res.data.length > 0) {
+          if (res.status === "success") {
+            // Retrieve dynamic mobile list mapping
+            teacherPhones = res.phones || {};
+
             const tempActiveTeacher = activeTeacher;
             
             TEACHERS.forEach(t => {
               dbState[t] = { classInCharge: "None", allocations: [] };
             });
 
-            res.data.forEach(item => {
-              const t = item.teacher;
-              if (dbState[t]) {
-                dbState[t].classInCharge = item.classInCharge;
-                if (item.className && item.className !== "N/A" && item.subject && item.subject !== "N/A") {
-                  dbState[t].allocations.push({
-                    className: item.className,
-                    subject: item.subject,
-                    periods: item.periods
-                  });
+            if (res.data && Array.isArray(res.data)) {
+              res.data.forEach(item => {
+                const t = item.teacher;
+                if (dbState[t]) {
+                  dbState[t].classInCharge = item.classInCharge;
+                  if (item.className && item.className !== "N/A" && item.subject && item.subject !== "N/A") {
+                    dbState[t].allocations.push({
+                      className: item.className,
+                      subject: item.subject,
+                      periods: item.periods
+                    });
+                  }
                 }
-              }
-            });
+              });
+            }
 
             if (tempActiveTeacher) {
               activeTeacher = tempActiveTeacher;
