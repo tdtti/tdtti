@@ -47,7 +47,8 @@
 
       /* Print Rule 1: Default summary tables print layout */
       body.print-default #tab2-content,
-      body.print-default #tab3-content {
+      body.print-default #tab3-content,
+      body.print-default #tab4-content {
         display: block !important;
       }
       body.print-default #teacherTableCard {
@@ -59,7 +60,6 @@
         display: block !important;
       }
       body.print-default #tab1-content,
-      body.print-default #tab4-content,
       body.print-default #tab5-content,
       body.print-default .class-timetable-card,
       body.print-default .teacher-timetable-card {
@@ -297,7 +297,8 @@
     <!-- ========================================================== -->
     <!-- TAB 2: LIVE TEACHERS SUMMARY TABLE                         -->
     <!-- ========================================================== -->
-    <div id="tab2-content" class="tab-pane hidden">
+    <div id="tab2-content" class="tab-pane hidden space-y-6">
+      <!-- Live Teacher Table Card initially loaded here -->
       <div id="teacherTableCard" class="bg-white rounded-lg shadow-sm border border-slate-200 p-4 sm:p-6 w-full">
         <h2 class="text-base sm:text-lg font-bold text-slate-950 mb-1 flex items-center gap-2">
           <span class="text-indigo-600">📊</span> Live Teachers Summary Table
@@ -342,7 +343,8 @@
     <!-- ========================================================== -->
     <!-- TAB 3: LIVE STUDENTS PERIOD ALLOCATION TABLE               -->
     <!-- ========================================================== -->
-    <div id="tab3-content" class="tab-pane hidden">
+    <div id="tab3-content" class="tab-pane hidden space-y-6">
+      <!-- Live Student Table Card initially loaded here -->
       <div id="studentTableCard" class="bg-white rounded-lg shadow-sm border border-slate-200 p-4 sm:p-6 w-full">
         <h2 class="text-base sm:text-lg font-bold text-slate-950 mb-1 flex items-center gap-2">
           <span class="text-teal-600">🎓</span> Live Students Period Allocation Table
@@ -388,7 +390,7 @@
     <!-- ========================================================== -->
     <!-- TAB 4: DATABASE SYNCHRONIZATION & ACTIONS                  -->
     <!-- ========================================================== -->
-    <div id="tab4-content" class="tab-pane hidden">
+    <div id="tab4-content" class="tab-pane hidden space-y-6">
       <div id="dbSyncControls" class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-slate-100 p-6 rounded-lg border border-slate-200">
         <div>
           <h3 class="text-sm font-bold text-slate-800">Database Synchronization & Actions</h3>
@@ -404,6 +406,9 @@
           </button>
         </div>
       </div>
+      
+      <!-- Unified Dynamic Workspace holding BOTH data cards directly below Sync Action controls -->
+      <div id="tab4-tables-container" class="space-y-6"></div>
     </div>
 
     <!-- ========================================================== -->
@@ -573,7 +578,7 @@
     const CLASSES = ["5A", "5B", "5C", "5D", "6A", "6B", "6C", "6D", "7A", "7B", "7C", "7D"];
     const SUBJECTS = ["MI", "MII", "ENG", "HIN", "BS", "SS", "MM", "HE", "PE", "AE", "WE", "IT", "SV/LIB"];
     const SUBJECT_PERIODS = {
-      "MI": 4, "MII": 2, "ENG": 5, 
+      "MI": 4, "MII": 2, "ENG": 5,
       "BS": 5, "SS": 5, "MM": 5, "HE": 1, 
       "PE": 1, "AE": 1, "WE": 1, "IT": 1, "SV/LIB": 1
     };
@@ -627,8 +632,15 @@
       }
     }
 
-    // Dynamic Navigation Tab switching script
+    // Dynamic Navigation Tab switching script with DOM re-appending relocator
     function switchMainTab(tabNum) {
+      const teacherCard = document.getElementById("teacherTableCard");
+      const studentCard = document.getElementById("studentTableCard");
+      const tab2Pane = document.getElementById("tab2-content");
+      const tab3Pane = document.getElementById("tab3-content");
+      const tab4Tables = document.getElementById("tab4-tables-container");
+
+      // Hide all panes
       for (let i = 1; i <= 5; i++) {
         const pane = document.getElementById(`tab${i}-content`);
         const btn = document.getElementById(`tab${i}-btn`);
@@ -637,6 +649,19 @@
           btn.className = "w-10 h-10 sm:w-11 sm:h-11 rounded-full flex items-center justify-center transition focus:outline-none focus:ring-2 focus:ring-indigo-500 text-2xl bg-slate-100 text-slate-500 hover:bg-slate-200";
         }
       }
+
+      // DOM re-appending logic: Mounts the correct tables to the active view pane to keep standard IDs synchronized
+      if (tabNum === 2) {
+        if (tab2Pane && teacherCard) tab2Pane.appendChild(teacherCard);
+      } else if (tabNum === 3) {
+        if (tab3Pane && studentCard) tab3Pane.appendChild(studentCard);
+      } else if (tabNum === 4) {
+        if (tab4Tables) {
+          if (teacherCard) tab4Tables.appendChild(teacherCard);
+          if (studentCard) tab4Tables.appendChild(studentCard);
+        }
+      }
+
       const activePane = document.getElementById(`tab${tabNum}-content`);
       const activeBtn = document.getElementById(`tab${tabNum}-btn`);
       if (activePane) activePane.classList.remove("hidden");
@@ -736,7 +761,7 @@
       const mobile = teacherPhones[teacherName];
       let targetUrl;
       if (mobile) {
-        // Strip any spaces or brackets, prepending the direct WhatsApp deep-linking base
+        // Strip any spaces or brackets, prepending direct WhatsApp deep-linking base
         let cleanMobile = String(mobile).replace(/\D/g, '');
         if (cleanMobile.length === 10) {
           cleanMobile = "91" + cleanMobile; // default to India country code
@@ -762,7 +787,7 @@
       if (!subject) return 0;
       if (subject === "HIN") {
         if (className) {
-          if (className.startsWith("5")) return 2;
+          if (className.startsWith("5")) return 3;
           if (className.startsWith("6") || className.startsWith("7")) return 3;
         }
         return 0;
@@ -1857,7 +1882,7 @@
         return;
       }
       
-      showSpinner("Fetching Database...");
+      showSpinner("Fetching database records from Google Sheets...");
       
       fetch(`${WEB_APP_URL}?action=get_allocations`)
         .then(res => res.json())
