@@ -576,9 +576,9 @@
     // App registers teachers including VRK
     const TEACHERS = ["TAK", "SK", "ERJ", "BA", "VA", "SJS", "GMK", "SA", "KK", "KSPB", "NV", "SS", "SSR", "RR", "BUS", "ANM", "VRK"];
     const CLASSES = ["5A", "5B", "5C", "5D", "6A", "6B", "6C", "6D", "7A", "7B", "7C", "7D"];
-    const SUBJECTS = ["MI", "MII", "ENG", "HIN", "BS", "SS", "MM", "HE", "PE", "AE", "WE", "IT", "SV/LIB"];
+    const SUBJECTS = ["ARB", "MI", "SKT","MII", "ENG", "HIN", "BS", "SS", "MM", "HE", "PE", "AE", "WE", "IT", "SV/LIB"];
     const SUBJECT_PERIODS = {
-      "MI": 4, "MII": 2, "ENG": 5,
+      "ARB": 4, "MI": 4, "SKT": 4, "MII": 2, "ENG": 5,
       "BS": 5, "SS": 5, "MM": 5, "HE": 1, 
       "PE": 1, "AE": 1, "WE": 1, "IT": 1, "SV/LIB": 1
     };
@@ -1882,7 +1882,7 @@
         return;
       }
       
-      showSpinner("Fetching database records from Google Sheets...");
+      showSpinner("Fetching Database...");
       
       fetch(`${WEB_APP_URL}?action=get_allocations`)
         .then(res => res.json())
