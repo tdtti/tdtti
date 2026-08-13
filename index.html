@@ -37,7 +37,6 @@
         display: none !important;
       }
 
-      /* Force full canvas width */
       .max-w-7xl {
         max-width: 100% !important;
         width: 100% !important;
@@ -160,9 +159,7 @@
 </head>
 <body class="bg-slate-50 min-h-screen text-slate-800 font-sans pb-16 print-default">
 
-  <!-- ========================================== -->
-  <!-- GLOBAL BUSY SPINNER OVERLAY                -->
-  <!-- ========================================== -->
+  <!-- GLOBAL BUSY SPINNER OVERLAY -->
   <div id="globalSpinner" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-[100] flex flex-col items-center justify-center hidden no-print">
     <div class="bg-white p-6 rounded-xl shadow-xl border border-slate-100 flex flex-col items-center space-y-4 max-w-xs w-full mx-4">
       <div class="w-12 h-12 border-4 border-indigo-200 border-t-indigo-600 rounded-full animate-spin"></div>
@@ -178,7 +175,7 @@
       <p class="text-sm text-slate-600 mt-1">Live allocation visualizer & schedule planner</p>
     </header>
 
-    <!-- Symbol-Only Navigation Bar with Separator & Universal Actions -->
+    <!-- Symbol Navigation Bar -->
     <div class="tab-navigation flex flex-wrap justify-center items-center gap-2.5 sm:gap-3 py-2 px-3 border border-slate-200 bg-white shadow-sm rounded-xl max-w-lg mx-auto no-print">
       <button id="tab1-btn" onclick="switchMainTab(1)" title="Basic Details & Allocation Form" class="w-10 h-10 sm:w-11 sm:h-11 rounded-full flex items-center justify-center transition focus:outline-none focus:ring-2 focus:ring-indigo-500 text-2xl">📝</button>
       <button id="tab2-btn" onclick="switchMainTab(2)" title="Live Teachers Summary Table" class="w-10 h-10 sm:w-11 sm:h-11 rounded-full flex items-center justify-center transition focus:outline-none focus:ring-2 focus:ring-indigo-500 text-2xl">📊</button>
@@ -186,10 +183,8 @@
       <button id="tab4-btn" onclick="switchMainTab(4)" title="Database Sync & Actions" class="w-10 h-10 sm:w-11 sm:h-11 rounded-full flex items-center justify-center transition focus:outline-none focus:ring-2 focus:ring-indigo-500 text-2xl">⚙️</button>
       <button id="tab5-btn" onclick="switchMainTab(5)" title="Generate & View Timetable" class="w-10 h-10 sm:w-11 sm:h-11 rounded-full flex items-center justify-center transition focus:outline-none focus:ring-2 focus:ring-indigo-500 text-2xl">🗓️</button>
       
-      <!-- Divider Line -->
       <div class="h-6 w-[1px] bg-slate-200 mx-1"></div>
 
-      <!-- Universal Utilities -->
       <button type="button" onclick="loadDatabaseFromSheet(true)" title="Sync / Refresh from Sheets" class="w-10 h-10 sm:w-11 sm:h-11 rounded-full flex items-center justify-center transition bg-indigo-50 text-indigo-700 hover:bg-indigo-100 text-xl active:scale-95 focus:outline-none">🔄</button>
       <button type="button" id="fullscreenToggleBtn" onclick="toggleFullscreenView()" title="Enter Fullscreen" class="w-10 h-10 sm:w-11 sm:h-11 rounded-full flex items-center justify-center transition bg-slate-100 text-slate-700 hover:bg-slate-200 text-xl active:scale-95 focus:outline-none">🖥️</button>
     </div>
@@ -266,9 +261,7 @@
                 </button>
               </div>
 
-              <div id="allocationsContainer" class="space-y-3 max-h-[220px] overflow-y-auto pr-1">
-                <!-- Dynamic grid rows -->
-              </div>
+              <div id="allocationsContainer" class="space-y-3 max-h-[220px] overflow-y-auto pr-1"></div>
 
               <div id="emptyState" class="text-center py-6 text-slate-400 text-sm hidden">
                 No configurations assigned. Click "+" to begin.
@@ -321,9 +314,7 @@
                   <th class="px-2 py-2.5 text-center bg-slate-50 text-slate-700 font-semibold w-16 share-col">Share</th>
                 </tr>
               </thead>
-              <tbody class="divide-y divide-slate-100 bg-white" id="teacherTableBody">
-                <!-- Dynamically populated -->
-              </tbody>
+              <tbody class="divide-y divide-slate-100 bg-white" id="teacherTableBody"></tbody>
             </table>
           </div>
         </div>
@@ -362,12 +353,8 @@
                   <th class="px-3 py-2.5 text-center bg-teal-50 text-teal-900 font-bold w-20">Total</th>
                 </tr>
               </thead>
-              <tbody class="divide-y divide-slate-100 bg-white" id="studentTableBody">
-                <!-- Dynamically populated -->
-              </tbody>
-              <tfoot class="bg-slate-200 text-slate-900 font-bold" id="studentTableFooter">
-                <!-- Summary row -->
-              </tfoot>
+              <tbody class="divide-y divide-slate-100 bg-white" id="studentTableBody"></tbody>
+              <tfoot class="bg-slate-200 text-slate-900 font-bold" id="studentTableFooter"></tfoot>
             </table>
           </div>
         </div>
@@ -532,7 +519,7 @@
   </div>
 
   <script>
-    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbz2uugeo4E3Ub8FrisS4rHXhYXal9b4KOR9_fyuKZyCeoig4iqRit3aIQH7qq62wFoXkQ/exec";
+    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwpdsRRS2WpneOefGeAlCxjGU7OlxhZtUPxeZH3dWENN6Fs-XQvgHlC02y-nOCYigBo8g/exec";
 
     const TEACHERS = ["TAK", "SK", "ERJ", "BA", "VA", "SJS", "GMK", "SA", "KK", "KSPB", "NV", "SS", "SSR", "RR", "BUS", "ANM", "VRK"];
     const CLASSES = ["5A", "5B", "5C", "5D", "6A", "6B", "6C", "6D", "7A", "7B", "7C", "7D"];
@@ -717,6 +704,7 @@
       return SUBJECT_PERIODS[subject] || 0;
     }
 
+    // INSTANT REAL-TIME FORM STATE OBSERVER
     function saveCurrentFormToState() {
       if (!activeTeacher) return;
       
@@ -737,6 +725,9 @@
         classInCharge: classInCharge,
         allocations: allocations
       };
+
+      // RE-RENDER TABLES INSTANTLY
+      updateTables();
     }
 
     function createAllocationRow(className = "", subject = "", periods = "") {
@@ -787,7 +778,6 @@
         const val = calculatePeriods(subjectSelect.value, classSelect.value);
         periodsInput.value = val || "";
         saveCurrentFormToState();
-        updateTables();
       };
 
       classSelect.addEventListener("change", updatePeriodUi);
@@ -799,7 +789,6 @@
       if (element) element.remove();
       checkEmptyState();
       saveCurrentFormToState();
-      updateTables();
     };
 
     function loadTeacherForm(teacherName) {
@@ -823,10 +812,13 @@
       checkEmptyState();
     }
 
+    // INSTANT REACTIVE TABLE RENDER ENGINE
     function updateTables() {
       const tBody = document.getElementById("teacherTableBody");
       const sBody = document.getElementById("studentTableBody");
       const sFoot = document.getElementById("studentTableFooter");
+
+      if (!tBody || !sBody || !sFoot) return;
 
       tBody.innerHTML = "";
       sBody.innerHTML = "";
@@ -1051,7 +1043,6 @@
       }
     };
 
-    // NON-BLOCKING BACKGROUND AUTO-SAVE
     function saveModalChangesAuto(forceImmediate = false) {
       if (!modalActiveTeacher) return;
       
@@ -1077,6 +1068,7 @@
         loadTeacherForm(activeTeacher);
       }
       
+      // INSTANT RE-RENDER
       updateTables();
       
       clearTimeout(autoSaveTimeout);
@@ -1147,14 +1139,6 @@
       showStatus("All active timetable constraints cleared.");
     }
 
-    function shuffleArray(array) {
-      for (let i = array.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [array[i], array[j]] = [array[j], array[i]];
-      }
-      return array;
-    }
-
     function buildAndRenderTimetables() {
       showSpinner("Generating conflict-free schedules...");
 
@@ -1184,14 +1168,6 @@
           }
         });
 
-        const classTeachers = {};
-        CLASSES.forEach(c => {
-          classTeachers[c] = null;
-          TEACHERS.forEach(t => {
-            if (dbState[t] && dbState[t].classInCharge === c) classTeachers[c] = t;
-          });
-        });
-
         let timetable = null;
         let teacherBusy = null;
         let success = false;
@@ -1209,9 +1185,6 @@
           teacherBusy = {};
           TEACHERS.forEach(t => teacherBusy[t] = Array(5).fill(null).map(() => Array(7).fill(false)));
 
-          let fillSuccess = true;
-
-          // Slot assignment loop
           for (let d = 0; d < 5; d++) {
             for (let p = 0; p < 7; p++) {
               for (let c of CLASSES) {
@@ -1260,7 +1233,6 @@
         hideSpinner();
         showStatus("Timetable generated successfully!");
 
-        // Auto-save generated timetable to sheets in background
         saveTimetableToSheets(timetable);
       }, 50);
     }
@@ -1384,7 +1356,6 @@
       }).catch(err => console.log("Timetable save error", err));
     }
 
-    // NON-BLOCKING POST PUSH TO SHEETS
     function postFullStateToSheets(isFromModal = false) {
       const modalStatus = document.getElementById("modalStatusMessage");
       
@@ -1462,60 +1433,71 @@
       window.print();
     }
 
-    // DIRECT CACHE-BUSTING DATA FETCHING FROM GOOGLE SHEETS
     function loadDatabaseFromSheet(isManual = false) {
-      if (isManual) showSpinner("Fetching Database...");
-      
-      const fetchUrl = `${WEB_APP_URL}?action=get_allocations&_t=${Date.now()}`;
-      
-      fetch(fetchUrl, { method: "GET", redirect: "follow" })
-        .then(res => res.json())
-        .then(res => {
-          if (res && res.status === "success") {
-            teacherPhones = res.phones || {};
-            
-            TEACHERS.forEach(t => {
-              dbState[t] = { classInCharge: "None", allocations: [] };
-            });
+  if (isManual) showSpinner("Fetching Database...");
+  
+  const fetchUrl = `${WEB_APP_URL}?action=get_allocations&_t=${Date.now()}`;
+  
+  fetch(fetchUrl, { method: "GET", redirect: "follow" })
+    .then(res => res.text()) // Fetch raw text first to inspect response type
+    .then(text => {
+      let res;
+      try {
+        res = JSON.parse(text);
+      } catch (e) {
+        if (text.trim().startsWith("<!DOCTYPE") || text.trim().startsWith("<html")) {
+          throw new Error("Google Apps Script returned an HTML page. Ensure 'Who has access' is set to 'Anyone' in Web App deployment.");
+        } else {
+          throw new Error("Invalid response format from server.");
+        }
+      }
 
-            if (res.data && Array.isArray(res.data)) {
-              res.data.forEach(item => {
-                const t = item.teacher;
-                if (dbState[t]) {
-                  dbState[t].classInCharge = item.classInCharge;
-                  if (item.className && item.className !== "N/A" && item.subject && item.subject !== "N/A") {
-                    dbState[t].allocations.push({
-                      className: item.className,
-                      subject: item.subject,
-                      periods: item.periods
-                    });
-                  }
-                }
-              });
-            }
-
-            if (activeTeacher) {
-              loadTeacherForm(activeTeacher);
-            }
-
-            const now = new Date();
-            syncTimestamp.textContent = `Last Synced: ${now.toLocaleTimeString()}`;
-            if (isManual) showStatus("Database sync complete.");
-          }
-          updateTables();
-        })
-        .catch(err => {
-          console.error("GET Fetch error:", err);
-          if (isManual) showStatus("Unable to reach Google Sheets API.", true);
-        })
-        .finally(() => {
-          if (isManual) hideSpinner();
+      if (res && res.status === "success") {
+        teacherPhones = res.phones || {};
+        
+        TEACHERS.forEach(t => {
+          dbState[t] = { classInCharge: "None", allocations: [] };
         });
-    }
+
+        if (res.data && Array.isArray(res.data)) {
+          res.data.forEach(item => {
+            const t = item.teacher;
+            if (dbState[t]) {
+              dbState[t].classInCharge = item.classInCharge;
+              if (item.className && item.className !== "N/A" && item.subject && item.subject !== "N/A") {
+                dbState[t].allocations.push({
+                  className: item.className,
+                  subject: item.subject,
+                  periods: item.periods
+                });
+              }
+            }
+          });
+        }
+
+        if (activeTeacher) {
+          loadTeacherForm(activeTeacher);
+        }
+
+        const now = new Date();
+        syncTimestamp.textContent = `Last Synced: ${now.toLocaleTimeString()}`;
+        if (isManual) showStatus("Database sync complete.");
+      }
+      updateTables();
+    })
+    .catch(err => {
+      console.error("GET Fetch error:", err.message);
+      showStatus("Connection Error: Check Apps Script Deployment ('Who has access' must be 'Anyone').", true);
+    })
+    .finally(() => {
+      if (isManual) hideSpinner();
+    });
+}
 
     form.addEventListener("submit", function(event) {
       event.preventDefault();
       saveCurrentFormToState();
+      updateTables(); // INSTANT REAL-TIME RENDER ON SAVE
       postFullStateToSheets(false);
     });
 
