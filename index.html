@@ -4,9 +4,23 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Teacher Subject Distribution System</title>
+  
+  <!-- Suppress Tailwind CDN developer warnings -->
+  <script>
+    const originalWarn = console.warn;
+    console.warn = function(...args) {
+      if (args[0] && typeof args[0] === 'string' && args[0].includes('cdn.tailwindcss.com')) return;
+      originalWarn.apply(console, args);
+    };
+  </script>
+  
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   
+  <!-- Firebase SDKs (v10 Compatibility Mode) -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+
   <style>
     /* NATIVE PRINT/PDF A4 LANDSCAPE FORMATTING */
     @media print {
@@ -22,7 +36,6 @@
         margin: 0 !important;
       }
 
-      /* Hide menus, modals, spinners, and headers during printing */
       header, 
       form, 
       #dbSyncControls,
@@ -44,7 +57,6 @@
         margin: 0 !important;
       }
 
-      /* Print Rule 1: Default summary tables print layout */
       body.print-default #tab2-content,
       body.print-default #tab3-content,
       body.print-default #tab4-content {
@@ -65,7 +77,6 @@
         display: none !important;
       }
 
-      /* Print Rule 2: Student Division Timetables */
       body.print-student #tab1-content,
       body.print-student #tab2-content,
       body.print-student #tab3-content,
@@ -94,7 +105,6 @@
         margin: 0 0 15mm 0 !important;
       }
 
-      /* Print Rule 3: Teacher Timetables */
       body.print-teacher #tab1-content,
       body.print-teacher #tab2-content,
       body.print-teacher #tab3-content,
@@ -172,10 +182,10 @@
     <!-- Header -->
     <header class="text-center px-2">
       <h1 class="text-2xl sm:text-3xl font-extrabold text-indigo-950">Teacher Subject Distribution System</h1>
-      <p class="text-sm text-slate-600 mt-1">Live allocation visualizer & schedule planner</p>
+      <p class="text-sm text-slate-600 mt-1">Live allocation visualizer & schedule planner (Firebase Powered 🔥)</p>
     </header>
 
-    <!-- Symbol Navigation Bar -->
+    <!-- Navigation Bar -->
     <div class="tab-navigation flex flex-wrap justify-center items-center gap-2.5 sm:gap-3 py-2 px-3 border border-slate-200 bg-white shadow-sm rounded-xl max-w-lg mx-auto no-print">
       <button id="tab1-btn" onclick="switchMainTab(1)" title="Basic Details & Allocation Form" class="w-10 h-10 sm:w-11 sm:h-11 rounded-full flex items-center justify-center transition focus:outline-none focus:ring-2 focus:ring-indigo-500 text-2xl">📝</button>
       <button id="tab2-btn" onclick="switchMainTab(2)" title="Live Teachers Summary Table" class="w-10 h-10 sm:w-11 sm:h-11 rounded-full flex items-center justify-center transition focus:outline-none focus:ring-2 focus:ring-indigo-500 text-2xl">📊</button>
@@ -185,7 +195,7 @@
       
       <div class="h-6 w-[1px] bg-slate-200 mx-1"></div>
 
-      <button type="button" onclick="loadDatabaseFromSheet(true)" title="Sync / Refresh from Sheets" class="w-10 h-10 sm:w-11 sm:h-11 rounded-full flex items-center justify-center transition bg-indigo-50 text-indigo-700 hover:bg-indigo-100 text-xl active:scale-95 focus:outline-none">🔄</button>
+      <button type="button" onclick="loadDatabaseFromFirebase(true)" title="Force Refresh from Firebase" class="w-10 h-10 sm:w-11 sm:h-11 rounded-full flex items-center justify-center transition bg-indigo-50 text-indigo-700 hover:bg-indigo-100 text-xl active:scale-95 focus:outline-none">🔥</button>
       <button type="button" id="fullscreenToggleBtn" onclick="toggleFullscreenView()" title="Enter Fullscreen" class="w-10 h-10 sm:w-11 sm:h-11 rounded-full flex items-center justify-center transition bg-slate-100 text-slate-700 hover:bg-slate-200 text-xl active:scale-95 focus:outline-none">🖥️</button>
     </div>
 
@@ -261,10 +271,10 @@
                 </button>
               </div>
 
-              <div id="allocationsContainer" class="space-y-3 max-h-[220px] overflow-y-auto pr-1"></div>
+              <div id="allocationsContainer" class="space-y-3 max-h-[260px] overflow-y-auto pr-1"></div>
 
-              <div id="emptyState" class="text-center py-6 text-slate-400 text-sm hidden">
-                No configurations assigned. Click "+" to begin.
+              <div id="emptyState" class="text-center py-8 text-slate-400 text-sm hidden">
+                No configurations assigned. Click "+" to add a class & subject.
               </div>
             </div>
           </div>
@@ -365,13 +375,13 @@
     <div id="tab4-content" class="tab-pane hidden space-y-6">
       <div id="dbSyncControls" class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-slate-100 p-6 rounded-lg border border-slate-200">
         <div>
-          <h3 class="text-sm font-bold text-slate-800">Database Synchronization & Actions</h3>
-          <p class="text-xs text-slate-500">View real-time configurations fetched directly from Google Sheets.</p>
+          <h3 class="text-sm font-bold text-slate-800">Firebase Synchronization & Actions</h3>
+          <p class="text-xs text-slate-500">Real-time Cloud Firestore updates active across all connected devices.</p>
         </div>
         <div class="flex flex-wrap items-center gap-3 w-full sm:w-auto justify-between sm:justify-end">
           <span id="syncTimestamp" class="text-[11px] text-slate-500 italic mr-2">Last Synced: Never</span>
           <button type="button" id="manualSyncBtn" class="bg-indigo-50 text-indigo-700 hover:bg-indigo-100 border border-indigo-200 active:scale-95 px-3 py-1.5 rounded-md text-xs font-semibold transition">
-            Sync with Sheets 🔄
+            Sync with Firebase 🔥
           </button>
           <button type="button" id="printBtn" class="bg-slate-800 text-white hover:bg-slate-900 active:scale-95 px-3 py-1.5 rounded-md text-xs font-semibold transition">
             Print Summary Tables 🖨️
@@ -433,7 +443,7 @@
             <h2 class="text-base sm:text-lg font-bold text-slate-950 flex items-center gap-2">
               <span class="text-indigo-600">🗓️</span> Temporary Timetable View
             </h2>
-            <p class="text-xs text-slate-500">Generates conflict-free weekly schedules according to strict structural conditions and auto-saves to Google Sheets.</p>
+            <p class="text-xs text-slate-500">Generates conflict-free weekly schedules according to strict structural conditions and auto-saves to Firebase.</p>
           </div>
           <div class="section-controls flex flex-wrap gap-2 w-full sm:w-auto justify-between sm:justify-end no-print">
             <button type="button" onclick="buildAndRenderTimetables()" class="bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white px-3.5 py-2 rounded-md text-xs font-semibold transition shadow-sm">
@@ -519,7 +529,41 @@
   </div>
 
   <script>
-    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwpdsRRS2WpneOefGeAlCxjGU7OlxhZtUPxeZH3dWENN6Fs-XQvgHlC02y-nOCYigBo8g/exec";
+    // =========================================================================
+    // 1. FIREBASE CONFIGURATION (Paste credentials from Firebase Console)
+    // =========================================================================
+    const firebaseConfig = {
+    apiKey: "AIzaSyAB02lvPYaiFy3O-_VMWZpAjmtsLRX7o90",
+    authDomain: "gen-lang-client-0466115057.firebaseapp.com",
+    projectId: "gen-lang-client-0466115057",
+    storageBucket: "gen-lang-client-0466115057.firebasestorage.app",
+    messagingSenderId: "198395126556",
+    appId: "1:198395126556:web:0d9f2cdf0d4f3523ac10d9"
+  };
+
+    const isFirebaseConfigured = firebaseConfig.apiKey && firebaseConfig.apiKey !== "YOUR_API_KEY";
+
+    let db = null;
+    if (isFirebaseConfigured) {
+      try {
+        firebase.initializeApp(firebaseConfig);
+        db = firebase.firestore();
+        db.enablePersistence().catch(err => {
+          console.log("Firestore offline mode active:", err.code);
+        });
+      } catch (err) {
+        console.warn("Firebase initialization skipped:", err.message);
+      }
+    }
+
+    const INITIAL_PHONES = {
+      "SA": "919446920638", "RR": "919847862112", "BA": "919847916716",
+      "ERJ": "919446920605", "ANM": "919961274128", "SJS": "919446736625",
+      "GMK": "919744759646", "BUS": "919895567999", "NV": "919747849634",
+      "SS": "919037412737", "KK": "919747557590", "KSPB": "916282581055",
+      "TAK": "919400476747", "SK": "919961304724", "VA": "919497731772",
+      "SSR": "916282462378", "VRK": "918089184165"
+    };
 
     const TEACHERS = ["TAK", "SK", "ERJ", "BA", "VA", "SJS", "GMK", "SA", "KK", "KSPB", "NV", "SS", "SSR", "RR", "BUS", "ANM", "VRK"];
     const CLASSES = ["5A", "5B", "5C", "5D", "6A", "6B", "6C", "6D", "7A", "7B", "7C", "7D"];
@@ -543,7 +587,7 @@
     let modalActiveTeacher = "";
     let autoSaveTimeout = null;
     let activeCustomRules = [];
-    let teacherPhones = {};
+    let teacherPhones = { ...INITIAL_PHONES };
 
     const container = document.getElementById("allocationsContainer");
     const addBtn = document.getElementById("addAllocationBtn");
@@ -704,7 +748,9 @@
       return SUBJECT_PERIODS[subject] || 0;
     }
 
-    // INSTANT REAL-TIME FORM STATE OBSERVER
+    // =========================================================================
+    // TAB 1: FORM STATE MANAGER & VALIDATION FIXES
+    // =========================================================================
     function saveCurrentFormToState() {
       if (!activeTeacher) return;
       
@@ -715,8 +761,9 @@
       rows.forEach(row => {
         const className = row.querySelector(".class-select").value;
         const subject = row.querySelector(".subject-select").value;
-        const periods = parseInt(row.querySelector(".periods-input").value) || 0;
-        if (className && subject) {
+        const periods = calculatePeriods(subject, className);
+        
+        if (className || subject) {
           allocations.push({ className, subject, periods });
         }
       });
@@ -726,7 +773,6 @@
         allocations: allocations
       };
 
-      // RE-RENDER TABLES INSTANTLY
       updateTables();
     }
 
@@ -743,6 +789,8 @@
       Object.keys(SUBJECT_PERIODS).forEach(s => subjectOptions += `<option value="${s}" ${s === subject ? 'selected' : ''}>${s}</option>`);
       subjectOptions += `<option value="HIN" ${subject === "HIN" ? 'selected' : ''}>HIN</option>`;
 
+      const initialPeriods = periods !== "" ? periods : calculatePeriods(subject, className);
+
       div.innerHTML = `
         <div class="sm:col-span-4">
           <label class="block text-[10px] font-bold text-slate-400 mb-0.5 sm:hidden uppercase">Class</label>
@@ -758,7 +806,7 @@
         </div>
         <div class="sm:col-span-2">
           <label class="block text-[10px] font-bold text-slate-400 mb-0.5 sm:hidden uppercase">Periods</label>
-          <input type="number" readonly class="periods-input w-full px-1 py-2 border border-slate-300 rounded-md bg-slate-100 text-slate-600 text-xs sm:text-sm text-center font-semibold h-10" placeholder="0" value="${periods}">
+          <input type="number" readonly class="periods-input w-full px-1 py-2 border border-slate-300 rounded-md bg-slate-100 text-slate-600 text-xs sm:text-sm text-center font-semibold h-10" placeholder="0" value="${initialPeriods}">
         </div>
         <div class="sm:col-span-2 flex justify-end sm:justify-center pt-2 sm:pt-0">
           <button type="button" onclick="removeRow('${rowId}')" title="Remove row" class="text-red-500 hover:text-red-700 bg-red-50 hover:bg-red-100 w-11 h-11 min-w-[44px] rounded-full flex items-center justify-center transition border border-red-200 active:scale-95">
@@ -799,20 +847,84 @@
         return;
       }
 
-      const profile = dbState[teacherName];
+      const profile = dbState[teacherName] || { classInCharge: "None", allocations: [] };
       chargeDropdown.value = profile.classInCharge || "None";
       
-      if (profile.allocations.length > 0) {
+      if (profile.allocations && profile.allocations.length > 0) {
         profile.allocations.forEach(alloc => {
           createAllocationRow(alloc.className, alloc.subject, alloc.periods);
         });
-      } else {
-        createAllocationRow();
       }
+      
       checkEmptyState();
     }
 
-    // INSTANT REACTIVE TABLE RENDER ENGINE
+    // Teacher Dropdown Switch Listener
+    teacherDropdown.addEventListener("change", function() {
+      if (activeTeacher) {
+        saveCurrentFormToState();
+      }
+      activeTeacher = this.value;
+      loadTeacherForm(activeTeacher);
+      updateTables();
+    });
+
+    chargeDropdown.addEventListener("change", function() {
+      if (!activeTeacher) {
+        showStatus("Please select a teacher first before setting Class In-Charge.", true);
+        this.value = "None";
+        return;
+      }
+      saveCurrentFormToState();
+      updateTables();
+    });
+
+    addBtn.addEventListener("click", () => {
+      if (!activeTeacher) {
+        showStatus("Please choose a teacher first before adding allotments.", true);
+        teacherDropdown.focus();
+        return;
+      }
+      createAllocationRow();
+      saveCurrentFormToState();
+    });
+
+    // Form Submission with Strict Row Validation
+    form.addEventListener("submit", function(event) {
+      event.preventDefault();
+
+      if (!activeTeacher) {
+        showStatus("Please select a teacher first.", true);
+        teacherDropdown.focus();
+        return;
+      }
+
+      const rows = container.querySelectorAll(".allocation-row");
+      let isIncomplete = false;
+      let rowNumber = 0;
+
+      rows.forEach((row, idx) => {
+        const cVal = row.querySelector(".class-select").value;
+        const sVal = row.querySelector(".subject-select").value;
+        if ((cVal && !sVal) || (!cVal && sVal)) {
+          isIncomplete = true;
+          rowNumber = idx + 1;
+        }
+      });
+
+      if (isIncomplete) {
+        showStatus(`Row ${rowNumber} is incomplete. Please select both Class and Subject, or remove empty rows.`, true);
+        return;
+      }
+
+      saveCurrentFormToState();
+      updateTables();
+      postFullStateToFirebase(false);
+    });
+
+    // =========================================================================
+    // REACTIVE SUMMARY TABLES RENDER
+    // =========================================================================
     function updateTables() {
       const tBody = document.getElementById("teacherTableBody");
       const sBody = document.getElementById("studentTableBody");
@@ -839,7 +951,9 @@
       TEACHERS.forEach(t => {
         const profile = dbState[t];
         const inCharge = profile.classInCharge !== "None" ? profile.classInCharge : "-";
-        const subjectsSummary = profile.allocations.map(a => `${a.subject}(${a.periods})`).join(", ");
+        
+        const validAllocations = (profile.allocations || []).filter(a => a.className && a.subject);
+        const subjectsSummary = validAllocations.map(a => `${a.subject}(${a.periods})`).join(", ");
         
         let teacherRowHtml = `
           <tr class="hover:bg-slate-50 border-b border-slate-100 ${t === activeTeacher ? 'bg-indigo-50/50 font-medium' : ''}">
@@ -853,7 +967,7 @@
         let teacherTotalPeriods = 0;
         
         CLASSES.forEach(c => {
-          const matched = profile.allocations.filter(a => a.className === c);
+          const matched = validAllocations.filter(a => a.className === c);
           if (matched.length > 0) {
             const displayStr = matched.map(m => `${m.subject}(${m.periods})`).join(", ");
             teacherRowHtml += `<td class="px-1 py-2 text-center border-r border-slate-100 text-[10px] text-slate-800">${displayStr}</td>`;
@@ -904,7 +1018,7 @@
 
           TEACHERS.forEach(t => {
             const profile = dbState[t];
-            const matched = profile.allocations.filter(a => a.className === c && a.subject === sub);
+            const matched = (profile.allocations || []).filter(a => a.className === c && a.subject === sub);
             matched.forEach(m => {
               cellAllocations.push(`${t}(${m.periods})`);
               cellPeriodsSum += parseInt(m.periods) || 0;
@@ -947,12 +1061,14 @@
       sFoot.innerHTML = footerHtml;
     }
 
+    // =========================================================================
     // MODAL EDIT CONTROLLER
+    // =========================================================================
     function openTeacherModal(teacherName) {
       modalActiveTeacher = teacherName;
       document.getElementById("modalTitle").innerHTML = `Edit Allocations: <span class="text-indigo-600 font-bold">${teacherName}</span>`;
       
-      const profile = dbState[teacherName];
+      const profile = dbState[teacherName] || { classInCharge: "None", allocations: [] };
       document.getElementById("modalClassInCharge").value = profile.classInCharge || "None";
       
       const modalContainer = document.getElementById("modalAllocationsContainer");
@@ -994,6 +1110,8 @@
       Object.keys(SUBJECT_PERIODS).forEach(s => subjectOptions += `<option value="${s}" ${s === subject ? 'selected' : ''}>${s}</option>`);
       subjectOptions += `<option value="HIN" ${subject === "HIN" ? 'selected' : ''}>HIN</option>`;
 
+      const initialPeriods = periods !== "" ? periods : calculatePeriods(subject, className);
+
       div.innerHTML = `
         <div class="sm:col-span-4">
           <select required class="modal-class-select w-full px-2 py-1.5 border border-slate-300 rounded-md bg-white text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500 h-9">
@@ -1006,7 +1124,7 @@
           </select>
         </div>
         <div class="sm:col-span-2">
-          <input type="number" readonly class="modal-periods-input w-full px-1 py-1.5 border border-slate-300 rounded-md bg-slate-100 text-slate-600 text-xs text-center font-semibold h-9" placeholder="0" value="${periods}">
+          <input type="number" readonly class="modal-periods-input w-full px-1 py-1.5 border border-slate-300 rounded-md bg-slate-100 text-slate-600 text-xs text-center font-semibold h-9" placeholder="0" value="${initialPeriods}">
         </div>
         <div class="sm:col-span-2 flex justify-end sm:justify-center">
           <button type="button" onclick="removeModalRow('${rowId}')" title="Remove row" class="text-red-500 hover:text-red-700 bg-red-50 hover:bg-red-100 w-9 h-9 min-w-[36px] rounded-full flex items-center justify-center transition border border-red-200 active:scale-95">
@@ -1053,7 +1171,7 @@
       for (let row of rows) {
         const className = row.querySelector(".modal-class-select").value;
         const subject = row.querySelector(".modal-subject-select").value;
-        const periods = parseInt(row.querySelector(".modal-periods-input").value) || 0;
+        const periods = calculatePeriods(subject, className);
         if (className && subject) {
           allocations.push({ className, subject, periods });
         }
@@ -1068,20 +1186,21 @@
         loadTeacherForm(activeTeacher);
       }
       
-      // INSTANT RE-RENDER
       updateTables();
       
       clearTimeout(autoSaveTimeout);
       if (forceImmediate) {
-        postFullStateToSheets(true);
+        postFullStateToFirebase(true);
       } else {
         autoSaveTimeout = setTimeout(() => {
-          postFullStateToSheets(true);
+          postFullStateToFirebase(true);
         }, 600);
       }
     }
 
+    // =========================================================================
     // TIMETABLE SOLVER
+    // =========================================================================
     function applyCustomRulePrompt() {
       const promptInput = document.getElementById("customPromptConstraint");
       const promptText = promptInput.value.trim();
@@ -1156,7 +1275,7 @@
           if (profile && profile.allocations) {
             profile.allocations.forEach(alloc => {
               const c = alloc.className;
-              if (CLASSES.includes(c)) {
+              if (CLASSES.includes(c) && alloc.subject) {
                 classAllotments[c].push({
                   teacher: t,
                   subject: alloc.subject,
@@ -1233,7 +1352,7 @@
         hideSpinner();
         showStatus("Timetable generated successfully!");
 
-        saveTimetableToSheets(timetable);
+        saveTimetableToFirebase(timetable);
       }, 50);
     }
 
@@ -1331,12 +1450,16 @@
       } else {
         teacherBtn.className = "px-4 py-2 border-b-2 border-teal-600 text-teal-600 font-semibold text-xs sm:text-sm active:scale-95 transition ml-2";
         classBtn.className = "px-4 py-2 border-b-2 border-transparent text-slate-500 hover:text-slate-700 font-semibold text-xs sm:text-sm active:scale-95 transition";
-        classCont.classList.add("hidden");
+        classCont.add("hidden");
         teacherCont.classList.remove("hidden");
       }
     }
 
-    function saveTimetableToSheets(timetable) {
+    // =========================================================================
+    // FIREBASE WRITE FUNCTIONS WITH TIMEOUT & NON-FREEZING SAFEGUARDS
+    // =========================================================================
+    function saveTimetableToFirebase(timetable) {
+      if (!db || !isFirebaseConfigured) return;
       const payloadTimetable = [];
       CLASSES.forEach(c => {
         DAYS.forEach((day, dIdx) => {
@@ -1349,82 +1472,88 @@
         });
       });
 
-      fetch(WEB_APP_URL, {
-        method: "POST",
-        headers: { "Content-Type": "text/plain;charset=utf-8" },
-        body: JSON.stringify({ type: "timetable", timetable: payloadTimetable })
-      }).catch(err => console.log("Timetable save error", err));
+      db.collection("school_data").doc("weekly_timetable").set({
+        timetable: payloadTimetable,
+        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+      }).then(() => {
+        console.log("Timetable saved to Firebase");
+      }).catch(err => {
+        console.error("Timetable Firebase Save Error:", err.message);
+      });
     }
 
-    function postFullStateToSheets(isFromModal = false) {
+    function postFullStateToFirebase(isFromModal = false) {
       const modalStatus = document.getElementById("modalStatusMessage");
       
+      if (!isFirebaseConfigured || !db) {
+        if (isFromModal && modalStatus) {
+          modalStatus.textContent = "Saved ✓";
+          modalStatus.classList.remove("hidden");
+          setTimeout(() => { modalStatus.classList.add("hidden"); }, 2000);
+        } else {
+          showStatus("Saved locally in memory. (Add Firebase keys to sync online)", false);
+        }
+        return;
+      }
+
       if (isFromModal) {
         if (modalStatus) {
           modalStatus.classList.remove("hidden");
           modalStatus.textContent = "Syncing...";
         }
       } else {
-        showSpinner("Saving allocations to Google Sheets...");
+        showSpinner("Saving allocations to Firebase...");
       }
 
-      const payloadData = [];
+      let hasResponded = false;
+
+      // 3.5s Safety Timeout - Never freezes UI
+      const timeoutId = setTimeout(() => {
+        if (!hasResponded) {
+          hasResponded = true;
+          if (!isFromModal) hideSpinner();
+          showStatus("Saved locally! (Firebase sync taking longer or working offline)", false);
+        }
+      }, 3500);
+
+      const batch = db.batch();
+      
       TEACHERS.forEach(t => {
-        payloadData.push({
-          teacher: t,
-          classInCharge: dbState[t].classInCharge,
-          allocations: dbState[t].allocations
+        const teacherRef = db.collection("teacher_allocations").doc(t);
+        const validAllocations = (dbState[t].allocations || []).filter(a => a.className && a.subject);
+        
+        batch.set(teacherRef, {
+          classInCharge: dbState[t].classInCharge || "None",
+          allocations: validAllocations,
+          updatedAt: firebase.firestore.FieldValue.serverTimestamp()
         });
       });
 
-      fetch(WEB_APP_URL, {
-        method: "POST",
-        headers: { "Content-Type": "text/plain;charset=utf-8" },
-        body: JSON.stringify({ allTeacherData: payloadData })
-      })
-      .then(res => res.json().catch(() => ({ status: "success" })))
-      .then(data => {
-        if (isFromModal && modalStatus) {
-          modalStatus.textContent = "Saved ✓";
-          setTimeout(() => { modalStatus.classList.add("hidden"); }, 2000);
-        } else {
-          showStatus("All distributions saved successfully!");
+      batch.commit().then(() => {
+        if (!hasResponded) {
+          hasResponded = true;
+          clearTimeout(timeoutId);
+          if (!isFromModal) hideSpinner();
+          
+          if (isFromModal && modalStatus) {
+            modalStatus.textContent = "Saved ✓";
+            setTimeout(() => { modalStatus.classList.add("hidden"); }, 2000);
+          } else {
+            showStatus("All distributions saved successfully to Firebase! 🔥");
+          }
         }
-      })
-      .catch(error => {
-        if (isFromModal && modalStatus) {
-          modalStatus.textContent = "Saved ✓";
-          setTimeout(() => { modalStatus.classList.add("hidden"); }, 2000);
+      }).catch(err => {
+        if (!hasResponded) {
+          hasResponded = true;
+          clearTimeout(timeoutId);
+          if (!isFromModal) hideSpinner();
+          console.warn("Firebase Write Error:", err.message);
+          showStatus("Saved locally. (Unable to reach Firebase Cloud)", false);
         }
-      })
-      .finally(() => {
-        if (!isFromModal) hideSpinner();
       });
     }
 
-    teacherDropdown.addEventListener("change", function() {
-      saveCurrentFormToState();
-      activeTeacher = this.value;
-      loadTeacherForm(activeTeacher);
-      updateTables();
-    });
-
-    chargeDropdown.addEventListener("change", function() {
-      saveCurrentFormToState();
-      updateTables();
-    });
-
-    addBtn.addEventListener("click", () => {
-      if (!activeTeacher) {
-        showStatus("Please choose a teacher first.", true);
-        return;
-      }
-      createAllocationRow();
-      saveCurrentFormToState();
-      updateTables();
-    });
-
-    manualSyncBtn.addEventListener("click", () => { loadDatabaseFromSheet(true); });
+    manualSyncBtn.addEventListener("click", () => { loadDatabaseFromFirebase(true); });
     printBtn.addEventListener("click", () => { printTimetables("default"); });
 
     function printTimetables(target) {
@@ -1433,76 +1562,65 @@
       window.print();
     }
 
-    function loadDatabaseFromSheet(isManual = false) {
-  if (isManual) showSpinner("Fetching Database...");
-  
-  const fetchUrl = `${WEB_APP_URL}?action=get_allocations&_t=${Date.now()}`;
-  
-  fetch(fetchUrl, { method: "GET", redirect: "follow" })
-    .then(res => res.text()) // Fetch raw text first to inspect response type
-    .then(text => {
-      let res;
-      try {
-        res = JSON.parse(text);
-      } catch (e) {
-        if (text.trim().startsWith("<!DOCTYPE") || text.trim().startsWith("<html")) {
-          throw new Error("Google Apps Script returned an HTML page. Ensure 'Who has access' is set to 'Anyone' in Web App deployment.");
-        } else {
-          throw new Error("Invalid response format from server.");
-        }
+    // =========================================================================
+    // FIREBASE REAL-TIME LISTENERS & DATA FETCH
+    // =========================================================================
+    function loadDatabaseFromFirebase(isManual = false) {
+      if (isManual) showSpinner("Connecting to Firebase...");
+
+      if (!isFirebaseConfigured || !db) {
+        if (isManual) hideSpinner();
+        showStatus("⚠️ Firebase Setup: Replace 'YOUR_API_KEY' with your real Firebase keys in firebaseConfig.", true);
+        updateTables();
+        return;
       }
 
-      if (res && res.status === "success") {
-        teacherPhones = res.phones || {};
-        
-        TEACHERS.forEach(t => {
-          dbState[t] = { classInCharge: "None", allocations: [] };
+      db.collection("school_data").doc("teacher_phones").get()
+        .then(doc => {
+          if (doc.exists) {
+            teacherPhones = doc.data().phones || INITIAL_PHONES;
+          } else {
+            db.collection("school_data").doc("teacher_phones").set({ phones: INITIAL_PHONES })
+              .catch(err => console.warn("Failed to seed teacher phones:", err.message));
+            teacherPhones = { ...INITIAL_PHONES };
+          }
+        })
+        .catch(err => {
+          teacherPhones = { ...INITIAL_PHONES };
         });
 
-        if (res.data && Array.isArray(res.data)) {
-          res.data.forEach(item => {
-            const t = item.teacher;
+      db.collection("teacher_allocations").onSnapshot(
+        snapshot => {
+          snapshot.forEach(doc => {
+            const t = doc.id;
             if (dbState[t]) {
-              dbState[t].classInCharge = item.classInCharge;
-              if (item.className && item.className !== "N/A" && item.subject && item.subject !== "N/A") {
-                dbState[t].allocations.push({
-                  className: item.className,
-                  subject: item.subject,
-                  periods: item.periods
-                });
-              }
+              const data = doc.data();
+              dbState[t].classInCharge = data.classInCharge || "None";
+              dbState[t].allocations = data.allocations || [];
             }
           });
+
+          if (activeTeacher) {
+            loadTeacherForm(activeTeacher);
+          }
+
+          const now = new Date();
+          syncTimestamp.textContent = `Last Synced: ${now.toLocaleTimeString()}`;
+          if (isManual) showStatus("Firebase Live Sync active.");
+          
+          updateTables();
+          if (isManual) hideSpinner();
+        }, 
+        err => {
+          if (isManual) hideSpinner();
+          showStatus("Running in offline mode. Ensure actual Firebase keys are pasted in script config.", true);
+          updateTables();
         }
+      );
+    }
 
-        if (activeTeacher) {
-          loadTeacherForm(activeTeacher);
-        }
-
-        const now = new Date();
-        syncTimestamp.textContent = `Last Synced: ${now.toLocaleTimeString()}`;
-        if (isManual) showStatus("Database sync complete.");
-      }
-      updateTables();
-    })
-    .catch(err => {
-      console.error("GET Fetch error:", err.message);
-      showStatus("Connection Error: Check Apps Script Deployment ('Who has access' must be 'Anyone').", true);
-    })
-    .finally(() => {
-      if (isManual) hideSpinner();
-    });
-}
-
-    form.addEventListener("submit", function(event) {
-      event.preventDefault();
-      saveCurrentFormToState();
-      updateTables(); // INSTANT REAL-TIME RENDER ON SAVE
-      postFullStateToSheets(false);
-    });
-
-    // Initial load
-    loadDatabaseFromSheet(false);
+    // Initial Load
+    loadDatabaseFromFirebase(false);
     updateTables();
     switchMainTab(1);
   </script>
