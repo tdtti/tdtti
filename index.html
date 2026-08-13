@@ -5,11 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Teacher Subject Distribution System</title>
   
-  <!-- Suppress Tailwind CDN developer warnings -->
+  <!-- Suppress harmless Tailwind CDN & Firebase deprecation warnings -->
   <script>
     const originalWarn = console.warn;
     console.warn = function(...args) {
-      if (args[0] && typeof args[0] === 'string' && args[0].includes('cdn.tailwindcss.com')) return;
+      if (args[0] && typeof args[0] === 'string' && 
+         (args[0].includes('cdn.tailwindcss.com') || args[0].includes('enableIndexedDbPersistence'))) {
+        return;
+      }
       originalWarn.apply(console, args);
     };
   </script>
@@ -20,7 +23,6 @@
   <!-- Firebase SDKs (v10 Compatibility Mode) -->
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
-
   <style>
     /* NATIVE PRINT/PDF A4 LANDSCAPE FORMATTING */
     @media print {
@@ -46,7 +48,7 @@
       .tab-navigation,
       .no-print,
       .share-col,
-      #globalSpinner {
+      #topProgressBar {
         display: none !important;
       }
 
@@ -169,13 +171,8 @@
 </head>
 <body class="bg-slate-50 min-h-screen text-slate-800 font-sans pb-16 print-default">
 
-  <!-- GLOBAL BUSY SPINNER OVERLAY -->
-  <div id="globalSpinner" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-[100] flex flex-col items-center justify-center hidden no-print">
-    <div class="bg-white p-6 rounded-xl shadow-xl border border-slate-100 flex flex-col items-center space-y-4 max-w-xs w-full mx-4">
-      <div class="w-12 h-12 border-4 border-indigo-200 border-t-indigo-600 rounded-full animate-spin"></div>
-      <p id="spinnerMessage" class="text-sm font-semibold text-slate-700 text-center leading-relaxed">Processing, please wait...</p>
-    </div>
-  </div>
+  <!-- YOUTUBE-STYLE TOP PROGRESS LOADING BAR -->
+  <div id="topProgressBar" class="fixed top-0 left-0 h-1 bg-gradient-to-r from-indigo-500 via-purple-500 to-emerald-500 z-[1000] transition-all duration-300 ease-out w-0 opacity-0 pointer-events-none"></div>
 
   <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:py-10 space-y-8">
     
@@ -199,93 +196,130 @@
       <button type="button" id="fullscreenToggleBtn" onclick="toggleFullscreenView()" title="Enter Fullscreen" class="w-10 h-10 sm:w-11 sm:h-11 rounded-full flex items-center justify-center transition bg-slate-100 text-slate-700 hover:bg-slate-200 text-xl active:scale-95 focus:outline-none">🖥️</button>
     </div>
 
-    <!-- TAB 1: ALLOTMENT FORM -->
+    <!-- TAB 1: RESTRUCTURED & RESET ALLOTMENT FORM -->
     <div id="tab1-content" class="tab-pane space-y-6">
-      <form id="distributionForm" class="space-y-6">
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 items-stretch">
-          
-          <div class="bg-white rounded-lg shadow-sm border border-slate-200 p-4 sm:p-6 flex flex-col justify-between">
-            <div>
-              <h2 class="text-md font-bold text-slate-800 mb-4 border-b pb-2 flex items-center gap-2">
-                <span class="bg-indigo-100 text-indigo-800 rounded-full w-5 h-5 flex items-center justify-center text-xs">1</span>
-                Basic Details
-              </h2>
-              
-              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label class="block text-xs sm:text-sm font-semibold text-slate-600 mb-1" for="teacher">Select Teacher</label>
-                  <select id="teacher" required class="w-full px-3 py-2 border border-slate-300 rounded-md bg-white text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 h-11 sm:h-10">
-                    <option value="">-- Choose Teacher --</option>
-                    <option value="TAK">TAK</option>
-                    <option value="SK">SK</option>
-                    <option value="ERJ">ERJ</option>
-                    <option value="BA">BA</option>
-                    <option value="VA">VA</option>
-                    <option value="SJS">SJS</option>
-                    <option value="GMK">GMK</option>
-                    <option value="SA">SA</option>
-                    <option value="KK">KK</option>
-                    <option value="KSPB">KSPB</option>
-                    <option value="NV">NV</option>
-                    <option value="SS">SS</option>
-                    <option value="SSR">SSR</option>
-                    <option value="RR">RR</option>
-                    <option value="BUS">BUS</option>
-                    <option value="ANM">ANM</option>
-                    <option value="VRK">VRK</option>
-                  </select>
-                </div>
+      
+      <!-- Reset & Quick Actions Header -->
+      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white p-4 sm:p-5 rounded-xl border border-slate-200 shadow-sm">
+        <div>
+          <h2 class="text-base font-bold text-slate-900 flex items-center gap-2">
+            <span>📝</span> Teacher Distribution Configurator
+          </h2>
+          <p class="text-xs text-slate-500">Select a teacher, configure class/subject loads, and sync with Firebase.</p>
+        </div>
+        <div class="flex items-center gap-2 w-full sm:w-auto justify-end">
+          <button type="button" onclick="resetFormForSelectedTeacher()" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold rounded-md border border-slate-300 transition active:scale-95">
+            Clear Selected Teacher 🧹
+          </button>
+          <button type="button" onclick="resetEntireSchoolForm()" class="px-3 py-1.5 bg-red-50 hover:bg-red-100 text-red-700 text-xs font-semibold rounded-md border border-red-200 transition active:scale-95">
+            Reset All Allocations ⚠️
+          </button>
+        </div>
+      </div>
 
-                <div>
-                  <label class="block text-xs sm:text-sm font-semibold text-slate-600 mb-1" for="classInCharge">Class In-Charge</label>
-                  <select id="classInCharge" class="w-full px-3 py-2 border border-slate-300 rounded-md bg-white text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 h-11 sm:h-10">
-                    <option value="None">None</option>
-                    <option value="5A">5A</option>
-                    <option value="5B">5B</option>
-                    <option value="5C">5C</option>
-                    <option value="5D">5D</option>
-                    <option value="6A">6A</option>
-                    <option value="6B">6B</option>
-                    <option value="6C">6C</option>
-                    <option value="6D">6D</option>
-                    <option value="7A">7A</option>
-                    <option value="7B">7B</option>
-                    <option value="7C">7C</option>
-                    <option value="7D">7D</option>
-                  </select>
-                </div>
+      <form id="distributionForm" class="space-y-6">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+          
+          <!-- Card 1: Basic Details (4 Columns) -->
+          <div class="lg:col-span-4 bg-white rounded-xl shadow-sm border border-slate-200 p-5 space-y-5">
+            <h3 class="text-sm font-bold text-slate-800 border-b pb-2 flex items-center justify-between">
+              <span>1. Select Teacher & Charge</span>
+              <span id="teacherLoadBadge" class="hidden text-[11px] font-extrabold px-2.5 py-0.5 rounded-full bg-indigo-100 text-indigo-800">0 Periods</span>
+            </h3>
+
+            <div class="space-y-4">
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1" for="teacher">Select Teacher</label>
+                <select id="teacher" required class="w-full px-3 py-2.5 border border-slate-300 rounded-lg bg-white text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 font-semibold text-slate-800">
+                  <option value="">-- Select Teacher --</option>
+                  <option value="TAK">TAK</option>
+                  <option value="SK">SK</option>
+                  <option value="ERJ">ERJ</option>
+                  <option value="BA">BA</option>
+                  <option value="VA">VA</option>
+                  <option value="SJS">SJS</option>
+                  <option value="GMK">GMK</option>
+                  <option value="SA">SA</option>
+                  <option value="KK">KK</option>
+                  <option value="KSPB">KSPB</option>
+                  <option value="NV">NV</option>
+                  <option value="SS">SS</option>
+                  <option value="SSR">SSR</option>
+                  <option value="RR">RR</option>
+                  <option value="BUS">BUS</option>
+                  <option value="ANM">ANM</option>
+                  <option value="VRK">VRK</option>
+                </select>
+              </div>
+
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1" for="classInCharge">Class In-Charge</label>
+                <select id="classInCharge" class="w-full px-3 py-2.5 border border-slate-300 rounded-lg bg-white text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 font-semibold text-slate-800">
+                  <option value="None">None</option>
+                  <option value="5A">5A</option>
+                  <option value="5B">5B</option>
+                  <option value="5C">5C</option>
+                  <option value="5D">5D</option>
+                  <option value="6A">6A</option>
+                  <option value="6B">6B</option>
+                  <option value="6C">6C</option>
+                  <option value="6D">6D</option>
+                  <option value="7A">7A</option>
+                  <option value="7B">7B</option>
+                  <option value="7C">7C</option>
+                  <option value="7D">7D</option>
+                </select>
               </div>
             </div>
-            <div class="mt-4 text-xs text-slate-400 italic font-medium">Select a teacher above to configure distributions.</div>
+
+            <div id="teacherSummaryBox" class="bg-slate-50 p-3 rounded-lg border border-slate-200 hidden space-y-1">
+              <p class="text-[11px] font-bold text-slate-700" id="summaryBoxTitle">Allocated Load Summary:</p>
+              <p class="text-xs text-slate-600 leading-snug" id="summaryBoxList">None</p>
+            </div>
           </div>
 
-          <div class="bg-white rounded-lg shadow-sm border border-slate-200 p-4 sm:p-6 flex flex-col justify-between">
-            <div>
-              <div class="flex items-center justify-between mb-4 border-b pb-2">
-                <h2 class="text-md font-bold text-slate-850 flex items-center gap-2">
-                  <span class="bg-indigo-100 text-indigo-800 rounded-full w-5 h-5 flex items-center justify-center text-xs">2</span>
-                  Class & Subject Allotment
-                </h2>
-                <button type="button" id="addAllocationBtn" title="Add Subject Allocation" class="bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white w-11 h-11 rounded-full flex items-center justify-center shadow-md transition transform hover:scale-105">
-                  <span class="text-xl font-bold">+</span>
-                </button>
+          <!-- Card 2: Class & Subject Allotment (8 Columns) -->
+          <div class="lg:col-span-8 bg-white rounded-xl shadow-sm border border-slate-200 p-5 space-y-4">
+            <div class="flex items-center justify-between border-b pb-3">
+              <div>
+                <h3 class="text-sm font-bold text-slate-800">2. Class & Subject Allotment</h3>
+                <p class="text-[11px] text-slate-500">Periods auto-calculate upon selecting subject and class.</p>
               </div>
+              <button type="button" id="addAllocationBtn" title="Add Subject Allocation" class="bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white px-3.5 py-2 rounded-lg font-semibold text-xs flex items-center gap-1.5 shadow-sm transition">
+                <span class="text-base font-bold">+</span> Add Subject
+              </button>
+            </div>
 
-              <div id="allocationsContainer" class="space-y-3 max-h-[260px] overflow-y-auto pr-1"></div>
+            <!-- Table Headers for rows -->
+            <div class="hidden sm:grid sm:grid-cols-12 gap-3 px-3 py-1.5 bg-slate-100 rounded-md text-[11px] font-bold text-slate-600 uppercase">
+              <div class="sm:col-span-4">Class</div>
+              <div class="sm:col-span-5">Subject</div>
+              <div class="sm:col-span-2 text-center">Periods</div>
+              <div class="sm:col-span-1 text-center">Action</div>
+            </div>
 
-              <div id="emptyState" class="text-center py-8 text-slate-400 text-sm hidden">
-                No configurations assigned. Click "+" to add a class & subject.
-              </div>
+            <div id="allocationsContainer" class="space-y-2.5 max-h-[340px] overflow-y-auto pr-1"></div>
+
+            <div id="emptyState" class="text-center py-10 text-slate-400 text-sm border-2 border-dashed border-slate-200 rounded-lg">
+              <p class="font-medium text-slate-500">No subject allotments configured yet.</p>
+              <p class="text-xs text-slate-400 mt-0.5">Select a teacher above and click <span class="font-bold text-indigo-600">"+ Add Subject"</span> to assign classes.</p>
             </div>
           </div>
 
         </div>
 
-        <div class="flex flex-col gap-3">
-          <div id="statusMessage" class="text-xs font-semibold px-4 py-3 rounded-md hidden border"></div>
-          <button type="submit" id="submitBtn" class="w-full bg-emerald-600 hover:bg-emerald-700 active:scale-95 text-white font-semibold py-3.5 rounded-lg shadow-md transition duration-150 text-sm sm:text-base">
-            Save Full School Distribution
-          </button>
+        <!-- Status Notification & Save Actions -->
+        <div class="space-y-3">
+          <div id="statusMessage" class="text-xs font-bold px-4 py-3 rounded-lg hidden border flex items-center justify-between shadow-sm"></div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <button type="button" onclick="saveSelectedTeacherOnly()" class="bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white font-semibold py-3 rounded-lg shadow-md transition text-xs sm:text-sm">
+              Save Selected Teacher Only 💾
+            </button>
+            <button type="submit" id="submitBtn" class="bg-emerald-600 hover:bg-emerald-700 active:scale-95 text-white font-semibold py-3 rounded-lg shadow-md transition text-xs sm:text-sm">
+              Save Full School Distribution 🚀
+            </button>
+          </div>
         </div>
       </form>
     </div>
@@ -530,16 +564,38 @@
 
   <script>
     // =========================================================================
-    // 1. FIREBASE CONFIGURATION (Paste credentials from Firebase Console)
+    // YOUTUBE-STYLE TOP LOADER CONTROLLER
+    // =========================================================================
+    function startTopLoader() {
+      const bar = document.getElementById("topProgressBar");
+      if (!bar) return;
+      bar.style.opacity = "1";
+      bar.style.width = "25%";
+      setTimeout(() => { if (bar.style.opacity === "1") bar.style.width = "65%"; }, 150);
+      setTimeout(() => { if (bar.style.opacity === "1") bar.style.width = "85%"; }, 400);
+    }
+
+    function completeTopLoader() {
+      const bar = document.getElementById("topProgressBar");
+      if (!bar) return;
+      bar.style.width = "100%";
+      setTimeout(() => {
+        bar.style.opacity = "0";
+        setTimeout(() => { bar.style.width = "0%"; }, 300);
+      }, 250);
+    }
+
+    // =========================================================================
+    // 1. FIREBASE CONFIGURATION
     // =========================================================================
     const firebaseConfig = {
-    apiKey: "AIzaSyAB02lvPYaiFy3O-_VMWZpAjmtsLRX7o90",
-    authDomain: "gen-lang-client-0466115057.firebaseapp.com",
-    projectId: "gen-lang-client-0466115057",
-    storageBucket: "gen-lang-client-0466115057.firebasestorage.app",
-    messagingSenderId: "198395126556",
-    appId: "1:198395126556:web:0d9f2cdf0d4f3523ac10d9"
-  };
+  apiKey: "AIzaSyAB02lvPYaiFy3O-_VMWZpAjmtsLRX7o90",
+  authDomain: "gen-lang-client-0466115057.firebaseapp.com",
+  projectId: "gen-lang-client-0466115057",
+  storageBucket: "gen-lang-client-0466115057.firebasestorage.app",
+  messagingSenderId: "198395126556",
+  appId: "1:198395126556:web:1b1209f4d48e59f9ac10d9"
+};
 
     const isFirebaseConfigured = firebaseConfig.apiKey && firebaseConfig.apiKey !== "YOUR_API_KEY";
 
@@ -600,20 +656,6 @@
     const syncTimestamp = document.getElementById("syncTimestamp");
     const manualSyncBtn = document.getElementById("manualSyncBtn");
     const printBtn = document.getElementById("printBtn");
-
-    function showSpinner(message = "Processing, please wait...") {
-      const spinner = document.getElementById("globalSpinner");
-      const spinnerMsg = document.getElementById("spinnerMessage");
-      if (spinner && spinnerMsg) {
-        spinnerMsg.textContent = message;
-        spinner.classList.remove("hidden");
-      }
-    }
-
-    function hideSpinner() {
-      const spinner = document.getElementById("globalSpinner");
-      if (spinner) spinner.classList.add("hidden");
-    }
 
     function switchMainTab(tabNum) {
       const teacherCard = document.getElementById("teacherTableCard");
@@ -679,7 +721,7 @@
       const statusEl = document.getElementById("statusMessage");
       if (!statusEl) return;
       statusEl.textContent = message;
-      statusEl.className = "text-xs font-semibold px-4 py-3 rounded-md border transition-all duration-150";
+      statusEl.className = "text-xs font-semibold px-4 py-3 rounded-lg border transition-all duration-150 flex items-center justify-between";
       
       if (isError) {
         statusEl.classList.add("bg-red-50", "text-red-800", "border-red-200");
@@ -689,7 +731,7 @@
       statusEl.classList.remove("hidden");
       
       if (!isError) {
-        setTimeout(() => { statusEl.classList.add("hidden"); }, 4000);
+        setTimeout(() => { statusEl.classList.add("hidden"); }, 5000);
       }
     }
 
@@ -749,8 +791,45 @@
     }
 
     // =========================================================================
-    // TAB 1: FORM STATE MANAGER & VALIDATION FIXES
+    // TAB 1: FORM STATE MANAGER & WORKLOAD BADGE
     // =========================================================================
+    function updateTeacherWorkloadBadge() {
+      const badge = document.getElementById("teacherLoadBadge");
+      const summaryBox = document.getElementById("teacherSummaryBox");
+      const summaryList = document.getElementById("summaryBoxList");
+
+      if (!activeTeacher || !dbState[activeTeacher]) {
+        if (badge) badge.classList.add("hidden");
+        if (summaryBox) summaryBox.classList.add("hidden");
+        return;
+      }
+
+      const profile = dbState[activeTeacher];
+      let totalP = 0;
+      const validSummaries = [];
+
+      (profile.allocations || []).forEach(a => {
+        if (a.className && a.subject) {
+          totalP += parseInt(a.periods) || 0;
+          validSummaries.push(`Class ${a.className}: ${a.subject} (${a.periods}p)`);
+        }
+      });
+
+      if (badge) {
+        badge.textContent = `${totalP} Periods / Week`;
+        badge.classList.remove("hidden");
+      }
+
+      if (summaryBox && summaryList) {
+        if (validSummaries.length > 0) {
+          summaryList.innerHTML = validSummaries.join("<br>");
+          summaryBox.classList.remove("hidden");
+        } else {
+          summaryBox.classList.add("hidden");
+        }
+      }
+    }
+
     function saveCurrentFormToState() {
       if (!activeTeacher) return;
       
@@ -773,6 +852,7 @@
         allocations: allocations
       };
 
+      updateTeacherWorkloadBadge();
       updateTables();
     }
 
@@ -780,12 +860,12 @@
       const rowId = 'row-' + Date.now() + Math.random().toString(36).substring(2, 7);
       const div = document.createElement("div");
       div.id = rowId;
-      div.className = "allocation-row grid grid-cols-1 sm:grid-cols-12 gap-3 items-center bg-slate-50 p-3 rounded-md border border-slate-200 relative";
+      div.className = "allocation-row grid grid-cols-1 sm:grid-cols-12 gap-3 items-center bg-slate-50 p-3 rounded-lg border border-slate-200 relative";
 
-      let classOptions = `<option value="">-- Class --</option>`;
+      let classOptions = `<option value="">-- Select Class --</option>`;
       CLASSES.forEach(c => classOptions += `<option value="${c}" ${c === className ? 'selected' : ''}>${c}</option>`);
 
-      let subjectOptions = `<option value="">-- Subject --</option>`;
+      let subjectOptions = `<option value="">-- Select Subject --</option>`;
       Object.keys(SUBJECT_PERIODS).forEach(s => subjectOptions += `<option value="${s}" ${s === subject ? 'selected' : ''}>${s}</option>`);
       subjectOptions += `<option value="HIN" ${subject === "HIN" ? 'selected' : ''}>HIN</option>`;
 
@@ -794,23 +874,23 @@
       div.innerHTML = `
         <div class="sm:col-span-4">
           <label class="block text-[10px] font-bold text-slate-400 mb-0.5 sm:hidden uppercase">Class</label>
-          <select required class="class-select w-full px-2 py-2 border border-slate-300 rounded-md bg-white text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 h-10">
+          <select required class="class-select w-full px-2.5 py-2 border border-slate-300 rounded-md bg-white text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 font-semibold h-10">
             ${classOptions}
           </select>
         </div>
-        <div class="sm:col-span-4">
+        <div class="sm:col-span-5">
           <label class="block text-[10px] font-bold text-slate-400 mb-0.5 sm:hidden uppercase">Subject</label>
-          <select required class="subject-select w-full px-2 py-2 border border-slate-300 rounded-md bg-white text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 h-10">
+          <select required class="subject-select w-full px-2.5 py-2 border border-slate-300 rounded-md bg-white text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 font-semibold h-10">
             ${subjectOptions}
           </select>
         </div>
         <div class="sm:col-span-2">
           <label class="block text-[10px] font-bold text-slate-400 mb-0.5 sm:hidden uppercase">Periods</label>
-          <input type="number" readonly class="periods-input w-full px-1 py-2 border border-slate-300 rounded-md bg-slate-100 text-slate-600 text-xs sm:text-sm text-center font-semibold h-10" placeholder="0" value="${initialPeriods}">
+          <input type="number" readonly class="periods-input w-full px-1 py-2 border border-slate-300 rounded-md bg-slate-100 text-slate-700 text-xs sm:text-sm text-center font-bold h-10" placeholder="0" value="${initialPeriods}">
         </div>
-        <div class="sm:col-span-2 flex justify-end sm:justify-center pt-2 sm:pt-0">
-          <button type="button" onclick="removeRow('${rowId}')" title="Remove row" class="text-red-500 hover:text-red-700 bg-red-50 hover:bg-red-100 w-11 h-11 min-w-[44px] rounded-full flex items-center justify-center transition border border-red-200 active:scale-95">
-            <span class="font-bold text-base">✕</span>
+        <div class="sm:col-span-1 flex justify-end sm:justify-center">
+          <button type="button" onclick="removeRow('${rowId}')" title="Remove row" class="text-red-500 hover:text-red-700 bg-red-50 hover:bg-red-100 w-9 h-9 rounded-full flex items-center justify-center transition border border-red-200 active:scale-95">
+            <span class="font-bold text-sm">✕</span>
           </button>
         </div>
       `;
@@ -844,6 +924,7 @@
       if (!teacherName) {
         chargeDropdown.value = "None";
         checkEmptyState();
+        updateTeacherWorkloadBadge();
         return;
       }
 
@@ -857,9 +938,32 @@
       }
       
       checkEmptyState();
+      updateTeacherWorkloadBadge();
     }
 
-    // Teacher Dropdown Switch Listener
+    // FORM RESET ACTIONS
+    function resetFormForSelectedTeacher() {
+      if (!activeTeacher) {
+        showStatus("Please select a teacher to clear.", true);
+        return;
+      }
+      dbState[activeTeacher] = { classInCharge: "None", allocations: [] };
+      loadTeacherForm(activeTeacher);
+      updateTables();
+      showStatus(`Cleared all allocations for teacher ${activeTeacher}. Click save to commit.`);
+    }
+
+    function resetEntireSchoolForm() {
+      if (confirm("Are you sure you want to reset ALL teacher allocations for the whole school?")) {
+        TEACHERS.forEach(t => {
+          dbState[t] = { classInCharge: "None", allocations: [] };
+        });
+        if (activeTeacher) loadTeacherForm(activeTeacher);
+        updateTables();
+        showStatus("Reset all school allocation records locally. Click save to commit.");
+      }
+    }
+
     teacherDropdown.addEventListener("change", function() {
       if (activeTeacher) {
         saveCurrentFormToState();
@@ -889,7 +993,41 @@
       saveCurrentFormToState();
     });
 
-    // Form Submission with Strict Row Validation
+    // SAVE SINGLE TEACHER
+    function saveSelectedTeacherOnly() {
+      if (!activeTeacher) {
+        showStatus("Please select a teacher first.", true);
+        teacherDropdown.focus();
+        return;
+      }
+
+      saveCurrentFormToState();
+      
+      if (!isFirebaseConfigured || !db) {
+        showStatus(`Saved allocations for [${activeTeacher}] locally in memory. (Firebase key required for cloud sync)`, false);
+        return;
+      }
+
+      startTopLoader();
+      const teacherRef = db.collection("teacher_allocations").doc(activeTeacher);
+      const validAllocations = (dbState[activeTeacher].allocations || []).filter(a => a.className && a.subject);
+
+      teacherRef.set({
+        classInCharge: dbState[activeTeacher].classInCharge || "None",
+        allocations: validAllocations,
+        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+      }).then(() => {
+        completeTopLoader();
+        const timeStr = new Date().toLocaleTimeString();
+        showStatus(`✅ SUCCESS: Saved allocations for [${activeTeacher}] to Cloud Firestore! (${timeStr})`);
+      }).catch(err => {
+        completeTopLoader();
+        console.error("Firebase Single Teacher Save Error:", err);
+        showStatus(`❌ FIREBASE WRITE FAILED: ${err.message}. Allocation saved locally.`, true);
+      });
+    }
+
+    // SAVE FULL SCHOOL DISTRIBUTION
     form.addEventListener("submit", function(event) {
       event.preventDefault();
 
@@ -1259,7 +1397,7 @@
     }
 
     function buildAndRenderTimetables() {
-      showSpinner("Generating conflict-free schedules...");
+      startTopLoader();
 
       setTimeout(() => {
         const condPEAfternoon = document.getElementById("condPEAfternoon").checked;
@@ -1349,7 +1487,7 @@
         });
 
         renderTeacherTimetables(teacherSchedules);
-        hideSpinner();
+        completeTopLoader();
         showStatus("Timetable generated successfully!");
 
         saveTimetableToFirebase(timetable);
@@ -1456,7 +1594,7 @@
     }
 
     // =========================================================================
-    // FIREBASE WRITE FUNCTIONS WITH TIMEOUT & NON-FREEZING SAFEGUARDS
+    // FIREBASE WRITE FUNCTIONS WITH STATUS REPORTING & TOP LOADER
     // =========================================================================
     function saveTimetableToFirebase(timetable) {
       if (!db || !isFirebaseConfigured) return;
@@ -1491,7 +1629,7 @@
           modalStatus.classList.remove("hidden");
           setTimeout(() => { modalStatus.classList.add("hidden"); }, 2000);
         } else {
-          showStatus("Saved locally in memory. (Add Firebase keys to sync online)", false);
+          showStatus("Saved locally in browser memory. (Add Firebase keys to sync online)", false);
         }
         return;
       }
@@ -1502,16 +1640,15 @@
           modalStatus.textContent = "Syncing...";
         }
       } else {
-        showSpinner("Saving allocations to Firebase...");
+        startTopLoader();
       }
 
       let hasResponded = false;
 
-      // 3.5s Safety Timeout - Never freezes UI
       const timeoutId = setTimeout(() => {
         if (!hasResponded) {
           hasResponded = true;
-          if (!isFromModal) hideSpinner();
+          if (!isFromModal) completeTopLoader();
           showStatus("Saved locally! (Firebase sync taking longer or working offline)", false);
         }
       }, 3500);
@@ -1533,22 +1670,23 @@
         if (!hasResponded) {
           hasResponded = true;
           clearTimeout(timeoutId);
-          if (!isFromModal) hideSpinner();
+          if (!isFromModal) completeTopLoader();
           
           if (isFromModal && modalStatus) {
             modalStatus.textContent = "Saved ✓";
             setTimeout(() => { modalStatus.classList.add("hidden"); }, 2000);
           } else {
-            showStatus("All distributions saved successfully to Firebase! 🔥");
+            const timeStr = new Date().toLocaleTimeString();
+            showStatus(`✅ SUCCESS: All school distributions saved to Firebase Cloud Firestore! (${timeStr})`);
           }
         }
       }).catch(err => {
         if (!hasResponded) {
           hasResponded = true;
           clearTimeout(timeoutId);
-          if (!isFromModal) hideSpinner();
+          if (!isFromModal) completeTopLoader();
           console.warn("Firebase Write Error:", err.message);
-          showStatus("Saved locally. (Unable to reach Firebase Cloud)", false);
+          showStatus(`❌ FIREBASE WRITE FAILED: ${err.message}. Saved in local memory.`, true);
         }
       });
     }
@@ -1566,10 +1704,10 @@
     // FIREBASE REAL-TIME LISTENERS & DATA FETCH
     // =========================================================================
     function loadDatabaseFromFirebase(isManual = false) {
-      if (isManual) showSpinner("Connecting to Firebase...");
+      if (isManual) startTopLoader();
 
       if (!isFirebaseConfigured || !db) {
-        if (isManual) hideSpinner();
+        if (isManual) completeTopLoader();
         showStatus("⚠️ Firebase Setup: Replace 'YOUR_API_KEY' with your real Firebase keys in firebaseConfig.", true);
         updateTables();
         return;
@@ -1609,10 +1747,10 @@
           if (isManual) showStatus("Firebase Live Sync active.");
           
           updateTables();
-          if (isManual) hideSpinner();
+          if (isManual) completeTopLoader();
         }, 
         err => {
-          if (isManual) hideSpinner();
+          if (isManual) completeTopLoader();
           showStatus("Running in offline mode. Ensure actual Firebase keys are pasted in script config.", true);
           updateTables();
         }
