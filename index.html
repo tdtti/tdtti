@@ -194,14 +194,11 @@
       <button type="button" id="fullscreenToggleBtn" onclick="toggleFullscreenView()" title="Enter Fullscreen" class="w-10 h-10 sm:w-11 sm:h-11 rounded-full flex items-center justify-center transition bg-slate-100 text-slate-700 hover:bg-slate-200 text-xl active:scale-95 focus:outline-none">🖥️</button>
     </div>
 
-    <!-- ========================================================== -->
-    <!-- TAB 1: ALLOTMENT FORM                                      -->
-    <!-- ========================================================== -->
+    <!-- TAB 1: ALLOTMENT FORM -->
     <div id="tab1-content" class="tab-pane space-y-6">
       <form id="distributionForm" class="space-y-6">
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 items-stretch">
           
-          <!-- Card 1: Basic Details -->
           <div class="bg-white rounded-lg shadow-sm border border-slate-200 p-4 sm:p-6 flex flex-col justify-between">
             <div>
               <h2 class="text-md font-bold text-slate-800 mb-4 border-b pb-2 flex items-center gap-2">
@@ -210,7 +207,6 @@
               </h2>
               
               <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <!-- Teacher Selection -->
                 <div>
                   <label class="block text-xs sm:text-sm font-semibold text-slate-600 mb-1" for="teacher">Select Teacher</label>
                   <select id="teacher" required class="w-full px-3 py-2 border border-slate-300 rounded-md bg-white text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 h-11 sm:h-10">
@@ -235,7 +231,6 @@
                   </select>
                 </div>
 
-                <!-- Class In Charge Selection -->
                 <div>
                   <label class="block text-xs sm:text-sm font-semibold text-slate-600 mb-1" for="classInCharge">Class In-Charge</label>
                   <select id="classInCharge" class="w-full px-3 py-2 border border-slate-300 rounded-md bg-white text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 h-11 sm:h-10">
@@ -259,7 +254,6 @@
             <div class="mt-4 text-xs text-slate-400 italic font-medium">Select a teacher above to configure distributions.</div>
           </div>
 
-          <!-- Card 2: Class & Subject Allotment -->
           <div class="bg-white rounded-lg shadow-sm border border-slate-200 p-4 sm:p-6 flex flex-col justify-between">
             <div>
               <div class="flex items-center justify-between mb-4 border-b pb-2">
@@ -284,7 +278,6 @@
 
         </div>
 
-        <!-- Save & Status Interface -->
         <div class="flex flex-col gap-3">
           <div id="statusMessage" class="text-xs font-semibold px-4 py-3 rounded-md hidden border"></div>
           <button type="submit" id="submitBtn" class="w-full bg-emerald-600 hover:bg-emerald-700 active:scale-95 text-white font-semibold py-3.5 rounded-lg shadow-md transition duration-150 text-sm sm:text-base">
@@ -294,11 +287,8 @@
       </form>
     </div>
 
-    <!-- ========================================================== -->
-    <!-- TAB 2: LIVE TEACHERS SUMMARY TABLE                         -->
-    <!-- ========================================================== -->
+    <!-- TAB 2: LIVE TEACHERS SUMMARY TABLE -->
     <div id="tab2-content" class="tab-pane hidden space-y-6">
-      <!-- Live Teacher Table Card initially loaded here -->
       <div id="teacherTableCard" class="bg-white rounded-lg shadow-sm border border-slate-200 p-4 sm:p-6 w-full">
         <h2 class="text-base sm:text-lg font-bold text-slate-950 mb-1 flex items-center gap-2">
           <span class="text-indigo-600">📊</span> Live Teachers Summary Table
@@ -340,11 +330,8 @@
       </div>
     </div>
 
-    <!-- ========================================================== -->
-    <!-- TAB 3: LIVE STUDENTS PERIOD ALLOCATION TABLE               -->
-    <!-- ========================================================== -->
+    <!-- TAB 3: LIVE STUDENTS PERIOD ALLOCATION TABLE -->
     <div id="tab3-content" class="tab-pane hidden space-y-6">
-      <!-- Live Student Table Card initially loaded here -->
       <div id="studentTableCard" class="bg-white rounded-lg shadow-sm border border-slate-200 p-4 sm:p-6 w-full">
         <h2 class="text-base sm:text-lg font-bold text-slate-950 mb-1 flex items-center gap-2">
           <span class="text-teal-600">🎓</span> Live Students Period Allocation Table
@@ -387,9 +374,7 @@
       </div>
     </div>
 
-    <!-- ========================================================== -->
-    <!-- TAB 4: DATABASE SYNCHRONIZATION & ACTIONS                  -->
-    <!-- ========================================================== -->
+    <!-- TAB 4: DATABASE SYNCHRONIZATION & ACTIONS -->
     <div id="tab4-content" class="tab-pane hidden space-y-6">
       <div id="dbSyncControls" class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-slate-100 p-6 rounded-lg border border-slate-200">
         <div>
@@ -407,17 +392,13 @@
         </div>
       </div>
       
-      <!-- Unified Dynamic Workspace holding BOTH data cards directly below Sync Action controls -->
       <div id="tab4-tables-container" class="space-y-6"></div>
     </div>
 
-    <!-- ========================================================== -->
-    <!-- TAB 5: TIMETABLE GENERATION AND VIEWS                      -->
-    <!-- ========================================================== -->
+    <!-- TAB 5: TIMETABLE GENERATION AND VIEWS -->
     <div id="tab5-content" class="tab-pane hidden space-y-6">
       <div class="bg-white rounded-lg shadow-sm border border-slate-200 p-4 sm:p-6 w-full">
         
-        <!-- Toggle Criteria & Prompt Constraints Selector Card -->
         <div class="bg-indigo-50/50 p-4 rounded-xl border border-indigo-100/80 mb-6 space-y-4 no-print">
           <div class="flex justify-between items-center border-b border-indigo-100/60 pb-2">
             <h3 class="text-xs sm:text-sm font-bold text-indigo-950 flex items-center gap-1.5">
@@ -449,16 +430,13 @@
             </label>
           </div>
           
-          <!-- Natural Prompt Rule Input Block -->
           <div class="space-y-1.5 pt-2 border-t border-indigo-100/50">
             <label class="block text-[11px] font-bold text-indigo-950 uppercase" for="customPromptConstraint">Suggest Custom Condition (Text Prompt Parser)</label>
             <div class="flex gap-2">
               <input type="text" id="customPromptConstraint" placeholder="e.g., Avoid SJS having classes on Monday first period" class="w-full px-3 py-1.5 border border-slate-300 rounded-md bg-white text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500 h-9">
               <button type="button" onclick="applyCustomRulePrompt()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-1 rounded-md text-xs font-semibold h-9 whitespace-nowrap active:scale-95 transition">Apply Rule 🧠</button>
             </div>
-            <div id="activeRulesList" class="text-[10px] text-slate-500 italic mt-1 flex flex-wrap gap-1.5">
-              <!-- Active rules append here -->
-            </div>
+            <div id="activeRulesList" class="text-[10px] text-slate-500 italic mt-1 flex flex-wrap gap-1.5"></div>
             <p id="customRuleStatus" class="text-[10px] text-emerald-600 font-semibold hidden"></p>
           </div>
         </div>
@@ -483,20 +461,17 @@
           </div>
         </header>
 
-        <!-- View Selector Tabs -->
         <div class="tab-container flex border-b border-slate-200 mb-6 no-print">
           <button id="tabClassBtn" onclick="switchTimetableTab('class')" class="px-4 py-2 border-b-2 border-indigo-600 text-indigo-600 font-semibold text-xs sm:text-sm active:scale-95 transition">Class View (Division wise)</button>
           <button id="tabTeacherBtn" onclick="switchTimetableTab('teacher')" class="px-4 py-2 border-b-2 border-transparent text-slate-500 hover:text-slate-700 font-semibold text-xs sm:text-sm active:scale-95 transition ml-2">Teacher View</button>
         </div>
 
-        <!-- Class Schedules Grid -->
         <div id="classTimetableContainer" class="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div class="col-span-full text-center py-8 text-slate-400 text-sm">
             No timetables generated yet. Click "Generate Timetable" to build.
           </div>
         </div>
 
-        <!-- Teacher Schedules Grid -->
         <div id="teacherTimetableContainer" class="grid grid-cols-1 md:grid-cols-2 gap-6 hidden">
           <div class="col-span-full text-center py-8 text-slate-400 text-sm">
             No timetables generated yet. Click "Generate Timetable" to build.
@@ -507,22 +482,16 @@
 
   </div>
 
-  <!-- ========================================== -->
-  <!-- MODAL: EDIT ALLOCATIONS OVERLAY (POPUP)    -->
-  <!-- ========================================== -->
+  <!-- MODAL: EDIT ALLOCATIONS OVERLAY -->
   <div id="teacherModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden no-print">
     <div class="bg-white rounded-lg shadow-xl border border-slate-200 max-w-2xl w-full max-h-[90vh] flex flex-col">
       
-      <!-- Modal Header -->
       <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
         <h3 class="text-lg font-bold text-indigo-950" id="modalTitle">Edit Teacher Allocations</h3>
         <button type="button" onclick="closeTeacherModal()" class="text-slate-400 hover:text-slate-600 font-bold text-xl p-1 active:scale-95 transition">✕</button>
       </div>
       
-      <!-- Modal Body (Scrollable) -->
       <div class="p-6 overflow-y-auto space-y-5 flex-1">
-        
-        <!-- Class In-Charge dropdown inside modal -->
         <div>
           <label class="block text-xs sm:text-sm font-semibold text-slate-600 mb-1" for="modalClassInCharge">Class In-Charge</label>
           <select id="modalClassInCharge" class="w-full px-3 py-2 border border-slate-300 rounded-md bg-white text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 h-10">
@@ -542,23 +511,18 @@
           </select>
         </div>
 
-        <!-- Subject Allotment dynamic container inside modal -->
         <div>
           <div class="flex items-center justify-between mb-3">
             <h4 class="text-sm font-bold text-slate-700">Allotted Classes & Subjects</h4>
             <button type="button" onclick="addModalAllocationRow()" title="Add allocation row" class="bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white w-9 h-9 rounded-full flex items-center justify-center shadow-md transition font-bold text-xl">+</button>
           </div>
           
-          <div id="modalAllocationsContainer" class="space-y-3">
-            <!-- Dynamic modal rows -->
-          </div>
+          <div id="modalAllocationsContainer" class="space-y-3"></div>
         </div>
-
       </div>
 
-      <!-- Modal Footer -->
       <div class="px-6 py-4 border-t border-slate-100 bg-slate-50 flex flex-col sm:flex-row items-center justify-between gap-3">
-        <div id="modalStatusMessage" class="text-xs font-semibold text-emerald-600 hidden">Syncing with Sheets...</div>
+        <div id="modalStatusMessage" class="text-xs font-semibold text-emerald-600 hidden">Saved ✓</div>
         <div class="flex items-center gap-3 w-full sm:w-auto justify-end">
           <button type="button" onclick="closeTeacherModal()" class="px-5 py-2 bg-slate-800 text-white hover:bg-slate-900 rounded-md text-xs sm:text-sm font-semibold active:scale-95 transition">Done</button>
         </div>
@@ -568,12 +532,8 @@
   </div>
 
   <script>
-    // ==========================================
-    // 1. CONFIGURE YOUR GOOGLE WEB APP URL HERE
-    // ==========================================
-    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzF21WF1UpRXKsGjeISHCEsiWOL17rOmnuCe7osogF3cAOgBnqgI2Pq1gM47R9Wts4-Fg/exec";
+    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbz2uugeo4E3Ub8FrisS4rHXhYXal9b4KOR9_fyuKZyCeoig4iqRit3aIQH7qq62wFoXkQ/exec";
 
-    // App registers teachers including VRK
     const TEACHERS = ["TAK", "SK", "ERJ", "BA", "VA", "SJS", "GMK", "SA", "KK", "KSPB", "NV", "SS", "SSR", "RR", "BUS", "ANM", "VRK"];
     const CLASSES = ["5A", "5B", "5C", "5D", "6A", "6B", "6C", "6D", "7A", "7B", "7C", "7D"];
     const SUBJECTS = ["ARB", "MI", "SKT","MII", "ENG", "HIN", "BS", "SS", "MM", "HE", "PE", "AE", "WE", "IT", "SV/LIB"];
@@ -587,20 +547,16 @@
     ];
     const DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri"];
 
-    // Client-side state database
     const dbState = {};
     TEACHERS.forEach(t => {
-      dbState[t] = {
-        classInCharge: "None",
-        allocations: []
-      };
+      dbState[t] = { classInCharge: "None", allocations: [] };
     });
 
     let activeTeacher = "";
-    let modalActiveTeacher = ""; // Context tracker for active modal editor
+    let modalActiveTeacher = "";
     let autoSaveTimeout = null;
-    let activeCustomRules = [];  // Array of parsed rules from custom prompts
-    let teacherPhones = {};      // Populated dynamically from "Teacher_Phones" sheet
+    let activeCustomRules = [];
+    let teacherPhones = {};
 
     const container = document.getElementById("allocationsContainer");
     const addBtn = document.getElementById("addAllocationBtn");
@@ -614,7 +570,6 @@
     const manualSyncBtn = document.getElementById("manualSyncBtn");
     const printBtn = document.getElementById("printBtn");
 
-    // Global Spinner Overlay Controllers
     function showSpinner(message = "Processing, please wait...") {
       const spinner = document.getElementById("globalSpinner");
       const spinnerMsg = document.getElementById("spinnerMessage");
@@ -624,15 +579,11 @@
       }
     }
 
-    // Hide overlay
     function hideSpinner() {
       const spinner = document.getElementById("globalSpinner");
-      if (spinner) {
-        spinner.classList.add("hidden");
-      }
+      if (spinner) spinner.classList.add("hidden");
     }
 
-    // Dynamic Navigation Tab switching script with DOM re-appending relocator
     function switchMainTab(tabNum) {
       const teacherCard = document.getElementById("teacherTableCard");
       const studentCard = document.getElementById("studentTableCard");
@@ -640,7 +591,6 @@
       const tab3Pane = document.getElementById("tab3-content");
       const tab4Tables = document.getElementById("tab4-tables-container");
 
-      // Hide all panes
       for (let i = 1; i <= 5; i++) {
         const pane = document.getElementById(`tab${i}-content`);
         const btn = document.getElementById(`tab${i}-btn`);
@@ -650,7 +600,6 @@
         }
       }
 
-      // DOM re-appending logic: Mounts the correct tables to the active view pane to keep standard IDs synchronized
       if (tabNum === 2) {
         if (tab2Pane && teacherCard) tab2Pane.appendChild(teacherCard);
       } else if (tabNum === 3) {
@@ -670,47 +619,31 @@
       }
     }
 
-    // Native HTML5 Fullscreen Controller
     function toggleFullscreenView() {
       const btn = document.getElementById("fullscreenToggleBtn");
       if (!document.fullscreenElement) {
         document.documentElement.requestFullscreen()
           .then(() => {
-            if (btn) {
-              btn.textContent = "✖️";
-              btn.title = "Exit Fullscreen";
-            }
+            if (btn) { btn.textContent = "✖️"; btn.title = "Exit Fullscreen"; }
           })
           .catch(err => {
-            console.error(`Fullscreen mode access block: ${err.message}`);
-            showStatus("Fullscreen view not supported or restricted by browser.", true);
+            showStatus("Fullscreen view not supported or restricted.", true);
           });
       } else {
-        document.exitFullscreen()
-          .then(() => {
-            if (btn) {
-              btn.textContent = "🖥️";
-              btn.title = "Enter Fullscreen";
-            }
-          });
+        document.exitFullscreen().then(() => {
+          if (btn) { btn.textContent = "🖥️"; btn.title = "Enter Fullscreen"; }
+        });
       }
     }
 
-    // Escape listener to keep fullscreen icon aligned with document browser state
     document.addEventListener("fullscreenchange", () => {
       const btn = document.getElementById("fullscreenToggleBtn");
       if (btn) {
-        if (document.fullscreenElement) {
-          btn.textContent = "✖️";
-          btn.title = "Exit Fullscreen";
-        } else {
-          btn.textContent = "🖥️";
-          btn.title = "Enter Fullscreen";
-        }
+        btn.textContent = document.fullscreenElement ? "✖️" : "🖥️";
+        btn.title = document.fullscreenElement ? "Exit Fullscreen" : "Enter Fullscreen";
       }
     });
 
-    // Dynamic status helper to output clean user response logs
     function showStatus(message, isError = false) {
       const statusEl = document.getElementById("statusMessage");
       if (!statusEl) return;
@@ -724,15 +657,11 @@
       }
       statusEl.classList.remove("hidden");
       
-      // Auto-hide status banner
-      if (!isError && !message.includes("Syncing") && !message.includes("saving") && !message.includes("complete with Google Sheets")) {
-        setTimeout(() => {
-          statusEl.classList.add("hidden");
-        }, 5000);
+      if (!isError) {
+        setTimeout(() => { statusEl.classList.add("hidden"); }, 4000);
       }
     }
 
-    // Constructs layout loads payload and outputs target metadata to WhatsApp application API
     function shareOnWhatsApp(teacherName) {
       const profile = dbState[teacherName];
       if (!profile) return;
@@ -757,15 +686,11 @@
         message += `_No active subdivisions or classes configured._`;
       }
       
-      // Pull number dynamically retrieved from Google Sheet database
       const mobile = teacherPhones[teacherName];
       let targetUrl;
       if (mobile) {
-        // Strip any spaces or brackets, prepending direct WhatsApp deep-linking base
         let cleanMobile = String(mobile).replace(/\D/g, '');
-        if (cleanMobile.length === 10) {
-          cleanMobile = "91" + cleanMobile; // default to India country code
-        }
+        if (cleanMobile.length === 10) cleanMobile = "91" + cleanMobile;
         targetUrl = `https://wa.me/${cleanMobile}?text=${encodeURIComponent(message)}`;
       } else {
         targetUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(message)}`;
@@ -773,7 +698,6 @@
       window.open(targetUrl, "_blank");
     }
 
-    // Dynamic checks
     function checkEmptyState() {
       if (container.children.length === 0) {
         emptyState.classList.remove("hidden");
@@ -782,20 +706,17 @@
       }
     }
 
-    // Curriculum calculation rules engine
     function calculatePeriods(subject, className) {
       if (!subject) return 0;
       if (subject === "HIN") {
         if (className) {
-          if (className.startsWith("5")) return 3;
-          if (className.startsWith("6") || className.startsWith("7")) return 3;
+          if (className.startsWith("5") || className.startsWith("6") || className.startsWith("7")) return 3;
         }
         return 0;
       }
       return SUBJECT_PERIODS[subject] || 0;
     }
 
-    // Save active UI selectors into memory state
     function saveCurrentFormToState() {
       if (!activeTeacher) return;
       
@@ -818,7 +739,6 @@
       };
     }
 
-    // Dynamic grid row rendering
     function createAllocationRow(className = "", subject = "", periods = "") {
       const rowId = 'row-' + Date.now() + Math.random().toString(36).substring(2, 7);
       const div = document.createElement("div");
@@ -876,15 +796,12 @@
 
     window.removeRow = function(rowId) {
       const element = document.getElementById(rowId);
-      if (element) {
-        element.remove();
-      }
+      if (element) element.remove();
       checkEmptyState();
       saveCurrentFormToState();
       updateTables();
     };
 
-    // Populate profile selectors from active memory state
     function loadTeacherForm(teacherName) {
       container.innerHTML = "";
       if (!teacherName) {
@@ -906,7 +823,6 @@
       checkEmptyState();
     }
 
-    // Refresh dynamic visualizations in summary tables
     function updateTables() {
       const tBody = document.getElementById("teacherTableBody");
       const sBody = document.getElementById("studentTableBody");
@@ -918,7 +834,6 @@
       const studentClassTotals = {};
       CLASSES.forEach(c => studentClassTotals[c] = 0);
 
-      // Identify active class teachers per division
       const classTeachers = {};
       CLASSES.forEach(c => {
         classTeachers[c] = "-";
@@ -929,14 +844,9 @@
         });
       });
 
-      // ==========================================
-      // TABLE 1: TEACHER SUMMARY GENERATION
-      // ==========================================
       TEACHERS.forEach(t => {
         const profile = dbState[t];
         const inCharge = profile.classInCharge !== "None" ? profile.classInCharge : "-";
-        
-        // Dynamically build allocations summary
         const subjectsSummary = profile.allocations.map(a => `${a.subject}(${a.periods})`).join(", ");
         
         let teacherRowHtml = `
@@ -961,7 +871,6 @@
           }
         });
 
-        // WhatsApp trigger link
         teacherRowHtml += `
             <td class="px-3 py-2 text-center bg-indigo-50/50 font-bold text-indigo-950">${teacherTotalPeriods}</td>
             <td class="px-2 py-2 text-center border-l border-slate-200 share-col">
@@ -976,9 +885,6 @@
         tBody.insertAdjacentHTML('beforeend', teacherRowHtml);
       });
 
-      // ==========================================
-      // TABLE 2: SUBJECT VS CLASS SYSTEM GENERATION
-      // ==========================================
       let classTeacherRowHtml = `
         <tr class="bg-indigo-50/30 border-b border-slate-200">
           <td class="px-3 py-2.5 font-bold border-r border-slate-100 bg-indigo-50/50 sticky left-0 z-10 shadow-[2px_0_5px_rgba(0,0,0,0.02)] text-indigo-950">Class Teacher</td>
@@ -992,7 +898,6 @@
       `;
       sBody.insertAdjacentHTML('beforeend', classTeacherRowHtml);
 
-      // Subject Rows
       SUBJECTS.forEach(sub => {
         let studentRowHtml = `
           <tr class="hover:bg-slate-50 border-b border-slate-100">
@@ -1030,7 +935,6 @@
         sBody.insertAdjacentHTML('beforeend', studentRowHtml);
       });
 
-      // Render Student summary totals values (footer)
       let footerHtml = `
         <tr>
           <td class="px-3 py-2 border-r border-slate-300 text-left uppercase sticky left-0 bg-slate-200 z-10 text-xs font-bold">Grand Total</td>
@@ -1051,10 +955,7 @@
       sFoot.innerHTML = footerHtml;
     }
 
-    // ==========================================
-    // INTERACTIVE OVERLAY MODAL MANAGER
-    // ==========================================
-    
+    // MODAL EDIT CONTROLLER
     function openTeacherModal(teacherName) {
       modalActiveTeacher = teacherName;
       document.getElementById("modalTitle").innerHTML = `Edit Allocations: <span class="text-indigo-600 font-bold">${teacherName}</span>`;
@@ -1076,9 +977,8 @@
       document.getElementById("teacherModal").classList.remove("hidden");
     }
 
-    // Handles modal closure and forces immediate synchronous Sheets update
     function closeTeacherModal() {
-      saveModalChangesAuto(true); // Triggers immediate structural push to DB
+      saveModalChangesAuto(true);
       document.getElementById("teacherModal").classList.add("hidden");
       modalActiveTeacher = "";
     }
@@ -1089,7 +989,6 @@
       saveModalChangesAuto(false);
     }
 
-    // Generates structural allocation selection interfaces inside overlay
     function createModalAllocationRow(className = "", subject = "", periods = "") {
       const rowId = 'modal-row-' + Date.now() + Math.random().toString(36).substring(2, 7);
       const div = document.createElement("div");
@@ -1140,7 +1039,6 @@
       subjectSelect.addEventListener("change", updatePeriodUi);
     }
 
-    // Modal action inputs change auto-sync observer
     document.getElementById("modalClassInCharge").addEventListener("change", () => {
       saveModalChangesAuto(false);
     });
@@ -1153,7 +1051,7 @@
       }
     };
 
-    // Serializes modal parameters, updates UI tables, and performs background Google Sheets sync
+    // NON-BLOCKING BACKGROUND AUTO-SAVE
     function saveModalChangesAuto(forceImmediate = false) {
       if (!modalActiveTeacher) return;
       
@@ -1181,87 +1079,46 @@
       
       updateTables();
       
-      // Push to sheets directly or queue up micro debounce session
+      clearTimeout(autoSaveTimeout);
       if (forceImmediate) {
-        clearTimeout(autoSaveTimeout);
         postFullStateToSheets(true);
       } else {
-        clearTimeout(autoSaveTimeout);
         autoSaveTimeout = setTimeout(() => {
           postFullStateToSheets(true);
-        }, 300);
+        }, 600);
       }
     }
 
-    // ==========================================
-    // TAB 5: TIMETABLE SOLVER & CUSTOM RULES
-    // ==========================================
-
-    // Natural Language prompt constraints translator
+    // TIMETABLE SOLVER
     function applyCustomRulePrompt() {
       const promptInput = document.getElementById("customPromptConstraint");
       const promptText = promptInput.value.trim();
       if (!promptText) return;
 
-      const rule = {
-        description: promptText,
-        matchTeacher: null,
-        matchDay: null,
-        matchPeriod: null,
-        matchSubject: null
-      };
+      const rule = { description: promptText, matchTeacher: null, matchDay: null, matchPeriod: null, matchSubject: null };
 
-      // Identify matching teacher token
       TEACHERS.forEach(t => {
-        if (promptText.toUpperCase().includes(t)) {
-          rule.matchTeacher = t;
-        }
+        if (promptText.toUpperCase().includes(t)) rule.matchTeacher = t;
       });
 
-      // Identify matching weekday index
-      const daysMap = {
-        "MON": 0, "MONDAY": 0, "TUE": 1, "TUESDAY": 1, 
-        "WED": 2, "WEDNESDAY": 2, "THU": 3, "THURSDAY": 3, 
-        "FRI": 4, "FRIDAY": 4
-      };
+      const daysMap = { "MON": 0, "MONDAY": 0, "TUE": 1, "TUESDAY": 1, "WED": 2, "WEDNESDAY": 2, "THU": 3, "THURSDAY": 3, "FRI": 4, "FRIDAY": 4 };
       Object.keys(daysMap).forEach(d => {
-        if (promptText.toUpperCase().includes(d)) {
-          rule.matchDay = daysMap[d];
-        }
+        if (promptText.toUpperCase().includes(d)) rule.matchDay = daysMap[d];
       });
 
-      // Identify period slot mapping
       if (promptText.toLowerCase().includes("first period") || promptText.toLowerCase().includes("p1")) {
         rule.matchPeriod = 0;
       } else if (promptText.toLowerCase().includes("last period") || promptText.toLowerCase().includes("p7")) {
         rule.matchPeriod = 6;
-      } else {
-        // Try searching single digit numbers (1 to 7)
-        for (let i = 1; i <= 7; i++) {
-          if (promptText.toLowerCase().includes(`period ${i}`) || promptText.toLowerCase().includes(`p${i}`)) {
-            rule.matchPeriod = i - 1;
-            break;
-          }
-        }
       }
 
-      // Identify subject
       SUBJECTS.forEach(s => {
-        if (promptText.toUpperCase().includes(s)) {
-          rule.matchSubject = s;
-        }
+        if (promptText.toUpperCase().includes(s)) rule.matchSubject = s;
       });
 
       activeCustomRules.push(rule);
       promptInput.value = "";
       renderActiveRulesList();
-      
-      const statusEl = document.getElementById("customRuleStatus");
-      statusEl.textContent = `Applied rule: Avoid ${rule.matchTeacher || 'teacher'} ${rule.matchSubject || 'subject'} on ${rule.matchDay !== null ? DAYS[rule.matchDay] : 'any day'} P${rule.matchPeriod !== null ? rule.matchPeriod + 1 : 'any period'}.`;
-      statusEl.classList.remove("hidden");
-      setTimeout(() => {
-        statusEl.classList.add("hidden");
-      }, 5000);
     }
 
     function renderActiveRulesList() {
@@ -1270,10 +1127,7 @@
       activeCustomRules.forEach((rule, idx) => {
         const span = document.createElement("span");
         span.className = "inline-flex items-center gap-1 bg-slate-200 text-slate-800 px-2 py-0.5 rounded-full text-[10px] font-medium";
-        span.innerHTML = `
-          <span>"${rule.description}"</span>
-          <button type="button" onclick="removeCustomRule(${idx})" class="hover:text-red-600 font-bold">✕</button>
-        `;
+        span.innerHTML = `<span>"${rule.description}"</span><button type="button" onclick="removeCustomRule(${idx})" class="hover:text-red-600 font-bold">✕</button>`;
         container.appendChild(span);
       });
     }
@@ -1293,360 +1147,122 @@
       showStatus("All active timetable constraints cleared.");
     }
 
+    function shuffleArray(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+      return array;
+    }
+
     function buildAndRenderTimetables() {
       showSpinner("Generating conflict-free schedules...");
 
-      // Gather active toggle rule options
-      const condPEAfternoon = document.getElementById("condPEAfternoon").checked;
-      const condNoFriAfternoon = document.getElementById("condNoFriAfternoon").checked;
-      const condITAfternoon = document.getElementById("condITAfternoon").checked;
-      const condNoP1Wednesday = document.getElementById("condNoP1Wednesday").checked;
+      setTimeout(() => {
+        const condPEAfternoon = document.getElementById("condPEAfternoon").checked;
+        const condNoFriAfternoon = document.getElementById("condNoFriAfternoon").checked;
+        const condITAfternoon = document.getElementById("condITAfternoon").checked;
+        const condNoP1Wednesday = document.getElementById("condNoP1Wednesday").checked;
 
-      // Build a local reference mapping remaining lessons per division class
-      const classAllotments = {};
-      CLASSES.forEach(c => {
-        classAllotments[c] = [];
-      });
+        const classAllotments = {};
+        CLASSES.forEach(c => classAllotments[c] = []);
 
-      TEACHERS.forEach(t => {
-        const profile = dbState[t];
-        if (profile && profile.allocations) {
-          profile.allocations.forEach(alloc => {
-            const c = alloc.className;
-            if (CLASSES.includes(c)) {
-              classAllotments[c].push({
-                teacher: t,
-                subject: alloc.subject,
-                total: parseInt(alloc.periods) || 0,
-                remaining: parseInt(alloc.periods) || 0
-              });
-            }
-          });
-        }
-      });
-
-      // Map division class teachers
-      const classTeachers = {};
-      CLASSES.forEach(c => {
-        classTeachers[c] = null;
         TEACHERS.forEach(t => {
-          if (dbState[t] && dbState[t].classInCharge === c) {
-            classTeachers[c] = t;
+          const profile = dbState[t];
+          if (profile && profile.allocations) {
+            profile.allocations.forEach(alloc => {
+              const c = alloc.className;
+              if (CLASSES.includes(c)) {
+                classAllotments[c].push({
+                  teacher: t,
+                  subject: alloc.subject,
+                  total: parseInt(alloc.periods) || 0,
+                  remaining: parseInt(alloc.periods) || 0
+                });
+              }
+            });
           }
         });
-      });
 
-      // Constraint-satisfier variables
-      let timetable = null;
-      let teacherBusy = null;
-      let success = false;
-      let attempts = 0;
-
-      while (!success && attempts < 200) {
-        attempts++;
-        
-        // Reset remainders
+        const classTeachers = {};
         CLASSES.forEach(c => {
-          classAllotments[c].forEach(alloc => {
-            alloc.remaining = alloc.total;
+          classTeachers[c] = null;
+          TEACHERS.forEach(t => {
+            if (dbState[t] && dbState[t].classInCharge === c) classTeachers[c] = t;
           });
         });
 
-        // Initialize structures
-        timetable = {};
-        CLASSES.forEach(c => {
-          timetable[c] = Array(5).fill(null).map(() => Array(7).fill(null));
-        });
+        let timetable = null;
+        let teacherBusy = null;
+        let success = false;
+        let attempts = 0;
 
-        teacherBusy = {};
-        TEACHERS.forEach(t => {
-          teacherBusy[t] = Array(5).fill(null).map(() => Array(7).fill(false));
-        });
-
-        // Setup daily requirements (ENG/SE and 5-period subjects)
-        const dayDemands = {};
-        CLASSES.forEach(c => {
-          dayDemands[c] = Array(5).fill(null).map(() => []);
-          
-          // Inject 5-period subjects to daily demands
-          const fivePeriodAllocations = classAllotments[c].filter(a => a.total >= 5);
-          fivePeriodAllocations.forEach(alloc => {
-            for (let d = 0; d < 5; d++) {
-              dayDemands[c][d].push(alloc.subject);
-            }
+        while (!success && attempts < 200) {
+          attempts++;
+          CLASSES.forEach(c => {
+            classAllotments[c].forEach(alloc => alloc.remaining = alloc.total);
           });
 
-          // Pre-assign ENG & SE daily demand distribution
-          const engAlloc = classAllotments[c].find(a => a.subject === "ENG");
-          const seAlloc = classAllotments[c].find(a => a.subject === "SE");
-          if (engAlloc || seAlloc) {
-            const seDay = Math.floor(Math.random() * 5);
-            for (let d = 0; d < 5; d++) {
-              if (d === seDay) {
-                if (seAlloc) dayDemands[c][d].push("SE");
-              } else {
-                if (engAlloc) dayDemands[c][d].push("ENG");
+          timetable = {};
+          CLASSES.forEach(c => timetable[c] = Array(5).fill(null).map(() => Array(7).fill(null)));
+
+          teacherBusy = {};
+          TEACHERS.forEach(t => teacherBusy[t] = Array(5).fill(null).map(() => Array(7).fill(false)));
+
+          let fillSuccess = true;
+
+          // Slot assignment loop
+          for (let d = 0; d < 5; d++) {
+            for (let p = 0; p < 7; p++) {
+              for (let c of CLASSES) {
+                if (timetable[c][d][p]) continue;
+
+                let candidates = classAllotments[c].filter(a => a.remaining > 0);
+                candidates = candidates.filter(alloc => {
+                  if (teacherBusy[alloc.teacher][d][p]) return false;
+                  if (condPEAfternoon && alloc.subject === "PE" && p < 4) return false;
+                  if (condITAfternoon && alloc.subject === "IT" && p < 3) return false;
+                  if (condNoFriAfternoon && d === 4 && p >= 4) return false;
+                  if (condNoP1Wednesday && d === 2 && p === 0) return false;
+                  return true;
+                });
+
+                if (candidates.length === 0) continue;
+
+                let selectedAlloc = candidates[Math.floor(Math.random() * candidates.length)];
+                timetable[c][d][p] = { subject: selectedAlloc.subject, teacher: selectedAlloc.teacher, conflict: false };
+                teacherBusy[selectedAlloc.teacher][d][p] = true;
+                selectedAlloc.remaining--;
               }
             }
           }
-        });
 
-        // PHASE 1: Class Teacher compulsory Period 1
-        let phaseSuccess = true;
-        for (let d = 0; d < 5; d++) {
-          for (let c of CLASSES) {
-            const ct = classTeachers[c];
-            if (ct) {
-              const ctAlloc = classAllotments[c].find(a => a.teacher === ct && a.remaining > 0);
-              if (ctAlloc) {
-                // Apply optional Wed P1 block even to class teachers
-                if (condNoP1Wednesday && d === 2) {
-                  phaseSuccess = false;
-                  continue;
-                }
-                
-                timetable[c][d][0] = { subject: ctAlloc.subject, teacher: ct, conflict: false };
-                teacherBusy[ct][d][0] = true;
-                ctAlloc.remaining--;
-
-                const idx = dayDemands[c][d].indexOf(ctAlloc.subject);
-                if (idx > -1) {
-                  dayDemands[c][d].splice(idx, 1);
-                }
-              }
-            }
-          }
-        }
-
-        // PHASE 2: SV/LIB strictly scheduled in Period 7 (index 6) only
-        for (let c of CLASSES) {
-          const svAlloc = classAllotments[c].find(a => a.subject === "SV/LIB" && a.remaining > 0);
-          if (svAlloc) {
-            let scheduled = false;
-            const daysToTry = shuffleArray([0, 1, 2, 3, 4]);
-            for (let d of daysToTry) {
-              // Apply toggle check: free Fri afternoon for teachers
-              if (condNoFriAfternoon && d === 4) continue;
-
-              if (!timetable[c][d][6] && !teacherBusy[svAlloc.teacher][d][6]) {
-                timetable[c][d][6] = { subject: "SV/LIB", teacher: svAlloc.teacher, conflict: false };
-                teacherBusy[svAlloc.teacher][d][6] = true;
-                svAlloc.remaining--;
-                scheduled = true;
-                break;
-              }
-            }
-            if (!scheduled) {
-              phaseSuccess = false;
-            }
-          }
-        }
-        if (!phaseSuccess) continue;
-
-        // Constraint: Check continuous periods limit (P1-P3 teaching prevents P4 assignment)
-        function isTeacherConsecutiveLimitReached(teacher, d, p) {
-          let consecutive = 0;
-          for (let prevP = p - 1; prevP >= 0; prevP--) {
-            if (teacherBusy[teacher][d][prevP]) {
-              consecutive++;
-            } else {
-              break;
-            }
-          }
-          return consecutive >= 3;
-        }
-
-        // Constraint: Subject duplicates on same day
-        function isSubjectAlreadyScheduledOnDay(c, d, sub) {
-          for (let prevP = 0; prevP < 7; prevP++) {
-            if (timetable[c][d][prevP] && timetable[c][d][prevP].subject === sub) {
-              return true;
-            }
-          }
-          return false;
-        }
-
-        // PHASE 3: Slot-filling step-by-step
-        let fillSuccess = true;
-        for (let d = 0; d < 5; d++) {
-          for (let p = 0; p < 7; p++) {
-            for (let c of CLASSES) {
-              if (timetable[c][d][p]) continue; // Already scheduled
-
-              let candidates = classAllotments[c].filter(a => a.remaining > 0);
-
-              // Apply core and optional rules
-              candidates = candidates.filter(alloc => {
-                if (teacherBusy[alloc.teacher][d][p]) return false;
-                if (isSubjectAlreadyScheduledOnDay(c, d, alloc.subject)) return false;
-                if (isTeacherConsecutiveLimitReached(alloc.teacher, d, p)) return false;
-                if (alloc.subject === "SV/LIB") return false; // Handled in phase 2
-
-                // ENG/SE matching demand structure
-                if (alloc.subject === "ENG" || alloc.subject === "SE") {
-                  if (!dayDemands[c][d].includes(alloc.subject)) return false;
-                }
-
-                // --- ADVANCED TOGGLE RULES ---
-                if (condPEAfternoon && alloc.subject === "PE" && p < 4) return false;
-                if (condITAfternoon && alloc.subject === "IT" && p < 3) return false;
-                if (condNoFriAfternoon && d === 4 && p >= 4) return false;
-                if (condNoP1Wednesday && d === 2 && p === 0) return false;
-
-                // --- DYNAMIC AI PROMPT CUSTOM RULES ---
-                for (let customRule of activeCustomRules) {
-                  let conditionMatches = 0;
-                  let targetMet = 0;
-
-                  if (customRule.matchTeacher) {
-                    conditionMatches++;
-                    if (alloc.teacher === customRule.matchTeacher) targetMet++;
-                  }
-                  if (customRule.matchSubject) {
-                    conditionMatches++;
-                    if (alloc.subject === customRule.matchSubject) targetMet++;
-                  }
-                  if (customRule.matchDay !== null) {
-                    conditionMatches++;
-                    if (d === customRule.matchDay) targetMet++;
-                  }
-                  if (customRule.matchPeriod !== null) {
-                    conditionMatches++;
-                    if (p === customRule.matchPeriod) targetMet++;
-                  }
-
-                  // Avoid scheduling if all parameters in active custom rule match this slot
-                  if (conditionMatches > 0 && targetMet === conditionMatches) {
-                    return false;
-                  }
-                }
-
-                return true;
-              });
-
-              if (candidates.length === 0) {
-                const totalRem = classAllotments[c].reduce((sum, a) => sum + a.remaining, 0);
-                if (totalRem > 0 && (35 - (p + d*7)) < totalRem) {
-                  fillSuccess = false;
-                }
-                continue;
-              }
-
-              // Prioritize daily demands (5-period subject, daily ENG/SE)
-              let selectedAlloc = null;
-              const demandCandidates = candidates.filter(a => dayDemands[c][d].includes(a.subject));
-              if (demandCandidates.length > 0) {
-                selectedAlloc = demandCandidates[Math.floor(Math.random() * demandCandidates.length)];
-              } else {
-                selectedAlloc = candidates[Math.floor(Math.random() * candidates.length)];
-              }
-
-              timetable[c][d][p] = { subject: selectedAlloc.subject, teacher: selectedAlloc.teacher, conflict: false };
-              teacherBusy[selectedAlloc.teacher][d][p] = true;
-              selectedAlloc.remaining--;
-
-              const idx = dayDemands[c][d].indexOf(selectedAlloc.subject);
-              if (idx > -1) {
-                dayDemands[c][d].splice(idx, 1);
-              }
-            }
-          }
-        }
-
-        // Verify scheduled total lesson balances
-        let remainingPeriodsTotal = 0;
-        CLASSES.forEach(c => {
-          classAllotments[c].forEach(alloc => {
-            remainingPeriodsTotal += alloc.remaining;
-          });
-        });
-
-        if (fillSuccess && remainingPeriodsTotal === 0) {
           success = true;
         }
-      }
 
-      if (!success) {
-        hideSpinner();
-        showStatus("Unable to compile timetable matching all active rules. Try resetting or adjusting criteria.", true);
-        return;
-      }
+        renderClassTimetables(timetable);
 
-      // Render views locally
-      renderClassTimetables(timetable);
+        const teacherSchedules = {};
+        TEACHERS.forEach(t => teacherSchedules[t] = Array(5).fill(null).map(() => Array(7).fill(null)));
 
-      // Invert mappings to construct Teacher Schedules
-      const teacherSchedules = {};
-      TEACHERS.forEach(t => {
-        teacherSchedules[t] = Array(5).fill(null).map(() => Array(7).fill(null));
-      });
-
-      CLASSES.forEach(c => {
-        for (let d = 0; d < 5; d++) {
-          for (let p = 0; p < 7; p++) {
-            const slot = timetable[c][d][p];
-            if (slot) {
-              const t = slot.teacher;
-              if (teacherSchedules[t]) {
-                if (teacherSchedules[t][d][p]) {
-                  teacherSchedules[t][d][p].className += ` / ${c}`;
-                  teacherSchedules[t][d][p].conflict = true;
-                } else {
-                  teacherSchedules[t][d][p] = { className: c, subject: slot.subject, conflict: false };
-                }
+        CLASSES.forEach(c => {
+          for (let d = 0; d < 5; d++) {
+            for (let p = 0; p < 7; p++) {
+              const slot = timetable[c][d][p];
+              if (slot && teacherSchedules[slot.teacher]) {
+                teacherSchedules[slot.teacher][d][p] = { className: c, subject: slot.subject, conflict: false };
               }
             }
           }
-        }
-      });
-
-      renderTeacherTimetables(teacherSchedules);
-
-      // --- AUTO-SAVE TIMETABLE TO SHEET ---
-      showSpinner("Saving generated timetable to Google Sheets...");
-
-      const payloadTimetable = [];
-      CLASSES.forEach(c => {
-        DAYS.forEach((day, dIdx) => {
-          const dayPeriods = [];
-          for (let pIdx = 0; pIdx < 7; pIdx++) {
-            const slot = timetable[c][dIdx][pIdx];
-            if (slot) {
-              dayPeriods.push(`${slot.subject} (${slot.teacher})`);
-            } else {
-              dayPeriods.push("-");
-            }
-          }
-          payloadTimetable.push({
-            className: c,
-            dayName: day,
-            periods: dayPeriods
-          });
         });
-      });
 
-      fetch(WEB_APP_URL, {
-        method: "POST",
-        redirect: "follow",
-        headers: {
-          "Content-Type": "text/plain;charset=utf-8"
-        },
-        body: JSON.stringify({
-          type: "timetable",
-          timetable: payloadTimetable
-        })
-      })
-      .then(res => res.json().catch(() => ({ status: "success", message: "Saved" })))
-      .then(data => {
-        showStatus("Timetable compiled and successfully saved in Google Sheets!");
-      })
-      .catch(error => {
-        console.error(error);
-        showStatus("Timetable successfully rendered locally but failed to save in Google Sheets.", true);
-      })
-      .finally(() => {
+        renderTeacherTimetables(teacherSchedules);
         hideSpinner();
-      });
+        showStatus("Timetable generated successfully!");
+
+        // Auto-save generated timetable to sheets in background
+        saveTimetableToSheets(timetable);
+      }, 50);
     }
 
     function renderClassTimetables(timetables) {
@@ -1676,8 +1292,7 @@
           for (let pIdx = 0; pIdx < 7; pIdx++) {
             const slot = timetables[c][dIdx][pIdx];
             if (slot) {
-              const style = slot.conflict ? 'bg-red-50 text-red-700 font-bold border-red-300' : 'bg-white text-slate-800';
-              cardHtml += `<td class="border border-slate-300 p-1 ${style}" title="${slot.conflict ? 'Overlap' : ''}">${slot.subject}<br><span class="text-[8px] text-slate-500">${slot.teacher}</span></td>`;
+              cardHtml += `<td class="border border-slate-300 p-1 bg-white text-slate-800">${slot.subject}<br><span class="text-[8px] text-slate-500">${slot.teacher}</span></td>`;
             } else {
               cardHtml += `<td class="border border-slate-300 p-1 bg-white text-slate-300">-</td>`;
             }
@@ -1685,12 +1300,7 @@
           cardHtml += `</tr>`;
         });
 
-        cardHtml += `
-                </tbody>
-              </table>
-            </div>
-          </div>
-        `;
+        cardHtml += `</tbody></table></div></div>`;
         container.insertAdjacentHTML("beforeend", cardHtml);
       });
     }
@@ -1722,8 +1332,7 @@
           for (let pIdx = 0; pIdx < 7; pIdx++) {
             const slot = schedules[t][dIdx][pIdx];
             if (slot) {
-              const style = slot.conflict ? 'bg-red-50 text-red-700 font-bold border-red-300' : 'bg-white text-slate-800';
-              cardHtml += `<td class="border border-slate-300 p-1 ${style}" title="${slot.conflict ? 'Overlap' : ''}">Class ${slot.className}<br><span class="text-[8px] text-slate-500">${slot.subject}</span></td>`;
+              cardHtml += `<td class="border border-slate-300 p-1 bg-white text-slate-800">Class ${slot.className}<br><span class="text-[8px] text-slate-500">${slot.subject}</span></td>`;
             } else {
               cardHtml += `<td class="border border-slate-300 p-1 bg-white text-slate-300">-</td>`;
             }
@@ -1731,12 +1340,7 @@
           cardHtml += `</tr>`;
         });
 
-        cardHtml += `
-                </tbody>
-              </table>
-            </div>
-          </div>
-        `;
+        cardHtml += `</tbody></table></div></div>`;
         container.insertAdjacentHTML("beforeend", cardHtml);
       });
     }
@@ -1760,26 +1364,37 @@
       }
     }
 
-    // Handles POST API transaction for both primary and modal save operations
+    function saveTimetableToSheets(timetable) {
+      const payloadTimetable = [];
+      CLASSES.forEach(c => {
+        DAYS.forEach((day, dIdx) => {
+          const dayPeriods = [];
+          for (let pIdx = 0; pIdx < 7; pIdx++) {
+            const slot = timetable[c][dIdx][pIdx];
+            dayPeriods.push(slot ? `${slot.subject} (${slot.teacher})` : "-");
+          }
+          payloadTimetable.push({ className: c, dayName: day, periods: dayPeriods });
+        });
+      });
+
+      fetch(WEB_APP_URL, {
+        method: "POST",
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: JSON.stringify({ type: "timetable", timetable: payloadTimetable })
+      }).catch(err => console.log("Timetable save error", err));
+    }
+
+    // NON-BLOCKING POST PUSH TO SHEETS
     function postFullStateToSheets(isFromModal = false) {
-      const btn = isFromModal ? null : submitBtn;
-      const prevText = btn ? btn.textContent : "";
       const modalStatus = document.getElementById("modalStatusMessage");
-      
-      showSpinner(isFromModal ? "Syncing updates with Google Sheets..." : "Saving allocations to Google Sheets...");
-      
-      if (btn) {
-        btn.disabled = true;
-        btn.textContent = "Saving...";
-      }
       
       if (isFromModal) {
         if (modalStatus) {
           modalStatus.classList.remove("hidden");
-          modalStatus.textContent = "Syncing Sheet...";
+          modalStatus.textContent = "Syncing...";
         }
       } else {
-        statusMessage.classList.add("hidden");
+        showSpinner("Saving allocations to Google Sheets...");
       }
 
       const payloadData = [];
@@ -1793,49 +1408,29 @@
 
       fetch(WEB_APP_URL, {
         method: "POST",
-        redirect: "follow", 
-        headers: {
-          "Content-Type": "text/plain;charset=utf-8"
-        },
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
         body: JSON.stringify({ allTeacherData: payloadData })
       })
-      .then(res => res.json().catch(() => ({ status: "success", message: "Saved" })))
+      .then(res => res.json().catch(() => ({ status: "success" })))
       .then(data => {
-        if (isFromModal) {
-          if (modalStatus) {
-            modalStatus.textContent = "Synced Successfully!";
-            setTimeout(() => {
-              modalStatus.classList.add("hidden");
-            }, 1500);
-          }
+        if (isFromModal && modalStatus) {
+          modalStatus.textContent = "Saved ✓";
+          setTimeout(() => { modalStatus.classList.add("hidden"); }, 2000);
         } else {
-          showStatus("All distributions saved successfully to Google Sheets!");
+          showStatus("All distributions saved successfully!");
         }
-        loadDatabaseFromSheet(false);
       })
       .catch(error => {
-        if (isFromModal) {
-          if (modalStatus) {
-            modalStatus.textContent = "Synced Successfully!";
-            setTimeout(() => {
-              modalStatus.classList.add("hidden");
-            }, 1500);
-          }
-        } else {
-          showStatus("Save complete! Spreadsheet updated successfully.", false);
+        if (isFromModal && modalStatus) {
+          modalStatus.textContent = "Saved ✓";
+          setTimeout(() => { modalStatus.classList.add("hidden"); }, 2000);
         }
-        loadDatabaseFromSheet(false);
       })
       .finally(() => {
-        if (btn) {
-          btn.disabled = false;
-          btn.textContent = prevText;
-        }
-        hideSpinner();
+        if (!isFromModal) hideSpinner();
       });
     }
 
-    // Event binding controls
     teacherDropdown.addEventListener("change", function() {
       saveCurrentFormToState();
       activeTeacher = this.value;
@@ -1858,40 +1453,26 @@
       updateTables();
     });
 
-    // Refresh database button click event
-    manualSyncBtn.addEventListener("click", () => {
-      loadDatabaseFromSheet(true);
-    });
+    manualSyncBtn.addEventListener("click", () => { loadDatabaseFromSheet(true); });
+    printBtn.addEventListener("click", () => { printTimetables("default"); });
 
-    // Native PDF / Print window call
-    printBtn.addEventListener("click", () => {
-      printTimetables("default");
-    });
-
-    // Prints summary tables, class views, or teacher schedules onto individual pages
     function printTimetables(target) {
       document.body.className = "bg-slate-50 min-h-screen text-slate-800 font-sans pb-16";
       document.body.classList.add(`print-${target}`);
       window.print();
     }
 
-    // GET Request to restore database allocations directly from spreadsheet
+    // DIRECT CACHE-BUSTING DATA FETCHING FROM GOOGLE SHEETS
     function loadDatabaseFromSheet(isManual = false) {
-      if (!WEB_APP_URL || WEB_APP_URL === "YOUR_GOOGLE_WEB_APP_URL_HERE") {
-        if (isManual) showStatus("Configuration Error: Missing Web App URL.", true);
-        return;
-      }
+      if (isManual) showSpinner("Fetching Database...");
       
-      showSpinner("Fetching Database...");
+      const fetchUrl = `${WEB_APP_URL}?action=get_allocations&_t=${Date.now()}`;
       
-      fetch(`${WEB_APP_URL}?action=get_allocations`)
+      fetch(fetchUrl, { method: "GET", redirect: "follow" })
         .then(res => res.json())
         .then(res => {
-          if (res.status === "success") {
-            // Retrieve dynamic mobile list mapping
+          if (res && res.status === "success") {
             teacherPhones = res.phones || {};
-
-            const tempActiveTeacher = activeTeacher;
             
             TEACHERS.forEach(t => {
               dbState[t] = { classInCharge: "None", allocations: [] };
@@ -1913,39 +1494,35 @@
               });
             }
 
-            if (tempActiveTeacher) {
-              activeTeacher = tempActiveTeacher;
+            if (activeTeacher) {
               loadTeacherForm(activeTeacher);
             }
 
             const now = new Date();
             syncTimestamp.textContent = `Last Synced: ${now.toLocaleTimeString()}`;
-            showStatus("Database sync complete.");
-          } else {
-            showStatus("Sync complete. No baseline configurations found.");
+            if (isManual) showStatus("Database sync complete.");
           }
           updateTables();
         })
         .catch(err => {
-          console.error(err);
-          showStatus("Synced locally. (Unable to reach Google Sheets API)", false);
+          console.error("GET Fetch error:", err);
+          if (isManual) showStatus("Unable to reach Google Sheets API.", true);
         })
         .finally(() => {
-          hideSpinner();
+          if (isManual) hideSpinner();
         });
     }
 
-    // POST Request to save configuration records from main form submit
     form.addEventListener("submit", function(event) {
       event.preventDefault();
       saveCurrentFormToState();
       postFullStateToSheets(false);
     });
 
-    // Load setup configurations on execution
-    loadDatabaseFromSheet();
+    // Initial load
+    loadDatabaseFromSheet(false);
     updateTables();
-    switchMainTab(1); // Set default starting tab to Tab 1
+    switchMainTab(1);
   </script>
 </body>
 </html>
