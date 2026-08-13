@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Teacher Subject Distribution System</title>
   
-  <!-- Suppress harmless Tailwind CDN & Firebase deprecation warnings -->
+  <!-- Suppress harmless developer notices -->
   <script>
     const originalWarn = console.warn;
     console.warn = function(...args) {
@@ -23,6 +23,7 @@
   <!-- Firebase SDKs (v10 Compatibility Mode) -->
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+
   <style>
     /* NATIVE PRINT/PDF A4 LANDSCAPE FORMATTING */
     @media print {
@@ -196,10 +197,9 @@
       <button type="button" id="fullscreenToggleBtn" onclick="toggleFullscreenView()" title="Enter Fullscreen" class="w-10 h-10 sm:w-11 sm:h-11 rounded-full flex items-center justify-center transition bg-slate-100 text-slate-700 hover:bg-slate-200 text-xl active:scale-95 focus:outline-none">🖥️</button>
     </div>
 
-    <!-- TAB 1: RESTRUCTURED & RESET ALLOTMENT FORM -->
+    <!-- TAB 1: ALLOTMENT FORM -->
     <div id="tab1-content" class="tab-pane space-y-6">
       
-      <!-- Reset & Quick Actions Header -->
       <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white p-4 sm:p-5 rounded-xl border border-slate-200 shadow-sm">
         <div>
           <h2 class="text-base font-bold text-slate-900 flex items-center gap-2">
@@ -220,7 +220,6 @@
       <form id="distributionForm" class="space-y-6">
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
           
-          <!-- Card 1: Basic Details (4 Columns) -->
           <div class="lg:col-span-4 bg-white rounded-xl shadow-sm border border-slate-200 p-5 space-y-5">
             <h3 class="text-sm font-bold text-slate-800 border-b pb-2 flex items-center justify-between">
               <span>1. Select Teacher & Charge</span>
@@ -278,7 +277,6 @@
             </div>
           </div>
 
-          <!-- Card 2: Class & Subject Allotment (8 Columns) -->
           <div class="lg:col-span-8 bg-white rounded-xl shadow-sm border border-slate-200 p-5 space-y-4">
             <div class="flex items-center justify-between border-b pb-3">
               <div>
@@ -290,7 +288,6 @@
               </button>
             </div>
 
-            <!-- Table Headers for rows -->
             <div class="hidden sm:grid sm:grid-cols-12 gap-3 px-3 py-1.5 bg-slate-100 rounded-md text-[11px] font-bold text-slate-600 uppercase">
               <div class="sm:col-span-4">Class</div>
               <div class="sm:col-span-5">Subject</div>
@@ -308,7 +305,6 @@
 
         </div>
 
-        <!-- Status Notification & Save Actions -->
         <div class="space-y-3">
           <div id="statusMessage" class="text-xs font-bold px-4 py-3 rounded-lg hidden border flex items-center justify-between shadow-sm"></div>
 
@@ -589,13 +585,13 @@
     // 1. FIREBASE CONFIGURATION
     // =========================================================================
     const firebaseConfig = {
-  apiKey: "AIzaSyAB02lvPYaiFy3O-_VMWZpAjmtsLRX7o90",
-  authDomain: "gen-lang-client-0466115057.firebaseapp.com",
-  projectId: "gen-lang-client-0466115057",
-  storageBucket: "gen-lang-client-0466115057.firebasestorage.app",
-  messagingSenderId: "198395126556",
-  appId: "1:198395126556:web:1b1209f4d48e59f9ac10d9"
-};
+      apiKey: "AIzaSyDdoarRZHUxSagRl1vCJW49JpHBHCdCe4o",
+      authDomain: "timetable-8075d.firebaseapp.com",
+      projectId: "timetable-8075d",
+      storageBucket: "timetable-8075d.firebasestorage.app",
+      messagingSenderId: "603667044502",
+      appId: "1:603667044502:web:2eff42ed69fe19c74bcab7"
+    };
 
     const isFirebaseConfigured = firebaseConfig.apiKey && firebaseConfig.apiKey !== "YOUR_API_KEY";
 
@@ -731,7 +727,7 @@
       statusEl.classList.remove("hidden");
       
       if (!isError) {
-        setTimeout(() => { statusEl.classList.add("hidden"); }, 5000);
+        setTimeout(() => { statusEl.classList.add("hidden"); }, 6000);
       }
     }
 
@@ -888,7 +884,7 @@
           <label class="block text-[10px] font-bold text-slate-400 mb-0.5 sm:hidden uppercase">Periods</label>
           <input type="number" readonly class="periods-input w-full px-1 py-2 border border-slate-300 rounded-md bg-slate-100 text-slate-700 text-xs sm:text-sm text-center font-bold h-10" placeholder="0" value="${initialPeriods}">
         </div>
-        <div class="sm:col-span-1 flex justify-end sm:justify-center">
+        <div class="sm:col-span-1 flex justify-end sm:justify-center pt-2 sm:pt-0">
           <button type="button" onclick="removeRow('${rowId}')" title="Remove row" class="text-red-500 hover:text-red-700 bg-red-50 hover:bg-red-100 w-9 h-9 rounded-full flex items-center justify-center transition border border-red-200 active:scale-95">
             <span class="font-bold text-sm">✕</span>
           </button>
@@ -1004,7 +1000,7 @@
       saveCurrentFormToState();
       
       if (!isFirebaseConfigured || !db) {
-        showStatus(`Saved allocations for [${activeTeacher}] locally in memory. (Firebase key required for cloud sync)`, false);
+        showStatus(`⚠️ Saved allocations for [${activeTeacher}] locally in memory. Paste real firebaseConfig keys to sync online.`, true);
         return;
       }
 
@@ -1023,7 +1019,11 @@
       }).catch(err => {
         completeTopLoader();
         console.error("Firebase Single Teacher Save Error:", err);
-        showStatus(`❌ FIREBASE WRITE FAILED: ${err.message}. Allocation saved locally.`, true);
+        let errDesc = err.message;
+        if (err.code === "permission-denied") {
+          errDesc = "Permission Denied: Set Cloud Firestore Rules to allow read, write: if true;";
+        }
+        showStatus(`❌ FIREBASE WRITE FAILED: ${errDesc}. Saved locally in memory.`, true);
       });
     }
 
@@ -1629,7 +1629,7 @@
           modalStatus.classList.remove("hidden");
           setTimeout(() => { modalStatus.classList.add("hidden"); }, 2000);
         } else {
-          showStatus("Saved locally in browser memory. (Add Firebase keys to sync online)", false);
+          showStatus("⚠️ Saved allocations locally in memory. Add Firebase keys in script config to sync online.", true);
         }
         return;
       }
@@ -1642,16 +1642,6 @@
       } else {
         startTopLoader();
       }
-
-      let hasResponded = false;
-
-      const timeoutId = setTimeout(() => {
-        if (!hasResponded) {
-          hasResponded = true;
-          if (!isFromModal) completeTopLoader();
-          showStatus("Saved locally! (Firebase sync taking longer or working offline)", false);
-        }
-      }, 3500);
 
       const batch = db.batch();
       
@@ -1667,27 +1657,23 @@
       });
 
       batch.commit().then(() => {
-        if (!hasResponded) {
-          hasResponded = true;
-          clearTimeout(timeoutId);
-          if (!isFromModal) completeTopLoader();
-          
-          if (isFromModal && modalStatus) {
-            modalStatus.textContent = "Saved ✓";
-            setTimeout(() => { modalStatus.classList.add("hidden"); }, 2000);
-          } else {
-            const timeStr = new Date().toLocaleTimeString();
-            showStatus(`✅ SUCCESS: All school distributions saved to Firebase Cloud Firestore! (${timeStr})`);
-          }
+        if (!isFromModal) completeTopLoader();
+        
+        if (isFromModal && modalStatus) {
+          modalStatus.textContent = "Saved ✓";
+          setTimeout(() => { modalStatus.classList.add("hidden"); }, 2000);
+        } else {
+          const timeStr = new Date().toLocaleTimeString();
+          showStatus(`✅ SUCCESS: All school distributions saved to Firebase Cloud Firestore! (${timeStr})`);
         }
       }).catch(err => {
-        if (!hasResponded) {
-          hasResponded = true;
-          clearTimeout(timeoutId);
-          if (!isFromModal) completeTopLoader();
-          console.warn("Firebase Write Error:", err.message);
-          showStatus(`❌ FIREBASE WRITE FAILED: ${err.message}. Saved in local memory.`, true);
+        if (!isFromModal) completeTopLoader();
+        console.error("Firebase Batch Write Error:", err);
+        let errDesc = err.message;
+        if (err.code === "permission-denied") {
+          errDesc = "Permission Denied: Set Cloud Firestore Rules to allow read, write: if true;";
         }
+        showStatus(`❌ FIREBASE WRITE FAILED: ${errDesc}. Saved locally in memory.`, true);
       });
     }
 
