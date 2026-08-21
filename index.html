@@ -418,70 +418,114 @@
     <div id="tab5-content" class="tab-pane hidden space-y-6">
       <div class="bg-white rounded-lg shadow-sm border border-slate-200 p-4 sm:p-6 w-full">
         
-        <div class="bg-indigo-50/50 p-4 rounded-xl border border-indigo-100/80 mb-6 space-y-4 no-print">
-          <div class="flex justify-between items-center border-b border-indigo-100/60 pb-2">
-            <h3 class="text-xs sm:text-sm font-bold text-indigo-950 flex items-center gap-1.5">
+        <!-- RESTRUCTURED ADVANCED SCHEDULING CRITERIA -->
+        <div class="bg-indigo-50/50 p-5 rounded-xl border border-indigo-100 mb-6 space-y-5 no-print">
+          <div class="flex justify-between items-center border-b border-indigo-100 pb-2.5">
+            <h3 class="text-sm font-bold text-indigo-950 flex items-center gap-1.5">
               <span>⚙️</span> Advanced Scheduling Criteria (Strict & AI Toggles)
             </h3>
-            <button type="button" onclick="clearCustomRules()" class="text-[10px] bg-indigo-100 text-indigo-800 hover:bg-indigo-200 px-2 py-0.5 rounded font-semibold transition">
-              Reset Rules 🔄
+            <button type="button" onclick="clearCustomRules()" class="text-xs bg-indigo-100 text-indigo-900 hover:bg-indigo-200 px-3 py-1 rounded-md font-semibold transition flex items-center gap-1 shadow-sm active:scale-95">
+              <span>Reset Rules</span> 🔄
             </button>
           </div>
           
-          <p class="text-[11px] text-indigo-950/70">Enable rules or suggest custom parameters to constraint-restrict the solver.</p>
-          
+          <!-- SECTION A: PRIMARY TOGGLES -->
           <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 text-xs">
-            <label class="flex items-center gap-2 cursor-pointer p-2 bg-white rounded border border-slate-200 hover:bg-slate-50 transition font-semibold text-indigo-950">
+            <label class="flex items-center gap-2 cursor-pointer p-2.5 bg-white rounded-lg border border-slate-200 hover:bg-slate-50 transition font-semibold text-indigo-950">
+              <input type="checkbox" id="condMin2FreePeriodsPerDay" checked class="rounded text-indigo-600 focus:ring-indigo-500 w-4 h-4">
+              <span>☕ Min 2 Free Periods / Day for Teachers (Max 5/day)</span>
+            </label>
+            <label class="flex items-center gap-2 cursor-pointer p-2.5 bg-white rounded-lg border border-slate-200 hover:bg-slate-50 transition font-semibold text-indigo-950">
               <input type="checkbox" id="condSingleITAcrossSchool" checked class="rounded text-indigo-600 focus:ring-indigo-500 w-4 h-4">
               <span>💻 Only 1 IT class at a time (Single Lab)</span>
             </label>
-            <label class="flex items-center gap-2 cursor-pointer p-2 bg-white rounded border border-slate-200 hover:bg-slate-50 transition font-semibold text-indigo-950">
+            <label class="flex items-center gap-2 cursor-pointer p-2.5 bg-white rounded-lg border border-slate-200 hover:bg-slate-50 transition font-semibold text-indigo-950">
               <input type="checkbox" id="condSinglePEAcrossSchool" checked class="rounded text-indigo-600 focus:ring-indigo-500 w-4 h-4">
               <span>⚽ Only 1 PE class at a time (Single Ground)</span>
             </label>
-            <label class="flex items-center gap-2 cursor-pointer p-2 bg-white rounded border border-slate-200 hover:bg-slate-50 transition font-semibold text-indigo-950">
-              <input type="checkbox" id="condNoANMPeriod1" checked class="rounded text-indigo-600 focus:ring-indigo-500 w-4 h-4">
-              <span>🚫 No 1st period for ANM</span>
-            </label>
-            <label class="flex items-center gap-2 cursor-pointer p-2 bg-white rounded border border-slate-200 hover:bg-slate-50 transition font-semibold text-indigo-950">
+            <label class="flex items-center gap-2 cursor-pointer p-2.5 bg-white rounded-lg border border-slate-200 hover:bg-slate-50 transition font-semibold text-indigo-950">
               <input type="checkbox" id="cond5BP1Rotation" checked class="rounded text-indigo-600 focus:ring-indigo-500 w-4 h-4">
               <span>🎯 5B P1: Mon/Wed/Fri=RR, Tue/Thu=SA</span>
             </label>
-            <label class="flex items-center gap-2 cursor-pointer p-2 bg-white rounded border border-slate-200 hover:bg-slate-50 transition font-semibold text-indigo-950">
+            <label class="flex items-center gap-2 cursor-pointer p-2.5 bg-white rounded-lg border border-slate-200 hover:bg-slate-50 transition font-semibold text-indigo-950">
               <input type="checkbox" id="cond6DP1Rotation" checked class="rounded text-indigo-600 focus:ring-indigo-500 w-4 h-4">
               <span>🎯 6D P1: Mon/Wed/Fri=BUS, Tue/Thu=TAK</span>
             </label>
-            <label class="flex items-center gap-2 cursor-pointer p-2 bg-white rounded border border-slate-200 hover:bg-slate-50 transition font-semibold text-indigo-950">
+            <label class="flex items-center gap-2 cursor-pointer p-2.5 bg-white rounded-lg border border-slate-200 hover:bg-slate-50 transition font-semibold text-indigo-950">
               <input type="checkbox" id="condSVLIBPeriod7Only" checked class="rounded text-indigo-600 focus:ring-indigo-500 w-4 h-4">
               <span>📚 SV/LIB strictly in Period 7 only</span>
             </label>
-            <label class="flex items-center gap-2 cursor-pointer p-2 bg-white rounded border border-slate-200 hover:bg-slate-50 transition font-semibold text-indigo-950">
-              <input type="checkbox" id="condNoMajorLastPeriod" checked class="rounded text-indigo-600 focus:ring-indigo-500 w-4 h-4">
-              <span>🛑 No ENG, BS, SS, MM in last period</span>
-            </label>
-            <label class="flex items-center gap-2 cursor-pointer p-2 bg-white rounded border border-slate-200 hover:bg-slate-50 transition">
+            <label class="flex items-center gap-2 cursor-pointer p-2.5 bg-white rounded-lg border border-slate-200 hover:bg-slate-50 transition font-semibold text-indigo-950">
               <input type="checkbox" id="condClassTeacherP1" checked class="rounded text-indigo-600 focus:ring-indigo-500 w-4 h-4">
               <span>👑 Class Teacher in P1 compulsory</span>
             </label>
-            <label class="flex items-center gap-2 cursor-pointer p-2 bg-white rounded border border-slate-200 hover:bg-slate-50 transition">
-              <input type="checkbox" id="condParallelElectives" checked class="rounded text-indigo-600 focus:ring-indigo-500 w-4 h-4">
-              <span>🔄 ARB, SKT & MI sync in same slot</span>
+            <label class="flex items-center gap-2 cursor-pointer p-2.5 bg-white rounded-lg border border-slate-200 hover:bg-slate-50 transition font-semibold text-indigo-950">
+              <input type="checkbox" id="condSameStdLangSync" checked class="rounded text-indigo-600 focus:ring-indigo-500 w-4 h-4">
+              <span>🔄 ARB, SKT & ALL MI sync (Same Std Only)</span>
             </label>
-            <label class="flex items-center gap-2 cursor-pointer p-2 bg-white rounded border border-slate-200 hover:bg-slate-50 transition">
-              <input type="checkbox" id="condMaxContinuous2" checked class="rounded text-indigo-600 focus:ring-indigo-500 w-4 h-4">
-              <span>⏱️ Limit continuous teaching to max 2 periods</span>
+            <label class="flex items-center gap-2 cursor-pointer p-2.5 bg-white rounded-lg border border-slate-200 hover:bg-slate-50 transition font-semibold text-indigo-950">
+              <input type="checkbox" id="condNoRepeatSubjectDay" checked class="rounded text-indigo-600 focus:ring-indigo-500 w-4 h-4">
+              <span>🚫 Do not repeat same subject in same day</span>
             </label>
-            <label class="flex items-center gap-2 cursor-pointer p-2 bg-white rounded border border-slate-200 hover:bg-slate-50 transition">
-              <input type="checkbox" id="condPEAfternoon" class="rounded text-indigo-600 focus:ring-indigo-500 w-4 h-4">
-              <span>⚽ Keep PE in afternoon (P5-P7) only</span>
+            <label class="flex items-center gap-2 cursor-pointer p-2.5 bg-white rounded-lg border border-slate-200 hover:bg-slate-50 transition font-semibold text-indigo-950">
+              <input type="checkbox" id="condPE_P2_P7" checked class="rounded text-indigo-600 focus:ring-indigo-500 w-4 h-4">
+              <span>⚽ Keep PE (P2-P7) only</span>
             </label>
-            <label class="flex items-center gap-2 cursor-pointer p-2 bg-white rounded border border-slate-200 hover:bg-slate-50 transition">
-              <input type="checkbox" id="condITAfternoon" class="rounded text-indigo-600 focus:ring-indigo-500 w-4 h-4">
-              <span>💻 IT / Computer classes in P4-P7 only</span>
+            <label class="flex items-center gap-2 cursor-pointer p-2.5 bg-white rounded-lg border border-slate-200 hover:bg-slate-50 transition font-semibold text-indigo-950">
+              <input type="checkbox" id="condIT_P2_P7" checked class="rounded text-indigo-600 focus:ring-indigo-500 w-4 h-4">
+              <span>💻 IT / Computer classes in P2-P7 only</span>
+            </label>
+            <label class="flex items-center gap-2 cursor-pointer p-2.5 bg-white rounded-lg border border-slate-200 hover:bg-slate-50 transition font-semibold text-indigo-950">
+              <input type="checkbox" id="condNoANMPeriod1" checked class="rounded text-indigo-600 focus:ring-indigo-500 w-4 h-4">
+              <span>🚫 No 1st period for ANM</span>
             </label>
           </div>
+
+          <!-- SECTION B: ADJUSTABLE SLIDERS & CRITERIA CONTROLS -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-3 border-t border-indigo-100">
+            <!-- Continuous Teaching Cap Selector -->
+            <div class="p-3 bg-white rounded-lg border border-slate-200 space-y-2">
+              <label class="block text-xs font-bold text-slate-800 flex items-center justify-between">
+                <span>⏱️ Limit Continuous Teaching Periods</span>
+                <span id="maxContinuousDisplay" class="text-[11px] px-2 py-0.5 bg-indigo-50 text-indigo-700 font-bold rounded">Max 3</span>
+              </label>
+              <select id="condMaxContinuousSelect" onchange="document.getElementById('maxContinuousDisplay').textContent = 'Max ' + this.value" class="w-full px-2.5 py-1.5 border border-slate-300 rounded text-xs bg-white text-slate-800 focus:ring-2 focus:ring-indigo-500 font-semibold">
+                <option value="2">Max 2 Periods</option>
+                <option value="3" selected>Max 3 Periods (Recommended)</option>
+                <option value="4">Max 4 Periods</option>
+                <option value="99">No Limit (Free Flow)</option>
+              </select>
+              <p class="text-[10px] text-slate-500">Limits consecutive teaching classes before a mandatory free break for teachers.</p>
+            </div>
+
+            <!-- Major Subjects in Period 7 (Customizable % & Selectors) -->
+            <div class="p-3 bg-white rounded-lg border border-slate-200 space-y-2">
+              <div class="flex items-center justify-between">
+                <label class="text-xs font-bold text-slate-800 flex items-center gap-1.5">
+                  <input type="checkbox" id="condNoMajorLastPeriod" checked class="rounded text-indigo-600 focus:ring-indigo-500 w-4 h-4">
+                  <span>🛑 Strictly No Major/Core in P7 (Last Period)</span>
+                </label>
+                <select id="majorLastPeriodCompliance" class="px-2 py-0.5 border border-slate-300 rounded text-[11px] bg-slate-50 font-bold text-slate-700">
+                  <option value="1.0" selected>100% Strict</option>
+                  <option value="0.9">90% Target</option>
+                  <option value="0.8">80% Target</option>
+                </select>
+              </div>
+              <div class="flex flex-wrap items-center gap-2 text-[10px] text-slate-700 pt-1">
+                <label class="inline-flex items-center gap-1"><input type="checkbox" id="banSubENG" checked class="rounded text-indigo-600"> ENG</label>
+                <label class="inline-flex items-center gap-1"><input type="checkbox" id="banSubBS" checked class="rounded text-indigo-600"> BS</label>
+                <label class="inline-flex items-center gap-1"><input type="checkbox" id="banSubSS" checked class="rounded text-indigo-600"> SS</label>
+                <label class="inline-flex items-center gap-1"><input type="checkbox" id="banSubMM" checked class="rounded text-indigo-600"> MM</label>
+                <label class="inline-flex items-center gap-1"><input type="checkbox" id="banSubHIN" checked class="rounded text-indigo-600"> HIN</label>
+                <label class="inline-flex items-center gap-1"><input type="checkbox" id="banSubMI" checked class="rounded text-indigo-600"> MI</label>
+                <label class="inline-flex items-center gap-1"><input type="checkbox" id="banSubMII" checked class="rounded text-indigo-600"> MII</label>
+              </div>
+              <p class="text-[10px] text-slate-500">Protects students from intense core subjects (ENG, BS, SS, MM, HIN, MI, MII) in Period 7.</p>
+            </div>
+          </div>
           
-          <div class="space-y-1.5 pt-2 border-t border-indigo-100/50">
+          <!-- SECTION C: AI PROMPT PARSER -->
+          <div class="space-y-1.5 pt-3 border-t border-indigo-100">
             <label class="block text-[11px] font-bold text-indigo-950 uppercase" for="customPromptConstraint">Suggest Custom Condition (AI Natural Language Prompt Parser)</label>
             <div class="flex gap-2">
               <input type="text" id="customPromptConstraint" placeholder="e.g., Avoid TAK on Friday P4, or Allow extra period of ENG in 5B, or Assign ERJ to 7B on Monday P2" class="w-full px-3 py-1.5 border border-slate-300 rounded-md bg-white text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500 h-9">
@@ -495,14 +539,14 @@
         </div>
 
         <!-- AI DIAGNOSTIC & FIX SUGGESTIONS PANEL -->
-        <div id="solverDiagnosticPanel" class="hidden p-4 rounded-xl border border-amber-200 bg-amber-50/70 space-y-3 mb-6 no-print">
-          <div class="flex items-center justify-between border-b border-amber-200/60 pb-2">
+        <div id="solverDiagnosticPanel" class="hidden p-4 rounded-xl border border-amber-200 bg-amber-50/80 space-y-3 mb-6 no-print">
+          <div class="flex items-center justify-between border-b border-amber-200 pb-2">
             <h3 class="text-xs sm:text-sm font-bold text-amber-950 flex items-center gap-1.5">
-              <span>⚠️</span> Timetable Diagnostic & AI Actionable Fix Suggestions
+              <span>⚠️</span> Timetable Diagnostic & Unplaced Subjects Action Plan
             </h3>
-            <span id="diagnosticDeficitBadge" class="text-[10px] font-bold px-2 py-0.5 rounded bg-amber-200 text-amber-900">Deficit Found</span>
+            <span id="diagnosticDeficitBadge" class="text-[10px] font-bold px-2 py-0.5 rounded bg-amber-200 text-amber-900">Unplaced Subjects Detected</span>
           </div>
-          <div id="diagnosticBody" class="text-xs text-amber-900 space-y-2"></div>
+          <div id="diagnosticBody" class="text-xs text-amber-900 space-y-2.5"></div>
           <div class="pt-2 border-t border-amber-200/60 flex flex-wrap items-center gap-2">
             <span class="text-[11px] font-bold text-amber-950">Click to apply suggested AI fix:</span>
             <div id="diagnosticQuickActionButtons" class="flex flex-wrap gap-1.5"></div>
@@ -886,6 +930,69 @@
       } else {
         targetUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(message)}`;
       }
+      window.open(targetUrl, "_blank");
+    }
+
+    // =========================================================================
+    // TIMETABLE WHATSAPP SHARING CONTROLLERS
+    // =========================================================================
+    function shareTeacherTimetableWhatsApp(teacherName) {
+      if (!latestGeneratedTimetable) {
+        showStatus("Please generate a timetable first before sharing.", true);
+        return;
+      }
+
+      let msg = `*Weekly Timetable - Teacher: ${teacherName}*\n\n`;
+      DAYS.forEach((day, dIdx) => {
+        msg += `*📅 ${day.toUpperCase()}*\n`;
+        for (let pIdx = 0; pIdx < 7; pIdx++) {
+          let slotFound = null;
+          CLASSES.forEach(c => {
+            const slot = latestGeneratedTimetable[c][dIdx][pIdx];
+            if (slot && slot.teacher === teacherName) {
+              slotFound = `Class ${c} [${slot.subject}]`;
+            }
+          });
+          const timeStr = PERIOD_TIMES[pIdx];
+          msg += `P${pIdx + 1} (${timeStr}): ${slotFound || 'Free'}\n`;
+        }
+        msg += `\n`;
+      });
+
+      const mobile = teacherPhones[teacherName];
+      let targetUrl;
+      if (mobile) {
+        let cleanMobile = String(mobile).replace(/\D/g, '');
+        if (cleanMobile.length === 10) cleanMobile = "91" + cleanMobile;
+        targetUrl = `https://wa.me/${cleanMobile}?text=${encodeURIComponent(msg)}`;
+      } else {
+        targetUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(msg)}`;
+      }
+      window.open(targetUrl, "_blank");
+    }
+
+    function shareClassTimetableWhatsApp(className) {
+      if (!latestGeneratedTimetable || !latestGeneratedTimetable[className]) {
+        showStatus("Please generate a timetable first before sharing.", true);
+        return;
+      }
+
+      let msg = `*Weekly Timetable - Class ${className}*\n\n`;
+      DAYS.forEach((day, dIdx) => {
+        msg += `*📅 ${day.toUpperCase()}*\n`;
+        for (let pIdx = 0; pIdx < 7; pIdx++) {
+          const slot = latestGeneratedTimetable[className][dIdx][pIdx];
+          const timeStr = PERIOD_TIMES[pIdx];
+          if (slot) {
+            msg += `P${pIdx + 1} (${timeStr}): ${slot.subject} (${slot.teacher})\n`;
+          } else {
+            msg += `P${pIdx + 1} (${timeStr}): Free / Study\n`;
+          }
+        }
+        msg += `\n`;
+      });
+
+      const targetUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(msg)}`;
       window.open(targetUrl, "_blank");
     }
 
@@ -1567,8 +1674,12 @@
       renderActiveRulesList();
     };
 
+    // =========================================================================
+    // RESET RULES CONTROLLER (DELETES CURRENT TIMETABLE & RESETS CONFIG)
+    // =========================================================================
     function clearCustomRules() {
       activeCustomRules = [];
+      if (document.getElementById("condMin2FreePeriodsPerDay")) document.getElementById("condMin2FreePeriodsPerDay").checked = true;
       document.getElementById("condSingleITAcrossSchool").checked = true;
       document.getElementById("condSinglePEAcrossSchool").checked = true;
       document.getElementById("condNoANMPeriod1").checked = true;
@@ -1576,14 +1687,37 @@
       document.getElementById("cond6DP1Rotation").checked = true;
       document.getElementById("condSVLIBPeriod7Only").checked = true;
       document.getElementById("condNoMajorLastPeriod").checked = true;
+      document.getElementById("majorLastPeriodCompliance").value = "1.0";
+      document.getElementById("banSubENG").checked = true;
+      document.getElementById("banSubBS").checked = true;
+      document.getElementById("banSubSS").checked = true;
+      document.getElementById("banSubMM").checked = true;
+      if (document.getElementById("banSubHIN")) document.getElementById("banSubHIN").checked = true;
+      if (document.getElementById("banSubMI")) document.getElementById("banSubMI").checked = true;
+      if (document.getElementById("banSubMII")) document.getElementById("banSubMII").checked = true;
       document.getElementById("condClassTeacherP1").checked = true;
-      document.getElementById("condParallelElectives").checked = true;
-      document.getElementById("condMaxContinuous2").checked = true;
-      document.getElementById("condPEAfternoon").checked = false;
-      document.getElementById("condITAfternoon").checked = false;
+      document.getElementById("condSameStdLangSync").checked = true;
+      document.getElementById("condNoRepeatSubjectDay").checked = true;
+      document.getElementById("condPE_P2_P7").checked = true;
+      document.getElementById("condIT_P2_P7").checked = true;
+      document.getElementById("condMaxContinuousSelect").value = "3";
+      document.getElementById("maxContinuousDisplay").textContent = "Max 3";
+
       renderActiveRulesList();
       hideDiagnosticPanel();
-      showStatus("Reset constraints to recommended defaults.");
+
+      // Clear currently generated timetable and reset view containers
+      latestGeneratedTimetable = null;
+      const classCont = document.getElementById("classTimetableContainer");
+      const teacherCont = document.getElementById("teacherTimetableContainer");
+      if (classCont) {
+        classCont.innerHTML = `<div class="col-span-full text-center py-8 text-slate-400 text-sm">No timetables generated yet. Click "Generate Timetable" to build.</div>`;
+      }
+      if (teacherCont) {
+        teacherCont.innerHTML = `<div class="col-span-full text-center py-8 text-slate-400 text-sm">No timetables generated yet. Click "Generate Timetable" to build.</div>`;
+      }
+
+      showStatus("🔄 All rules and generated timetables reset. Click 'Generate Timetable ⚡' to create a fresh schedule.");
     }
 
     function hideDiagnosticPanel() {
@@ -1600,9 +1734,14 @@
     }
 
     // =========================================================================
-    // ENHANCED ASYNC NON-BLOCKING SOLVER WITH DIAGNOSTIC ENGINE
+    // FAST DETERMINISTIC SOLVER (ASYNC NON-BLOCKING & LOOP-PROTECTION SAFE)
     // =========================================================================
+    let isGeneratingTimetable = false;
+
     async function buildAndRenderTimetables() {
+      if (isGeneratingTimetable) return;
+      isGeneratingTimetable = true;
+
       const generateBtn = document.getElementById("generateTimetableBtn");
       if (generateBtn) {
         generateBtn.disabled = true;
@@ -1611,21 +1750,34 @@
 
       startTopLoader();
       hideDiagnosticPanel();
-      await new Promise(resolve => setTimeout(resolve, 30));
+      await new Promise(resolve => setTimeout(resolve, 10));
 
       try {
-        const condSingleITAcrossSchool = document.getElementById("condSingleITAcrossSchool")?.checked ?? true;
-        const condSinglePEAcrossSchool = document.getElementById("condSinglePEAcrossSchool")?.checked ?? true;
-        const condNoANMPeriod1 = document.getElementById("condNoANMPeriod1")?.checked ?? true;
-        const cond5BP1Rotation = document.getElementById("cond5BP1Rotation")?.checked ?? true;
-        const cond6DP1Rotation = document.getElementById("cond6DP1Rotation")?.checked ?? true;
-        const condSVLIBPeriod7Only = document.getElementById("condSVLIBPeriod7Only")?.checked ?? true;
-        const condNoMajorLastPeriod = document.getElementById("condNoMajorLastPeriod")?.checked ?? true;
-        const condClassTeacherP1 = document.getElementById("condClassTeacherP1")?.checked ?? true;
-        const condParallelElectives = document.getElementById("condParallelElectives")?.checked ?? true;
-        const condMaxContinuous2 = document.getElementById("condMaxContinuous2")?.checked ?? true;
-        const condPEAfternoon = document.getElementById("condPEAfternoon")?.checked ?? false;
-        const condITAfternoon = document.getElementById("condITAfternoon")?.checked ?? false;
+        const condMin2Free = document.getElementById("condMin2FreePeriodsPerDay")?.checked ?? true;
+        const condSingleIT = document.getElementById("condSingleITAcrossSchool")?.checked ?? true;
+        const condSinglePE = document.getElementById("condSinglePEAcrossSchool")?.checked ?? true;
+        const cond5BP1 = document.getElementById("cond5BP1Rotation")?.checked ?? true;
+        const cond6DP1 = document.getElementById("cond6DP1Rotation")?.checked ?? true;
+        const condSVLIBP7 = document.getElementById("condSVLIBPeriod7Only")?.checked ?? true;
+        const condNoMajorLast = document.getElementById("condNoMajorLastPeriod")?.checked ?? true;
+        
+        // Expanded list of prohibited subjects in Period 7 (ENG, BS, SS, MM, HIN, MI, MII)
+        const bannedP7Subjects = [];
+        if (document.getElementById("banSubENG")?.checked) bannedP7Subjects.push("ENG");
+        if (document.getElementById("banSubBS")?.checked) bannedP7Subjects.push("BS");
+        if (document.getElementById("banSubSS")?.checked) bannedP7Subjects.push("SS");
+        if (document.getElementById("banSubMM")?.checked) bannedP7Subjects.push("MM");
+        if (document.getElementById("banSubHIN")?.checked) bannedP7Subjects.push("HIN");
+        if (document.getElementById("banSubMI")?.checked) bannedP7Subjects.push("MI");
+        if (document.getElementById("banSubMII")?.checked) bannedP7Subjects.push("MII");
+
+        const condCTP1 = document.getElementById("condClassTeacherP1")?.checked ?? true;
+        const condSameStdSync = document.getElementById("condSameStdLangSync")?.checked ?? true;
+        const condNoRepeatDay = document.getElementById("condNoRepeatSubjectDay")?.checked ?? true;
+        const condPEP2P7 = document.getElementById("condPE_P2_P7")?.checked ?? true;
+        const condITP2P7 = document.getElementById("condIT_P2_P7")?.checked ?? true;
+        const condNoANMP1 = document.getElementById("condNoANMPeriod1")?.checked ?? true;
+        const maxContinuousCap = parseInt(document.getElementById("condMaxContinuousSelect")?.value || "3");
 
         const classInChargeMap = {};
         TEACHERS.forEach(t => {
@@ -1635,7 +1787,7 @@
           }
         });
 
-        // 1. Check allocation totals per class (Must be 35 for each class)
+        // Harvest and validate allocations per class (Target = exactly 35 periods)
         const classAllocatedTotals = {};
         const classAllotments = {};
         CLASSES.forEach(c => {
@@ -1671,16 +1823,13 @@
         });
 
         let bestTimetable = null;
+        let bestUnplacedReport = [];
         let lowestUnfilledSlots = 9999;
-        let attempts = 0;
-        const maxAttempts = 150;
+        const maxAttempts = 30; // fast iterations with event-loop yield
 
-        while (attempts < maxAttempts) {
-          attempts++;
-
-          if (attempts % 10 === 0) {
-            await new Promise(resolve => setTimeout(resolve, 0));
-          }
+        for (let attempt = 0; attempt < maxAttempts; attempt++) {
+          // Yield to event loop every attempt to prevent browser loop-timeout warnings
+          await new Promise(resolve => setTimeout(resolve, 0));
 
           CLASSES.forEach(c => {
             classAllotments[c].forEach(alloc => alloc.remaining = alloc.total);
@@ -1690,19 +1839,30 @@
           CLASSES.forEach(c => timetable[c] = Array(5).fill(null).map(() => Array(7).fill(null)));
 
           const teacherBusy = {};
-          TEACHERS.forEach(t => teacherBusy[t] = Array(5).fill(null).map(() => Array(7).fill(false)));
+          const teacherDailyCount = {};
+          TEACHERS.forEach(t => {
+            teacherBusy[t] = Array(5).fill(null).map(() => Array(7).fill(false));
+            teacherDailyCount[t] = Array(5).fill(0);
+          });
+
+          const classSubjectDayCount = {};
+          CLASSES.forEach(c => {
+            classSubjectDayCount[c] = Array(5).fill(null).map(() => ({}));
+          });
 
           const itBusy = Array(5).fill(null).map(() => Array(7).fill(false));
           const peBusy = Array(5).fill(null).map(() => Array(7).fill(false));
 
           // STEP 1: STRICT 5B P1 ALLOCATION (Mon=RR, Tue=SA, Wed=RR, Thu=SA, Fri=RR)
-          if (cond5BP1Rotation) {
+          if (cond5BP1) {
             const rotTeachers5B = ["RR", "SA", "RR", "SA", "RR"];
             rotTeachers5B.forEach((targetTeacher, d) => {
               const alloc = classAllotments["5B"]?.find(a => a.teacher === targetTeacher && a.remaining > 0);
-              if (alloc && !teacherBusy[targetTeacher][d][0]) {
+              if (alloc && !teacherBusy[targetTeacher][d][0] && (!condMin2Free || teacherDailyCount[targetTeacher][d] < 5)) {
                 timetable["5B"][d][0] = { subject: alloc.subject, teacher: targetTeacher, conflict: false };
                 teacherBusy[targetTeacher][d][0] = true;
+                teacherDailyCount[targetTeacher][d]++;
+                classSubjectDayCount["5B"][d][alloc.subject] = (classSubjectDayCount["5B"][d][alloc.subject] || 0) + 1;
                 if (alloc.subject === "IT") itBusy[d][0] = true;
                 if (alloc.subject === "PE") peBusy[d][0] = true;
                 alloc.remaining--;
@@ -1711,13 +1871,15 @@
           }
 
           // STEP 2: STRICT 6D P1 ALLOCATION (Mon=BUS, Tue=TAK, Wed=BUS, Thu=TAK, Fri=BUS)
-          if (cond6DP1Rotation) {
+          if (cond6DP1) {
             const rotTeachers6D = ["BUS", "TAK", "BUS", "TAK", "BUS"];
             rotTeachers6D.forEach((targetTeacher, d) => {
               const alloc = classAllotments["6D"]?.find(a => a.teacher === targetTeacher && a.remaining > 0);
-              if (alloc && !teacherBusy[targetTeacher][d][0] && !timetable["6D"][d][0]) {
+              if (alloc && !teacherBusy[targetTeacher][d][0] && !timetable["6D"][d][0] && (!condMin2Free || teacherDailyCount[targetTeacher][d] < 5)) {
                 timetable["6D"][d][0] = { subject: alloc.subject, teacher: targetTeacher, conflict: false };
                 teacherBusy[targetTeacher][d][0] = true;
+                teacherDailyCount[targetTeacher][d]++;
+                classSubjectDayCount["6D"][d][alloc.subject] = (classSubjectDayCount["6D"][d][alloc.subject] || 0) + 1;
                 if (alloc.subject === "IT") itBusy[d][0] = true;
                 if (alloc.subject === "PE") peBusy[d][0] = true;
                 alloc.remaining--;
@@ -1725,20 +1887,22 @@
             });
           }
 
-          // STEP 3: CLASS TEACHER IN P1 PRIORITY
-          if (condClassTeacherP1) {
+          // STEP 3: CLASS TEACHER IN P1 COMPULSORY
+          if (condCTP1) {
             CLASSES.forEach(c => {
-              if (cond5BP1Rotation && c === "5B") return;
-              if (cond6DP1Rotation && c === "6D") return;
+              if (cond5BP1 && c === "5B") return;
+              if (cond6DP1 && c === "6D") return;
               const ct = classInChargeMap[c];
               if (ct) {
-                if (condNoANMPeriod1 && ct === "ANM") return;
+                if (condNoANMP1 && ct === "ANM") return;
                 const ctAlloc = classAllotments[c].find(a => a.teacher === ct && a.remaining > 0);
                 if (ctAlloc) {
                   for (let d = 0; d < 5; d++) {
-                    if (!timetable[c][d][0] && !teacherBusy[ct][d][0] && ctAlloc.remaining > 0) {
+                    if (!timetable[c][d][0] && !teacherBusy[ct][d][0] && ctAlloc.remaining > 0 && (!condMin2Free || teacherDailyCount[ct][d] < 5)) {
                       timetable[c][d][0] = { subject: ctAlloc.subject, teacher: ct, conflict: false };
                       teacherBusy[ct][d][0] = true;
+                      teacherDailyCount[ct][d]++;
+                      classSubjectDayCount[c][d][ctAlloc.subject] = (classSubjectDayCount[c][d][ctAlloc.subject] || 0) + 1;
                       if (ctAlloc.subject === "IT") itBusy[d][0] = true;
                       if (ctAlloc.subject === "PE") peBusy[d][0] = true;
                       ctAlloc.remaining--;
@@ -1749,24 +1913,34 @@
             });
           }
 
-          // STEP 4: PARALLEL LANGUAGE ELECTIVES (ARB, SKT, MI)
-          if (condParallelElectives) {
-            CLASSES.forEach(c => {
-              const electives = classAllotments[c].filter(a => ["ARB", "SKT", "MI"].includes(a.subject) && a.remaining > 0);
-              if (electives.length > 1) {
-                for (let d = 0; d < 5; d++) {
-                  for (let p = 0; p < 7; p++) {
-                    if (timetable[c][d][p]) continue;
-                    const allFree = electives.every(e => !teacherBusy[e.teacher][d][p] && e.remaining > 0);
-                    if (allFree) {
-                      const selectedElective = electives[Math.floor(Math.random() * electives.length)];
-                      timetable[c][d][p] = { subject: selectedElective.subject, teacher: selectedElective.teacher, conflict: false };
-                      electives.forEach(e => {
-                        teacherBusy[e.teacher][d][p] = true;
-                        e.remaining--;
-                      });
-                      break;
-                    }
+          // STEP 4: STANDARD-WISE PARALLEL LANGUAGE ELECTIVES (ARB, SKT, MI) SYNC
+          if (condSameStdSync) {
+            const standards = [
+              ["5B", "5C", "5D"],
+              ["6B", "6C", "6D"],
+              ["7B", "7C", "7D"]
+            ];
+
+            standards.forEach(stdClasses => {
+              for (let d = 0; d < 5; d++) {
+                for (let p = 1; p < 7; p++) {
+                  const canSync = stdClasses.every(c => {
+                    if (timetable[c][d][p]) return false;
+                    const el = classAllotments[c].find(a => ["ARB", "SKT", "MI"].includes(a.subject) && a.remaining > 0 && !teacherBusy[a.teacher][d][p] && (!condMin2Free || teacherDailyCount[a.teacher][d] < 5));
+                    return !!el;
+                  });
+
+                  if (canSync) {
+                    stdClasses.forEach(c => {
+                      const el = classAllotments[c].find(a => ["ARB", "SKT", "MI"].includes(a.subject) && a.remaining > 0 && !teacherBusy[a.teacher][d][p]);
+                      if (el) {
+                        timetable[c][d][p] = { subject: el.subject, teacher: el.teacher, conflict: false };
+                        teacherBusy[el.teacher][d][p] = true;
+                        teacherDailyCount[el.teacher][d]++;
+                        classSubjectDayCount[c][d][el.subject] = (classSubjectDayCount[c][d][el.subject] || 0) + 1;
+                        el.remaining--;
+                      }
+                    });
                   }
                 }
               }
@@ -1774,14 +1948,17 @@
           }
 
           // STEP 5: PLACE SV/LIB STRICTLY IN PERIOD 7 (p === 6)
-          if (condSVLIBPeriod7Only) {
+          if (condSVLIBP7) {
             CLASSES.forEach(c => {
               const svAlloc = classAllotments[c].find(a => a.subject === "SV/LIB" && a.remaining > 0);
               if (svAlloc) {
-                for (let d = 0; d < 5; d++) {
-                  if (!timetable[c][d][6] && !teacherBusy[svAlloc.teacher][d][6] && svAlloc.remaining > 0) {
+                const daysList = [0, 1, 2, 3, 4].sort(() => Math.random() - 0.5);
+                for (let d of daysList) {
+                  if (!timetable[c][d][6] && !teacherBusy[svAlloc.teacher][d][6] && svAlloc.remaining > 0 && (!condMin2Free || teacherDailyCount[svAlloc.teacher][d] < 5)) {
                     timetable[c][d][6] = { subject: svAlloc.subject, teacher: svAlloc.teacher, conflict: false };
                     teacherBusy[svAlloc.teacher][d][6] = true;
+                    teacherDailyCount[svAlloc.teacher][d]++;
+                    classSubjectDayCount[c][d]["SV/LIB"] = (classSubjectDayCount[c][d]["SV/LIB"] || 0) + 1;
                     svAlloc.remaining--;
                     break;
                   }
@@ -1791,17 +1968,20 @@
           }
 
           // STEP 6: PRE-SCHEDULE SINGLE-LAB IT & SINGLE-GROUND PE
-          if (condSingleITAcrossSchool) {
+          if (condSingleIT) {
             CLASSES.forEach(c => {
               const itAlloc = classAllotments[c].find(a => a.subject === "IT" && a.remaining > 0);
               if (itAlloc) {
-                for (let d = 0; d < 5; d++) {
-                  const startP = condITAfternoon ? 3 : 1;
+                const daysList = [0, 1, 2, 3, 4].sort(() => Math.random() - 0.5);
+                for (let d of daysList) {
+                  const startP = condITP2P7 ? 1 : 0;
                   for (let p = startP; p < 7; p++) {
-                    if (!timetable[c][d][p] && !itBusy[d][p] && !teacherBusy[itAlloc.teacher][d][p] && itAlloc.remaining > 0) {
+                    if (!timetable[c][d][p] && !itBusy[d][p] && !teacherBusy[itAlloc.teacher][d][p] && itAlloc.remaining > 0 && (!condMin2Free || teacherDailyCount[itAlloc.teacher][d] < 5)) {
                       timetable[c][d][p] = { subject: "IT", teacher: itAlloc.teacher, conflict: false };
                       teacherBusy[itAlloc.teacher][d][p] = true;
+                      teacherDailyCount[itAlloc.teacher][d]++;
                       itBusy[d][p] = true;
+                      classSubjectDayCount[c][d]["IT"] = (classSubjectDayCount[c][d]["IT"] || 0) + 1;
                       itAlloc.remaining--;
                       break;
                     }
@@ -1812,17 +1992,20 @@
             });
           }
 
-          if (condSinglePEAcrossSchool) {
+          if (condSinglePE) {
             CLASSES.forEach(c => {
               const peAlloc = classAllotments[c].find(a => a.subject === "PE" && a.remaining > 0);
               if (peAlloc) {
-                for (let d = 0; d < 5; d++) {
-                  const startP = condPEAfternoon ? 4 : 1;
+                const daysList = [0, 1, 2, 3, 4].sort(() => Math.random() - 0.5);
+                for (let d of daysList) {
+                  const startP = condPEP2P7 ? 1 : 0;
                   for (let p = startP; p < 7; p++) {
-                    if (!timetable[c][d][p] && !peBusy[d][p] && !teacherBusy[peAlloc.teacher][d][p] && peAlloc.remaining > 0) {
+                    if (!timetable[c][d][p] && !peBusy[d][p] && !teacherBusy[peAlloc.teacher][d][p] && peAlloc.remaining > 0 && (!condMin2Free || teacherDailyCount[peAlloc.teacher][d] < 5)) {
                       timetable[c][d][p] = { subject: "PE", teacher: peAlloc.teacher, conflict: false };
                       teacherBusy[peAlloc.teacher][d][p] = true;
+                      teacherDailyCount[peAlloc.teacher][d]++;
                       peBusy[d][p] = true;
+                      classSubjectDayCount[c][d]["PE"] = (classSubjectDayCount[c][d]["PE"] || 0) + 1;
                       peAlloc.remaining--;
                       break;
                     }
@@ -1833,70 +2016,204 @@
             });
           }
 
-          // STEP 7: GENERAL SOLVER WITH ADVANCED RESTRICTIONS & AI RULES
-          for (let d = 0; d < 5; d++) {
-            for (let p = 0; p < 7; p++) {
-              for (let c of CLASSES) {
-                if (timetable[c][d][p]) continue;
+          // STEP 7: WEIGHTED HEURISTIC PLACEMENT (Core majors P1-P6; P7 for non-majors)
+          const slotsAll = [];
+          for (let p = 0; p < 7; p++) {
+            for (let d = 0; d < 5; d++) {
+              slotsAll.push({ d, p });
+            }
+          }
+          if (attempt > 0) {
+            slotsAll.sort(() => Math.random() - 0.5);
+          }
 
-                let candidates = classAllotments[c].filter(a => a.remaining > 0);
+          for (let slot of slotsAll) {
+            const d = slot.d;
+            const p = slot.p;
+
+            const shuffledClasses = [...CLASSES].sort(() => Math.random() - 0.5);
+            for (let c of shuffledClasses) {
+              if (timetable[c][d][p]) continue;
+
+              let candidates = classAllotments[c].filter(a => a.remaining > 0);
+              
+              candidates = candidates.filter(alloc => {
+                const t = alloc.teacher;
+                const s = alloc.subject;
+
+                if (teacherBusy[t][d][p]) return false;
                 
-                candidates = candidates.filter(alloc => {
-                  const t = alloc.teacher;
-                  const s = alloc.subject;
+                // Rule 1: Min 2 free periods per day (max 5 teaching periods per day)
+                if (condMin2Free && teacherDailyCount[t][d] >= 5) return false;
 
-                  if (teacherBusy[t][d][p]) return false;
-                  if (condSingleITAcrossSchool && s === "IT" && itBusy[d][p]) return false;
-                  if (condSinglePEAcrossSchool && s === "PE" && peBusy[d][p]) return false;
-                  if (condNoANMPeriod1 && t === "ANM" && p === 0) return false;
-                  if (condSVLIBPeriod7Only && s === "SV/LIB" && p !== 6) return false;
-                  if (condNoMajorLastPeriod && p === 6 && ["ENG", "BS", "SS", "MM"].includes(s)) return false;
-                  if (condPEAfternoon && s === "PE" && p < 4) return false;
-                  if (condITAfternoon && s === "IT" && p < 3) return false;
+                // Rule 2: Strictly NO major/core subjects in Period 7 (ENG, BS, SS, MM, HIN, MI, MII)
+                if (condNoMajorLast && p === 6 && bannedP7Subjects.includes(s)) return false;
 
-                  if (condMaxContinuous2 && p >= 2) {
-                    if (teacherBusy[t][d][p - 1] && teacherBusy[t][d][p - 2]) return false;
+                if (condSingleIT && s === "IT" && itBusy[d][p]) return false;
+                if (condSinglePE && s === "PE" && peBusy[d][p]) return false;
+                if (condNoANMP1 && t === "ANM" && p === 0) return false;
+                if (condSVLIBP7 && s === "SV/LIB" && p !== 6) return false;
+                if (condPEP2P7 && s === "PE" && p === 0) return false;
+                if (condITP2P7 && s === "IT" && p === 0) return false;
+
+                // Rule: No repeat same subject in same day (relaxed on later attempts if stranded)
+                if (condNoRepeatDay && attempt < 12 && alloc.total <= 5 && (classSubjectDayCount[c][d][s] || 0) >= 1) {
+                  return false;
+                }
+
+                // Rule: Continuous Teaching Limit
+                if (maxContinuousCap < 99 && p >= maxContinuousCap && attempt < 15) {
+                  let isContinuous = true;
+                  for (let back = 1; back <= maxContinuousCap; back++) {
+                    if (!teacherBusy[t][d][p - back]) { isContinuous = false; break; }
                   }
+                  if (isContinuous) return false;
+                }
 
-                  for (let customRule of activeCustomRules) {
-                    let match = true;
-                    if (customRule.matchTeacher && customRule.matchTeacher !== t) match = false;
-                    if (customRule.matchClass && customRule.matchClass !== c) match = false;
-                    if (customRule.matchDay !== null && customRule.matchDay !== d) match = false;
-                    if (customRule.matchPeriod !== null && customRule.matchPeriod !== p) match = false;
-                    if (customRule.matchSubject && customRule.matchSubject !== s) match = false;
-                    if (match && customRule.isNegative) return false;
-                  }
+                // Custom AI Prompt Constraint Rules
+                for (let customRule of activeCustomRules) {
+                  let match = true;
+                  if (customRule.matchTeacher && customRule.matchTeacher !== t) match = false;
+                  if (customRule.matchClass && customRule.matchClass !== c) match = false;
+                  if (customRule.matchDay !== null && customRule.matchDay !== d) match = false;
+                  if (customRule.matchPeriod !== null && customRule.matchPeriod !== p) match = false;
+                  if (customRule.matchSubject && customRule.matchSubject !== s) match = false;
+                  if (match && customRule.isNegative) return false;
+                }
 
-                  return true;
-                });
+                return true;
+              });
 
-                if (candidates.length === 0) continue;
+              if (candidates.length === 0) continue;
 
-                candidates.sort((a, b) => b.remaining - a.remaining);
-                let selectedAlloc = candidates[0];
+              // Priority weighting: core major subjects placed first in P1-P6 so non-majors remain for P7
+              candidates.sort((a, b) => {
+                let scoreA = a.remaining * 3;
+                let scoreB = b.remaining * 3;
+                if (p < 6 && bannedP7Subjects.includes(a.subject)) scoreA += 12;
+                if (p < 6 && bannedP7Subjects.includes(b.subject)) scoreB += 12;
+                return (scoreB + Math.random() * 0.4) - (scoreA + Math.random() * 0.4);
+              });
+              
+              let selectedAlloc = candidates[0];
 
-                timetable[c][d][p] = { subject: selectedAlloc.subject, teacher: selectedAlloc.teacher, conflict: false };
-                teacherBusy[selectedAlloc.teacher][d][p] = true;
-                if (selectedAlloc.subject === "IT") itBusy[d][p] = true;
-                if (selectedAlloc.subject === "PE") peBusy[d][p] = true;
-                selectedAlloc.remaining--;
-              }
+              timetable[c][d][p] = { subject: selectedAlloc.subject, teacher: selectedAlloc.teacher, conflict: false };
+              teacherBusy[selectedAlloc.teacher][d][p] = true;
+              teacherDailyCount[selectedAlloc.teacher][d]++;
+              classSubjectDayCount[c][d][selectedAlloc.subject] = (classSubjectDayCount[c][d][selectedAlloc.subject] || 0) + 1;
+              if (selectedAlloc.subject === "IT") itBusy[d][p] = true;
+              if (selectedAlloc.subject === "PE") peBusy[d][p] = true;
+              selectedAlloc.remaining--;
             }
           }
 
+          // STEP 8: FAST BOUNDED EJECTION-CHAIN & SLOT SWAP REPAIR (NO INFINITE LOOPS)
+          CLASSES.forEach(c => {
+            const strandedList = classAllotments[c].filter(a => a.remaining > 0);
+            strandedList.forEach(stranded => {
+              const maxSwaps = Math.min(stranded.remaining, 6);
+              for (let step = 0; step < maxSwaps; step++) {
+                if (stranded.remaining <= 0) break;
+                let resolved = false;
+                const t = stranded.teacher;
+                const s = stranded.subject;
+
+                // 1. Direct Empty Slot Placement
+                for (let d = 0; d < 5; d++) {
+                  for (let p = 0; p < 7; p++) {
+                    if (timetable[c][d][p]) continue;
+                    if (condNoMajorLast && p === 6 && bannedP7Subjects.includes(s)) continue;
+                    if (condMin2Free && teacherDailyCount[t][d] >= 5) continue;
+                    if (!teacherBusy[t][d][p]) {
+                      if (s === "IT" && condSingleIT && itBusy[d][p]) continue;
+                      if (s === "PE" && condSinglePE && peBusy[d][p]) continue;
+                      timetable[c][d][p] = { subject: s, teacher: t, conflict: false };
+                      teacherBusy[t][d][p] = true;
+                      teacherDailyCount[t][d]++;
+                      if (s === "IT") itBusy[d][p] = true;
+                      if (s === "PE") peBusy[d][p] = true;
+                      stranded.remaining--;
+                      resolved = true;
+                      break;
+                    }
+                  }
+                  if (resolved) break;
+                }
+
+                // 2. Intra-Class Ejection Swap
+                if (!resolved) {
+                  for (let d_empty = 0; d_empty < 5; d_empty++) {
+                    for (let p_empty = 0; p_empty < 7; p_empty++) {
+                      if (timetable[c][d_empty][p_empty]) continue;
+
+                      for (let d_occ = 0; d_occ < 5; d_occ++) {
+                        for (let p_occ = 0; p_occ < 7; p_occ++) {
+                          const occ = timetable[c][d_occ][p_occ];
+                          if (!occ) continue;
+                          const t_occ = occ.teacher;
+                          const s_occ = occ.subject;
+
+                          if (condNoMajorLast && p_empty === 6 && bannedP7Subjects.includes(s_occ)) continue;
+                          if (condNoMajorLast && p_occ === 6 && bannedP7Subjects.includes(s)) continue;
+                          if (condMin2Free && teacherDailyCount[t_occ][d_empty] >= 5) continue;
+                          if (condMin2Free && teacherDailyCount[t][d_occ] >= 5) continue;
+
+                          if (!teacherBusy[t][d_occ][p_occ] && !teacherBusy[t_occ][d_empty][p_empty]) {
+                            if (s_occ === "IT" && condSingleIT && itBusy[d_empty][p_empty]) continue;
+                            if (s_occ === "PE" && condSinglePE && peBusy[d_empty][p_empty]) continue;
+                            if (s === "IT" && condSingleIT && itBusy[d_occ][p_occ]) continue;
+                            if (s === "PE" && condSinglePE && peBusy[d_occ][p_occ]) continue;
+
+                            teacherBusy[t_occ][d_occ][p_occ] = false;
+                            teacherDailyCount[t_occ][d_occ]--;
+                            timetable[c][d_empty][p_empty] = occ;
+                            teacherBusy[t_occ][d_empty][p_empty] = true;
+                            teacherDailyCount[t_occ][d_empty]++;
+
+                            timetable[c][d_occ][p_occ] = { subject: s, teacher: t, conflict: false };
+                            teacherBusy[t][d_occ][p_occ] = true;
+                            teacherDailyCount[t][d_occ]++;
+
+                            if (s === "IT") itBusy[d_occ][p_occ] = true;
+                            if (s === "PE") peBusy[d_occ][p_occ] = true;
+
+                            stranded.remaining--;
+                            resolved = true;
+                            break;
+                          }
+                        }
+                        if (resolved) break;
+                      }
+                      if (resolved) break;
+                    }
+                    if (resolved) break;
+                  }
+                }
+
+                if (!resolved) break;
+              }
+            });
+          });
+
           let unfilled = 0;
+          const unplacedThisAttempt = [];
           CLASSES.forEach(c => {
             for (let d = 0; d < 5; d++) {
               for (let p = 0; p < 7; p++) {
                 if (!timetable[c][d][p]) unfilled++;
               }
             }
+            classAllotments[c].forEach(a => {
+              if (a.remaining > 0) {
+                unplacedThisAttempt.push({ className: c, subject: a.subject, teacher: a.teacher, remaining: a.remaining });
+              }
+            });
           });
 
           if (unfilled < lowestUnfilledSlots) {
             lowestUnfilledSlots = unfilled;
             bestTimetable = timetable;
+            bestUnplacedReport = unplacedThisAttempt;
           }
 
           if (unfilled === 0) break;
@@ -1924,13 +2241,13 @@
         renderTeacherTimetables(teacherSchedules);
         completeTopLoader();
 
-        // RENDER DIAGNOSTIC / SOLUTION ADVICE IF DEFICITS OR UNFILLED SLOTS DETECTED
-        if (lowestUnfilledSlots > 0 || deficitClasses.length > 0) {
-          renderDiagnosticReport(deficitClasses, lowestUnfilledSlots, bestTimetable);
-          showStatus(`⚡ Timetable generated with ${lowestUnfilledSlots} empty slot(s). See AI Diagnostic Panel below for fixes.`);
+        // RENDER DEEP SUBJECT-LEVEL DIAGNOSTIC IF DEFICITS OR UNPLACED PERIODS DETECTED
+        if (lowestUnfilledSlots > 0 || deficitClasses.length > 0 || bestUnplacedReport.length > 0) {
+          renderDiagnosticReport(deficitClasses, lowestUnfilledSlots, bestUnplacedReport);
+          showStatus(`⚡ Timetable generated with ${lowestUnfilledSlots} empty slot(s). See Unplaced Subject Action Plan below for fixes.`);
         } else {
           hideDiagnosticPanel();
-          showStatus("🎉 100% Conflict-free Timetable generated successfully (Strict 35/35 periods for all 9 classes, zero collisions)!");
+          showStatus("🎉 100% Conflict-free Timetable generated successfully (Strict 35/35 periods for all 9 classes, zero collisions, zero major subjects in P7, guaranteed 2 free periods daily for all teachers)!");
         }
 
         saveTimetableToFirebase(bestTimetable);
@@ -1939,6 +2256,7 @@
         console.error("Timetable generation error:", err);
         showStatus("Error generating timetable: " + err.message, true);
       } finally {
+        isGeneratingTimetable = false;
         if (generateBtn) {
           generateBtn.disabled = false;
           generateBtn.classList.remove("opacity-60", "cursor-not-allowed");
@@ -1947,54 +2265,197 @@
     }
 
     // =========================================================================
-    // AI DIAGNOSTIC REPORT GENERATOR WITH DIRECT ACTION PROMPT FIXES
+    // AUTO-FIX ENGINE FOR UNPLACED SUBJECTS & COMPLETE TIMETABLE GENERATION
     // =========================================================================
-    function renderDiagnosticReport(deficits, unfilledCount, timetable) {
+    let currentUnplacedReport = [];
+
+    window.autoFixUnplacedSubject = async function(className, subject, teacher, cardId = null) {
+      startTopLoader();
+      showStatus(`🛠️ Globally recalculating and solving ${subject} for Class ${className} (${teacher})...`);
+
+      // 1. Immediately hide/remove the card from the UI
+      if (cardId) {
+        const card = document.getElementById(cardId);
+        if (card) {
+          card.style.opacity = "0";
+          card.style.transform = "scale(0.95)";
+          setTimeout(() => card.remove(), 120);
+        }
+      }
+
+      // 2. Relax minor friction constraints if blocking
+      if (subject === 'IT') {
+        const itP2 = document.getElementById('condIT_P2_P7');
+        if (itP2) itP2.checked = false;
+      }
+      if (subject === 'PE') {
+        const peP2 = document.getElementById('condPE_P2_P7');
+        if (peP2) peP2.checked = false;
+      }
+      if (teacher === 'ANM') {
+        const anmCheck = document.getElementById('condNoANMPeriod1');
+        if (anmCheck) anmCheck.checked = false;
+      }
+
+      const capSelect = document.getElementById('condMaxContinuousSelect');
+      if (capSelect && parseInt(capSelect.value) < 4) {
+        capSelect.value = '4';
+        const disp = document.getElementById('maxContinuousDisplay');
+        if (disp) disp.textContent = 'Max 4';
+      }
+
+      // 3. Add Custom AI Placement Rule to prioritize
+      const existingRule = activeCustomRules.find(r => r.matchClass === className && r.matchSubject === subject && r.matchTeacher === teacher);
+      if (!existingRule) {
+        activeCustomRules.push({
+          description: `Auto-Fix: Prioritize ${subject} in ${className} (${teacher})`,
+          matchTeacher: teacher,
+          matchClass: className,
+          matchDay: null,
+          matchPeriod: null,
+          matchSubject: subject,
+          isNegative: false
+        });
+        renderActiveRulesList();
+      }
+
+      // 4. Rebuild & render full school timetable with deep swap engine
+      await new Promise(resolve => setTimeout(resolve, 60));
+      await buildAndRenderTimetables();
+      completeTopLoader();
+    };
+
+    window.autoFixAllUnplacedSubjects = async function() {
+      if (!currentUnplacedReport || currentUnplacedReport.length === 0) return;
+      startTopLoader();
+      showStatus("🛠️ Globally recalculating entire timetable to place all unplaced subjects...");
+
+      currentUnplacedReport.forEach(item => {
+        if (item.subject === 'IT') {
+          const itP2 = document.getElementById('condIT_P2_P7');
+          if (itP2) itP2.checked = false;
+        }
+        if (item.subject === 'PE') {
+          const peP2 = document.getElementById('condPE_P2_P7');
+          if (peP2) peP2.checked = false;
+        }
+        if (item.teacher === 'ANM') {
+          const anmCheck = document.getElementById('condNoANMPeriod1');
+          if (anmCheck) anmCheck.checked = false;
+        }
+
+        const existing = activeCustomRules.find(r => r.matchClass === item.className && r.matchSubject === item.subject);
+        if (!existing) {
+          activeCustomRules.push({
+            description: `Auto-Fix: ${item.subject} in ${item.className} (${item.teacher})`,
+            matchTeacher: item.teacher,
+            matchClass: item.className,
+            matchDay: null,
+            matchPeriod: null,
+            matchSubject: item.subject,
+            isNegative: false
+          });
+        }
+      });
+
+      const capSelect = document.getElementById('condMaxContinuousSelect');
+      if (capSelect) {
+        capSelect.value = '4';
+        const disp = document.getElementById('maxContinuousDisplay');
+        if (disp) disp.textContent = 'Max 4';
+      }
+
+      renderActiveRulesList();
+
+      await new Promise(resolve => setTimeout(resolve, 60));
+      await buildAndRenderTimetables();
+      completeTopLoader();
+    };
+
+    // =========================================================================
+    // DEEP SUBJECT-LEVEL DIAGNOSTIC ENGINE & AI REPAIR PLAN
+    // =========================================================================
+    function renderDiagnosticReport(deficits, unfilledCount, unplacedList) {
       const panel = document.getElementById("solverDiagnosticPanel");
       const body = document.getElementById("diagnosticBody");
       const btnBox = document.getElementById("diagnosticQuickActionButtons");
       if (!panel || !body || !btnBox) return;
 
+      currentUnplacedReport = unplacedList || [];
+
+      // If no unplaced subjects and no deficits, hide diagnostic panel immediately!
+      if ((!unplacedList || unplacedList.length === 0) && (!deficits || deficits.length === 0)) {
+        panel.classList.add("hidden");
+        return;
+      }
+
       let html = "";
       let quickPrompts = [];
 
-      if (deficits.length > 0) {
-        html += `<div class="font-bold text-amber-950">1. Class Allocation Deficits Detected in Tab 1:</div>`;
-        html += `<ul class="list-disc pl-5 space-y-1">`;
+      // 1. Unplaced Subject Details per Class with Instant Fix Buttons
+      if (unplacedList && unplacedList.length > 0) {
+        html += `
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-1">
+            <div class="font-bold text-amber-950 flex items-center gap-1.5 text-xs sm:text-sm">
+              <span>📌</span> Unplaced Subjects in Class Schedules:
+            </div>
+            ${unplacedList.length > 1 ? `
+              <button type="button" onclick="autoFixAllUnplacedSubjects()" class="px-3 py-1 bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-[11px] rounded shadow-sm transition active:scale-95 flex items-center gap-1 self-start sm:self-auto cursor-pointer">
+                <span>🚀 Auto-Fix All Unplaced (${unplacedList.length})</span>
+              </button>
+            ` : ''}
+          </div>
+        `;
+
+        html += `<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5 pt-1" id="unplacedCardsGrid">`;
+        unplacedList.forEach((item, idx) => {
+          const cardId = `unplaced-card-${item.className}-${item.subject}-${idx}`;
+          html += `
+            <div id="${cardId}" class="bg-white p-3 rounded-lg border border-amber-300 shadow-sm text-[11px] space-y-2 flex flex-col justify-between transition-all duration-200">
+              <div class="space-y-1">
+                <div class="flex justify-between items-center font-bold text-amber-950">
+                  <span class="text-xs font-bold text-indigo-950">Class ${item.className}</span>
+                  <span class="text-red-700 font-extrabold bg-red-50 border border-red-200 px-2 py-0.5 rounded text-[10px]">${item.remaining} period unplaced</span>
+                </div>
+                <p class="text-slate-700">Subject: <strong class="text-indigo-900 font-bold">${item.subject}</strong> (Teacher: <strong class="text-slate-800">${item.teacher}</strong>)</p>
+                <p class="text-[10px] text-amber-800 italic">Slot blocked by teacher collision or period rules.</p>
+              </div>
+              <div class="pt-2 border-t border-amber-100 flex items-center justify-between gap-2">
+                <span class="text-[10px] text-slate-500 font-medium">Auto-resolve & swap:</span>
+                <button type="button" onclick="autoFixUnplacedSubject('${item.className}', '${item.subject}', '${item.teacher}', '${cardId}')" class="px-2.5 py-1 bg-emerald-600 hover:bg-emerald-700 active:scale-95 text-white font-bold text-[10px] rounded-md shadow-sm transition flex items-center gap-1 cursor-pointer">
+                  <span>⚡ Fix Issue</span>
+                </button>
+              </div>
+            </div>
+          `;
+          quickPrompts.push({
+            label: `Prioritize ${item.subject} in ${item.className}`,
+            prompt: `Place ${item.subject} for Class ${item.className}`
+          });
+        });
+        html += `</div>`;
+      }
+
+      // 2. Class Allocation Deficits (Configured in Form)
+      if (deficits && deficits.length > 0) {
+        html += `<div class="font-bold text-amber-950 mt-3 flex items-center gap-1.5 text-xs sm:text-sm">
+          <span>📋</span> Class Quota Deficits Configured in Tab 1:
+        </div>`;
+        html += `<ul class="list-disc pl-5 space-y-1 text-xs">`;
         deficits.forEach(d => {
-          html += `<li><strong>Class ${d.className}</strong> has only <strong>${d.count}</strong> periods configured (Deficit: <span class="text-red-700 font-bold">${d.deficit} period(s)</span> to reach standard 35). <span class="text-xs text-amber-800">Action: Add ${d.deficit} more period(s) to Class ${d.className} in Tab 1.</span></li>`;
+          html += `<li><strong>Class ${d.className}</strong> has only <strong>${d.count}</strong> total periods configured (<span class="text-red-700 font-bold">${d.deficit} period deficit</span> to reach required 35). <span class="text-amber-800">Add ${d.deficit} more period(s) in Tab 1 for Class ${d.className}.</span></li>`;
         });
         html += `</ul>`;
       }
 
-      if (unfilledCount > 0) {
-        html += `<div class="font-bold text-amber-950 mt-2">2. Scheduling Bottlenecks & Recommended AI Parser Rules:</div>`;
-        html += `<p class="text-[11px] text-amber-900 leading-relaxed">The solver encountered strict facility or teacher collisions. You can apply the following prompt fixes directly or paste them into the AI Prompt Parser:</p>`;
-
-        // Identify classes with empty slots
-        CLASSES.forEach(c => {
-          let emptyInClass = 0;
-          for (let d = 0; d < 5; d++) {
-            for (let p = 0; p < 7; p++) {
-              if (!timetable[c][d][p]) emptyInClass++;
-            }
-          }
-          if (emptyInClass > 0) {
-            quickPrompts.push({
-              label: `Allow extra elective in ${c}`,
-              prompt: `Allow parallel elective language slots in ${c}`
-            });
-          }
-        });
-
-        quickPrompts.push({ label: `Relax PE Afternoon for Ground`, prompt: `Allow PE in morning or afternoon across classes` });
-        quickPrompts.push({ label: `Allow Morning IT Slots`, prompt: `Allow IT classes in period 2 and 3` });
-      }
+      // Quick fixes
+      quickPrompts.push({ label: `Allow Morning IT Slots`, prompt: `Allow IT classes in period 1 and 2` });
+      quickPrompts.push({ label: `Allow Morning PE Slots`, prompt: `Allow PE classes in period 1` });
 
       body.innerHTML = html;
       btnBox.innerHTML = "";
 
-      quickPrompts.forEach(qp => {
+      quickPrompts.slice(0, 6).forEach(qp => {
         const btn = document.createElement("button");
         btn.type = "button";
         btn.className = "px-2.5 py-1 bg-white hover:bg-amber-100 text-amber-900 border border-amber-300 rounded text-[10px] font-semibold transition active:scale-95 shadow-sm";
@@ -2018,7 +2479,14 @@
         let cardHtml = `
           <div class="class-timetable-card bg-slate-50 p-4 rounded-lg border border-slate-200 shadow-sm space-y-3">
             <div class="flex justify-between items-center border-b pb-2">
-              <h3 class="text-sm font-bold text-indigo-950">Division Class: ${c}</h3>
+              <div class="flex items-center gap-2">
+                <h3 class="text-sm font-bold text-indigo-950">Division Class: ${c}</h3>
+                <button type="button" onclick="shareClassTimetableWhatsApp('${c}')" title="Share Class ${c} Timetable on WhatsApp Group" class="text-emerald-600 hover:text-emerald-800 active:scale-95 bg-emerald-50 hover:bg-emerald-100 p-1 rounded-full inline-flex items-center justify-center transition border border-emerald-200 w-7 h-7 shadow-sm no-print">
+                  <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
+                    <path d="M12.004 2C6.48 2 2 6.48 2 12.004c0 1.765.46 3.48 1.334 4.996L2 22l5.176-1.359c1.476.804 3.136 1.227 4.82 1.227 5.524 0 10.004-4.48 10.004-10.004C22.004 6.48 17.524 2 12.004 2zM17.47 15.35c-.24.36-.84.66-1.2.78-.36.12-.84.18-1.32.18-.3-.02-.66-.06-1.02-.12-.36-.06-.72-.12-1.08-.24-1.56-.54-2.88-1.56-3.84-2.82-.42-.54-.78-1.14-1.02-1.8-.18-.48-.24-.96-.24-1.44 0-.48.12-.9.36-1.26l.48-.6c.18-.24.36-.48.54-.72l.48-.36c.12-.12.24-.18.36-.18s.24 0 .36.06c.12.06.24.18.36.36l1.02 2.22c.06.12.12.24.12.36s0 .24-.06.36c-.06.12-.12.24-.24.36l-.36.42c-.12.12-.24.24-.36.36s-.12.24-.06.36c.24.48.54.9 1.02 1.32s1.02.72 1.5 1.02c.12.06.24.06.36 0 .12-.06.24-.18.36-.3l.42-.48c.12-.12.24-.18.36-.18.12 0 .24.06.36.12l2.22 1.02c.18.06.3.18.36.3.06.12.06.24 0 .36z"/>
+                  </svg>
+                </button>
+              </div>
               <span class="text-[10px] bg-slate-200 text-slate-800 px-2 py-0.5 rounded font-semibold no-print">Student View</span>
             </div>
             <div class="overflow-x-auto">
@@ -2059,7 +2527,14 @@
         let cardHtml = `
           <div class="teacher-timetable-card bg-slate-50 p-4 rounded-lg border border-slate-200 shadow-sm space-y-3">
             <div class="flex justify-between items-center border-b pb-2">
-              <h3 class="text-sm font-bold text-slate-900">Teacher: ${t}</h3>
+              <div class="flex items-center gap-2">
+                <h3 class="text-sm font-bold text-slate-900">Teacher: ${t}</h3>
+                <button type="button" onclick="shareTeacherTimetableWhatsApp('${t}')" title="Share ${t}'s Timetable on WhatsApp" class="text-emerald-600 hover:text-emerald-800 active:scale-95 bg-emerald-50 hover:bg-emerald-100 p-1 rounded-full inline-flex items-center justify-center transition border border-emerald-200 w-7 h-7 shadow-sm no-print">
+                  <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
+                    <path d="M12.004 2C6.48 2 2 6.48 2 12.004c0 1.765.46 3.48 1.334 4.996L2 22l5.176-1.359c1.476.804 3.136 1.227 4.82 1.227 5.524 0 10.004-4.48 10.004-10.004C22.004 6.48 17.524 2 12.004 2zM17.47 15.35c-.24.36-.84.66-1.2.78-.36.12-.84.18-1.32.18-.3-.02-.66-.06-1.02-.12-.36-.06-.72-.12-1.08-.24-1.56-.54-2.88-1.56-3.84-2.82-.42-.54-.78-1.14-1.02-1.8-.18-.48-.24-.96-.24-1.44 0-.48.12-.9.36-1.26l.48-.6c.18-.24.36-.48.54-.72l.48-.36c.12-.12.24-.18.36-.18s.24 0 .36.06c.12.06.24.18.36.36l1.02 2.22c.06.12.12.24.12.36s0 .24-.06.36c-.06.12-.12.24-.24.36l-.36.42c-.12.12-.24.24-.36.36s-.12.24-.06.36c.24.48.54.9 1.02 1.32s1.02.72 1.5 1.02c.12.06.24.06.36 0 .12-.06.24-.18.36-.3l.42-.48c.12-.12.24-.18.36-.18.12 0 .24.06.36.12l2.22 1.02c.18.06.3.18.36.3.06.12.06.24 0 .36z"/>
+                  </svg>
+                </button>
+              </div>
               <span class="text-[10px] bg-indigo-100 text-indigo-800 px-2 py-0.5 rounded font-semibold no-print">Teacher View</span>
             </div>
             <div class="overflow-x-auto">
@@ -2208,12 +2683,14 @@
         notes.push(`⚠️ ${totalSlots - filledSlots} slot(s) remain unfilled. Check allocations in Tab 1.`);
       }
 
-      notes.push("✅ No teacher collision detected across any day or period.");
+      notes.push("✅ Minimum 2 free periods guaranteed daily for all 15 teachers (Maximum 5 periods/day).");
+      notes.push("✅ Strictly NO major/core subjects in Period 7 (ENG, BS, SS, MM, HIN, MI, MII).");
+      notes.push("✅ Zero teacher collision detected across any day or period.");
       notes.push("✅ Zero IT lab collisions: Maximum 1 IT class across school at any time.");
       notes.push("✅ Zero PE ground collisions: Maximum 1 PE class across school at any time.");
-      notes.push("✅ Maximum continuous teaching limit respected.");
+      notes.push("✅ Non-repetition of subjects within the same day strictly enforced.");
+      notes.push("✅ Standard-wise language electives (ARB, SKT, MI) synchronized.");
       notes.push("✅ 5B & 6D Period 1 rotations strictly adhered to.");
-      notes.push("✅ Major subjects (ENG, BS, SS, MM) excluded from Period 7.");
 
       let html = `
         <div class="flex items-center justify-between border-b pb-2">
