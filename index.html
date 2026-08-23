@@ -465,7 +465,7 @@
             </label>
             <label class="flex items-center gap-2 cursor-pointer p-2.5 bg-white rounded-lg border border-slate-200 hover:bg-slate-50 transition font-semibold text-indigo-950">
               <input type="checkbox" id="condSameStdLangSync" checked class="rounded text-indigo-600 focus:ring-indigo-500 w-4 h-4">
-              <span>🔄 ARB, SKT & ALL MI sync (Same Std Only)</span>
+              <span>🔄 Fixed language sync matrix (ANM reserved)</span>
             </label>
             <label class="flex items-center gap-2 cursor-pointer p-2.5 bg-white rounded-lg border border-slate-200 hover:bg-slate-50 transition font-semibold text-indigo-950">
               <input type="checkbox" id="condPE_P2_P7" checked class="rounded text-indigo-600 focus:ring-indigo-500 w-4 h-4">
@@ -784,6 +784,19 @@
       "09:20-10:00", "10:00-10:40", "10:50-11:30", "11:30-12:10", "01:10-01:50", "01:50-02:30", "02:40-03:20"
     ];
     const DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri"];
+
+    // Fixed language-elective lessons.  The three divisions of a standard run
+    // in parallel; ANM is deliberately reserved (free) in every one of these
+    // slots.  Period indexes are zero-based in the solver.
+    const LANGUAGE_SYNC_MATRIX = [
+      { slots: [[0, 1], [1, 2], [3, 4], [4, 3]], lessons: [["5B", "VRK", "SKT"], ["5C", "NV", "MI"], ["5D", "SA", "MI"]] },
+      { slots: [[0, 2], [1, 1], [2, 1], [4, 1]], lessons: [["6B", "VRK", "SKT"], ["6C", "SK", "MI"], ["6D", "SA", "MI"]] },
+      { slots: [[0, 4], [2, 2], [3, 3], [4, 4]], lessons: [["7B", "VRK", "SKT"], ["7C", "NV", "MI"], ["7D", "SK", "MI"]] }
+    ];
+
+    const LANGUAGE_SYNC_SLOT_KEYS = new Set(
+      LANGUAGE_SYNC_MATRIX.flatMap(group => group.slots.map(([day, period]) => `${day}:${period}`))
+    );
 
     const dbState = {};
     TEACHERS.forEach(t => {
@@ -1871,37 +1884,26 @@
             });
           }
 
-          // 4. Parallel Electives Sync (ARB, SKT, MI)
+          // 4. Fixed standard-wise language synchronization matrix.
+          // These placements are intentionally made before general scheduling so
+          // their specified day/period coordinates can never drift between runs.
           if (condSameStdSync) {
-            const standards = [
-              ["5B", "5C", "5D"],
-              ["6B", "6C", "6D"],
-              ["7B", "7C", "7D"]
-            ];
+            LANGUAGE_SYNC_MATRIX.forEach(group => {
+              group.slots.forEach(([d, p]) => {
+                group.lessons.forEach(([c, teacher, subject]) => {
+                  const alloc = classAllotments[c].find(a =>
+                    a.teacher === teacher && a.subject === subject && a.remaining > 0
+                  );
+                  if (!alloc || timetable[c][d][p] || teacherBusy[teacher][d][p]) return;
+                  if (condMin2Free && teacherDailyCount[teacher][d] >= 5) return;
 
-            standards.forEach(stdClasses => {
-              for (let d = 0; d < 5; d++) {
-                for (let p = 1; p < 7; p++) {
-                  const canSync = stdClasses.every(c => {
-                    if (timetable[c][d][p]) return false;
-                    const el = classAllotments[c].find(a => ["ARB", "SKT", "MI"].includes(a.subject) && a.remaining > 0 && !teacherBusy[a.teacher][d][p] && (!condMin2Free || teacherDailyCount[a.teacher][d] < 5));
-                    return !!el;
-                  });
-
-                  if (canSync) {
-                    stdClasses.forEach(c => {
-                      const el = classAllotments[c].find(a => ["ARB", "SKT", "MI"].includes(a.subject) && a.remaining > 0 && !teacherBusy[a.teacher][d][p]);
-                      if (el) {
-                        timetable[c][d][p] = { subject: el.subject, teacher: el.teacher, conflict: false };
-                        teacherBusy[el.teacher][d][p] = true;
-                        teacherDailyCount[el.teacher][d]++;
-                        classSubjectDayCount[c][d][el.subject] = (classSubjectDayCount[c][d][el.subject] || 0) + 1;
-                        el.remaining--;
-                      }
-                    });
-                  }
-                }
-              }
+                  timetable[c][d][p] = { subject, teacher, conflict: false };
+                  teacherBusy[teacher][d][p] = true;
+                  teacherDailyCount[teacher][d]++;
+                  classSubjectDayCount[c][d][subject] = (classSubjectDayCount[c][d][subject] || 0) + 1;
+                  alloc.remaining--;
+                });
+              });
             });
           }
 
@@ -2013,6 +2015,8 @@
                 if (condSingleIT && s === "IT" && itBusy[d][p]) return false;
                 if (condSinglePE && s === "PE" && peBusy[d][p]) return false;
                 if (condNoANMP1 && t === "ANM" && p === 0) return false;
+                // ANM must remain free whenever a fixed language sync is running.
+                if (condSameStdSync && t === "ANM" && LANGUAGE_SYNC_SLOT_KEYS.has(`${d}:${p}`)) return false;
                 if (condSVLIBP7 && s === "SV/LIB" && p !== 6) return false;
                 if (condPEP2P7 && s === "PE" && p === 0) return false;
                 if (condITP2P7 && s === "IT" && p === 0) return false;
