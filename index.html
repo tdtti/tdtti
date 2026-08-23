@@ -187,11 +187,11 @@
 
     <!-- Navigation Bar -->
     <div class="tab-navigation flex flex-wrap justify-center items-center gap-2.5 sm:gap-3 py-2 px-3 border border-slate-200 bg-white shadow-sm rounded-xl max-w-xl mx-auto no-print">
-      <button id="tab1-btn" onclick="switchMainTab(1)" title="Basic Details & Allocation Form" class="w-10 h-10 sm:w-11 sm:h-11 rounded-full flex items-center justify-center transition focus:outline-none focus:ring-2 focus:ring-indigo-500 text-2xl">📝</button>
-      <button id="tab2-btn" onclick="switchMainTab(2)" title="Live Teachers Summary Table" class="w-10 h-10 sm:w-11 sm:h-11 rounded-full flex items-center justify-center transition focus:outline-none focus:ring-2 focus:ring-indigo-500 text-2xl">📊</button>
-      <button id="tab3-btn" onclick="switchMainTab(3)" title="Live Students Period Allocation Table" class="w-10 h-10 sm:w-11 sm:h-11 rounded-full flex items-center justify-center transition focus:outline-none focus:ring-2 focus:ring-indigo-500 text-2xl">🎓</button>
-      <button id="tab4-btn" onclick="switchMainTab(4)" title="Database Sync & Actions" class="w-10 h-10 sm:w-11 sm:h-11 rounded-full flex items-center justify-center transition focus:outline-none focus:ring-2 focus:ring-indigo-500 text-2xl">⚙️</button>
-      <button id="tab5-btn" onclick="switchMainTab(5)" title="Generate & View Timetable" class="w-10 h-10 sm:w-11 sm:h-11 rounded-full flex items-center justify-center transition focus:outline-none focus:ring-2 focus:ring-indigo-500 text-2xl">🗓️</button>
+      <button type="button" data-main-tab="1" id="tab1-btn" onclick="switchMainTab(1)" title="Basic Details & Allocation Form" class="w-10 h-10 sm:w-11 sm:h-11 rounded-full flex items-center justify-center transition focus:outline-none focus:ring-2 focus:ring-indigo-500 text-2xl">📝</button>
+      <button type="button" data-main-tab="2" id="tab2-btn" onclick="switchMainTab(2)" title="Live Teachers Summary Table" class="w-10 h-10 sm:w-11 sm:h-11 rounded-full flex items-center justify-center transition focus:outline-none focus:ring-2 focus:ring-indigo-500 text-2xl">📊</button>
+      <button type="button" data-main-tab="3" id="tab3-btn" onclick="switchMainTab(3)" title="Live Students Period Allocation Table" class="w-10 h-10 sm:w-11 sm:h-11 rounded-full flex items-center justify-center transition focus:outline-none focus:ring-2 focus:ring-indigo-500 text-2xl">🎓</button>
+      <button type="button" data-main-tab="4" id="tab4-btn" onclick="switchMainTab(4)" title="Database Sync & Actions" class="w-10 h-10 sm:w-11 sm:h-11 rounded-full flex items-center justify-center transition focus:outline-none focus:ring-2 focus:ring-indigo-500 text-2xl">⚙️</button>
+      <button type="button" data-main-tab="5" id="tab5-btn" onclick="switchMainTab(5)" title="Generate & View Timetable" class="w-10 h-10 sm:w-11 sm:h-11 rounded-full flex items-center justify-center transition focus:outline-none focus:ring-2 focus:ring-indigo-500 text-2xl">🗓️</button>
       
       <div class="h-6 w-[1px] bg-slate-200 mx-1"></div>
 
@@ -201,7 +201,7 @@
     </div>
 
     <!-- TAB 1: ALLOTMENT FORM -->
-    <div id="tab1-content" class="tab-pane space-y-6">
+    <div id="tab1-content" data-tab-pane="1" class="tab-pane space-y-6">
       
       <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white p-4 sm:p-5 rounded-xl border border-slate-200 shadow-sm">
         <div>
@@ -319,7 +319,7 @@
     </div>
 
     <!-- TAB 2: LIVE TEACHERS SUMMARY TABLE -->
-    <div id="tab2-content" class="tab-pane hidden space-y-6">
+    <div id="tab2-content" data-tab-pane="2" class="tab-pane hidden space-y-6">
       <div id="teacherTableCard" class="bg-white rounded-lg shadow-sm border border-slate-200 p-4 sm:p-6 w-full">
         <h2 class="text-base sm:text-lg font-bold text-slate-950 mb-1 flex items-center gap-2">
           <span class="text-indigo-600">📊</span> Live Teachers Summary Table
@@ -357,7 +357,7 @@
     </div>
 
     <!-- TAB 3: LIVE STUDENTS PERIOD ALLOCATION TABLE -->
-    <div id="tab3-content" class="tab-pane hidden space-y-6">
+    <div id="tab3-content" data-tab-pane="3" class="tab-pane hidden space-y-6">
       <div id="studentTableCard" class="bg-white rounded-lg shadow-sm border border-slate-200 p-4 sm:p-6 w-full">
         <h2 class="text-base sm:text-lg font-bold text-slate-950 mb-1 flex items-center gap-2">
           <span class="text-teal-600">🎓</span> Live Students Period Allocation Table
@@ -394,7 +394,7 @@
     </div>
 
     <!-- TAB 4: DATABASE SYNCHRONIZATION & ACTIONS -->
-    <div id="tab4-content" class="tab-pane hidden space-y-6">
+    <div id="tab4-content" data-tab-pane="4" class="tab-pane hidden space-y-6">
       <div id="dbSyncControls" class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-slate-100 p-6 rounded-lg border border-slate-200">
         <div>
           <h3 class="text-sm font-bold text-slate-800">Firebase Synchronization & Actions</h3>
@@ -415,7 +415,7 @@
     </div>
 
     <!-- TAB 5: TIMETABLE GENERATION AND VIEWS -->
-    <div id="tab5-content" class="tab-pane hidden space-y-6">
+    <div id="tab5-content" data-tab-pane="5" class="tab-pane hidden space-y-6">
       <div class="bg-white rounded-lg shadow-sm border border-slate-200 p-4 sm:p-6 w-full">
         
         <!-- SCHEDULING CRITERIA -->
@@ -817,40 +817,29 @@
     const manualSyncBtn = document.getElementById("manualSyncBtn");
     const printBtn = document.getElementById("printBtn");
 
-    function switchMainTab(tabNum) {
-      const teacherCard = document.getElementById("teacherTableCard");
-      const studentCard = document.getElementById("studentTableCard");
-      const tab2Pane = document.getElementById("tab2-content");
-      const tab3Pane = document.getElementById("tab3-content");
-      const tab4Tables = document.getElementById("tab4-tables-container");
+    window.switchMainTab = function(tabNum) {
+      const selectedTab = Number(tabNum);
+      if (!Number.isInteger(selectedTab) || selectedTab < 1 || selectedTab > 5) return;
 
-      for (let i = 1; i <= 5; i++) {
-        const pane = document.getElementById(`tab${i}-content`);
-        const btn = document.getElementById(`tab${i}-btn`);
-        if (pane) pane.classList.add("hidden");
-        if (btn) {
-          btn.className = "w-10 h-10 sm:w-11 sm:h-11 rounded-full flex items-center justify-center transition focus:outline-none focus:ring-2 focus:ring-indigo-500 text-2xl bg-slate-100 text-slate-500 hover:bg-slate-200";
-        }
-      }
+      // Keep each pane in its original DOM location. Moving summary cards between
+      // panes caused a hidden parent to retain visible content after navigation.
+      document.querySelectorAll("[data-tab-pane]").forEach(pane => {
+        const isSelected = Number(pane.dataset.tabPane) === selectedTab;
+        pane.classList.toggle("hidden", !isSelected);
+        pane.setAttribute("aria-hidden", String(!isSelected));
+      });
 
-      if (tabNum === 2) {
-        if (tab2Pane && teacherCard) tab2Pane.appendChild(teacherCard);
-      } else if (tabNum === 3) {
-        if (tab3Pane && studentCard) tab3Pane.appendChild(studentCard);
-      } else if (tabNum === 4) {
-        if (tab4Tables) {
-          if (teacherCard) tab4Tables.appendChild(teacherCard);
-          if (studentCard) tab4Tables.appendChild(studentCard);
-        }
-      }
+      document.querySelectorAll("[data-main-tab]").forEach(button => {
+        const isSelected = Number(button.dataset.mainTab) === selectedTab;
+        button.setAttribute("aria-selected", String(isSelected));
+        button.className = isSelected
+          ? "w-10 h-10 sm:w-11 sm:h-11 rounded-full flex items-center justify-center transition focus:outline-none focus:ring-2 focus:ring-indigo-500 text-2xl bg-indigo-600 text-white shadow-md transform scale-110"
+          : "w-10 h-10 sm:w-11 sm:h-11 rounded-full flex items-center justify-center transition focus:outline-none focus:ring-2 focus:ring-indigo-500 text-2xl bg-slate-100 text-slate-500 hover:bg-slate-200";
+      });
 
-      const activePane = document.getElementById(`tab${tabNum}-content`);
-      const activeBtn = document.getElementById(`tab${tabNum}-btn`);
-      if (activePane) activePane.classList.remove("hidden");
-      if (activeBtn) {
-        activeBtn.className = "w-10 h-10 sm:w-11 sm:h-11 rounded-full flex items-center justify-center transition focus:outline-none focus:ring-2 focus:ring-indigo-500 text-2xl bg-indigo-600 text-white shadow-md transform scale-110";
-      }
-    }
+      // Refresh the relevant summaries without reparenting their table cards.
+      if (selectedTab === 2 || selectedTab === 3) updateTables();
+    };
 
     function toggleFullscreenView() {
       const btn = document.getElementById("fullscreenToggleBtn");
@@ -1830,6 +1819,20 @@
             configurationViolations.push(`${t} has ${total} weekly periods configured; 20–25 are required to provide 4–5 lessons every day.`);
           }
         });
+        TEACHERS.forEach(t => {
+          const total = teacherAllocatedTotals[t];
+          if (total < 20 || total > 25) {
+            configurationViolations.push(`${t} has ${total} weekly periods configured; 20–25 are required to provide 4–5 lessons every day.`);
+          }
+        });
+
+        // Do not generate or overwrite a timetable from an infeasible allocation.
+        if (deficitClasses.length > 0 || configurationViolations.length > 0) {
+          renderDiagnosticReport(deficitClasses, 0, [], configurationViolations, "Allocation feasibility violations");
+          completeTopLoader();
+          showStatus("Cannot generate a conflict-free timetable until every class and teacher allocation meets the required weekly totals.", true);
+          return;
+        }
 
         // Do not generate or overwrite a timetable from an infeasible allocation.
         if (deficitClasses.length > 0 || configurationViolations.length > 0) {
