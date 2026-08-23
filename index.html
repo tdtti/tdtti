@@ -821,6 +821,34 @@
       const selectedTab = Number(tabNum);
       if (!Number.isInteger(selectedTab) || selectedTab < 1 || selectedTab > 5) return;
 
+      // Use an inline display value as well as Tailwind's utility class. This
+      // keeps navigation functional even if the CDN utility stylesheet loads late.
+      for (let tab = 1; tab <= 5; tab++) {
+        const pane = document.getElementById(`tab${tab}-content`);
+        const button = document.getElementById(`tab${tab}-btn`);
+        const isSelected = tab === selectedTab;
+        if (pane) {
+          pane.classList.toggle("hidden", !isSelected);
+          pane.style.display = isSelected ? "" : "none";
+          pane.setAttribute("aria-hidden", String(!isSelected));
+        }
+        if (button) {
+          button.setAttribute("aria-selected", String(isSelected));
+          button.className = isSelected
+            ? "w-10 h-10 sm:w-11 sm:h-11 rounded-full flex items-center justify-center transition focus:outline-none focus:ring-2 focus:ring-indigo-500 text-2xl bg-indigo-600 text-white shadow-md transform scale-110"
+            : "w-10 h-10 sm:w-11 sm:h-11 rounded-full flex items-center justify-center transition focus:outline-none focus:ring-2 focus:ring-indigo-500 text-2xl bg-slate-100 text-slate-500 hover:bg-slate-200";
+        }
+      }
+    };
+
+    // Bind click handlers after the document exists; this avoids relying solely
+    // on inline handlers in embedded/browser preview environments.
+    document.querySelectorAll("[data-main-tab]").forEach(button => {
+      button.addEventListener("click", event => {
+        event.preventDefault();
+        window.switchMainTab(button.dataset.mainTab);
+      });
+    });
       // Keep each pane in its original DOM location. Moving summary cards between
       // panes caused a hidden parent to retain visible content after navigation.
       document.querySelectorAll("[data-tab-pane]").forEach(pane => {
