@@ -1788,6 +1788,7 @@
         });
 
         const classAllocatedTotals = {};
+        const teacherAllocatedTotals = Object.fromEntries(TEACHERS.map(t => [t, 0]));
         const classAllotments = {};
         CLASSES.forEach(c => {
           classAllocatedTotals[c] = 0;
@@ -1802,6 +1803,7 @@
               if (CLASSES.includes(c) && alloc.subject) {
                 const p = parseInt(alloc.periods) || 0;
                 classAllocatedTotals[c] += p;
+                teacherAllocatedTotals[t] += p;
                 classAllotments[c].push({
                   teacher: t,
                   subject: alloc.subject,
@@ -1814,11 +1816,28 @@
         });
 
         const deficitClasses = [];
+        const configurationViolations = [];
         CLASSES.forEach(c => {
           if (classAllocatedTotals[c] < 35) {
             deficitClasses.push({ className: c, count: classAllocatedTotals[c], deficit: 35 - classAllocatedTotals[c] });
+          } else if (classAllocatedTotals[c] > 35) {
+            configurationViolations.push(`Class ${c} has ${classAllocatedTotals[c]} periods configured; exactly 35 are required.`);
           }
         });
+        TEACHERS.forEach(t => {
+          const total = teacherAllocatedTotals[t];
+          if (total < 20 || total > 25) {
+            configurationViolations.push(`${t} has ${total} weekly periods configured; 20–25 are required to provide 4–5 lessons every day.`);
+          }
+        });
+
+        // Do not generate or overwrite a timetable from an infeasible allocation.
+        if (deficitClasses.length > 0 || configurationViolations.length > 0) {
+          renderDiagnosticReport(deficitClasses, 0, [], configurationViolations, "Allocation feasibility violations");
+          completeTopLoader();
+          showStatus("Cannot generate a conflict-free timetable until every class and teacher allocation meets the required weekly totals.", true);
+          return;
+        }
 
         let bestTimetable = null;
         let bestUnplacedReport = [];
@@ -2212,6 +2231,15 @@
           if (unfilled === 0 && workloadViolationCount === 0) break;
         }
 
+        const workloadViolations = getTeacherWorkloadViolations(bestTimetable);
+        const isCompleteAndCompliant = lowestUnfilledSlots === 0 && bestUnplacedReport.length === 0 && workloadViolations.length === 0;
+        if (!isCompleteAndCompliant) {
+          renderDiagnosticReport([], lowestUnfilledSlots, bestUnplacedReport, workloadViolations, "Timetable rule violations");
+          completeTopLoader();
+          showStatus("No timetable was published: the generated draft still violates one or more hard rules.", true);
+          return;
+        }
+
         latestGeneratedTimetable = bestTimetable;
 
         renderClassTimetables(bestTimetable);
@@ -2233,6 +2261,8 @@
         renderTeacherTimetables(teacherSchedules);
         completeTopLoader();
 
+        hideDiagnosticPanel();
+        showStatus("🎉 100% Conflict-free timetable generated successfully (minimum 4 lessons/day, max 2 continuous teaching periods, max 1 continuous free period, and clean Period 7)!");
         const workloadViolations = getTeacherWorkloadViolations(bestTimetable);
         if (lowestUnfilledSlots > 0 || deficitClasses.length > 0 || bestUnplacedReport.length > 0 || workloadViolations.length > 0) {
           renderDiagnosticReport(deficitClasses, lowestUnfilledSlots, bestUnplacedReport, workloadViolations);
@@ -2463,6 +2493,7 @@
       }
     };
 
+    function renderDiagnosticReport(deficits, unfilledCount, unplacedList, ruleViolations = [], violationTitle = "Teacher workload rule violations") {
     function renderDiagnosticReport(deficits, unfilledCount, unplacedList, workloadViolations = []) {
       const panel = document.getElementById("solverDiagnosticPanel");
       const body = document.getElementById("diagnosticBody");
@@ -2471,6 +2502,7 @@
 
       currentUnplacedReport = unplacedList || [];
 
+      if ((!unplacedList || unplacedList.length === 0) && (!deficits || deficits.length === 0) && ruleViolations.length === 0) {
       if ((!unplacedList || unplacedList.length === 0) && (!deficits || deficits.length === 0) && workloadViolations.length === 0) {
         panel.classList.add("hidden");
         return;
@@ -2533,6 +2565,10 @@
         html += `</ul>`;
       }
 
+      if (ruleViolations.length > 0) {
+        html += `<div class="font-bold text-amber-950 mt-3 flex items-center gap-1.5 text-xs sm:text-sm"><span>👩‍🏫</span> ${violationTitle}:</div>`;
+        html += `<p class="text-[11px] text-amber-800">A publishable timetable requires exact class totals, 4–5 lessons/day per teacher, at most 2 continuous teaching periods, and no more than 1 continuous free period.</p>`;
+        html += `<ul class="list-disc pl-5 space-y-1 text-xs">${ruleViolations.map(v => `<li>${v}</li>`).join("")}</ul>`;
       if (workloadViolations.length > 0) {
         html += `<div class="font-bold text-amber-950 mt-3 flex items-center gap-1.5 text-xs sm:text-sm"><span>👩‍🏫</span> Teacher Workload Rule Violations:</div>`;
         html += `<p class="text-[11px] text-amber-800">A valid timetable requires at least 4 lessons/day, at most 2 continuous teaching periods, and no more than 1 continuous free period for every teacher.</p>`;
