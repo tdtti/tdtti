@@ -36,5 +36,9 @@ Use Firebase Security Rules appropriate to your school before deploying. API key
 - Core 5-period subjects are distributed at most once per day by the solver.
 - P7 excludes `ENG`, `BS`, `SS`, `MM`, `HIN`, `MI`, and `MII`; `SV/LIB` is P7-only.
 - Only one IT lab and one PE ground lesson may run in a P2–P7 slot.
-- Teachers are capped at five periods per day and three consecutive periods.
+- Teachers must teach at least four periods per day, with at most two consecutive teaching periods and one consecutive free period.
 - The available allocations must add up to 35 periods per division for a complete timetable. The diagnostic panel identifies shortages or lessons that cannot be placed.
+
+## Teacher workload rules
+
+A timetable is only reported as conflict-free when every teacher has at least four teaching periods on each school day, has no run longer than two consecutive teaching periods, and has no run longer than one consecutive free period. If the configured allocations cannot meet these requirements, the diagnostic panel names every teacher/day violation instead of reporting a false success.
