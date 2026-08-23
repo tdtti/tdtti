@@ -465,7 +465,7 @@
             </label>
             <label class="flex items-center gap-2 cursor-pointer p-2.5 bg-white rounded-lg border border-slate-200 hover:bg-slate-50 transition font-semibold text-indigo-950">
               <input type="checkbox" id="condSameStdLangSync" checked class="rounded text-indigo-600 focus:ring-indigo-500 w-4 h-4">
-              <span>🔄 ARB, SKT & ALL MI sync (Same Std Only)</span>
+              <span>🔄 Fixed language sync matrix (ANM reserved)</span>
             </label>
             <label class="flex items-center gap-2 cursor-pointer p-2.5 bg-white rounded-lg border border-slate-200 hover:bg-slate-50 transition font-semibold text-indigo-950">
               <input type="checkbox" id="condPE_P2_P7" checked class="rounded text-indigo-600 focus:ring-indigo-500 w-4 h-4">
@@ -486,15 +486,10 @@
             <div class="p-3 bg-white rounded-lg border border-slate-200 space-y-2">
               <label class="block text-xs font-bold text-slate-800 flex items-center justify-between">
                 <span>⏱️ Limit Continuous Teaching Periods</span>
-                <span id="maxContinuousDisplay" class="text-[11px] px-2 py-0.5 bg-indigo-50 text-indigo-700 font-bold rounded">Max 3</span>
+                <span id="maxContinuousDisplay" class="text-[11px] px-2 py-0.5 bg-indigo-50 text-indigo-700 font-bold rounded">Max 2</span>
               </label>
-              <select id="condMaxContinuousSelect" onchange="document.getElementById('maxContinuousDisplay').textContent = 'Max ' + this.value" class="w-full px-2.5 py-1.5 border border-slate-300 rounded text-xs bg-white text-slate-800 focus:ring-2 focus:ring-indigo-500 font-semibold">
-                <option value="2">Max 2 Periods</option>
-                <option value="3" selected>Max 3 Periods (Recommended)</option>
-                <option value="4">Max 4 Periods</option>
-                <option value="99">No Limit (Free Flow)</option>
-              </select>
-              <p class="text-[10px] text-slate-500">Limits consecutive teaching classes before a mandatory free break for teachers.</p>
+              <input id="condMaxContinuousSelect" type="hidden" value="2">
+              <p class="text-[10px] text-slate-500">Hard limit: a teacher may teach at most two consecutive periods.</p>
             </div>
 
             <div class="p-3 bg-white rounded-lg border border-slate-200 space-y-2">
@@ -784,6 +779,19 @@
       "09:20-10:00", "10:00-10:40", "10:50-11:30", "11:30-12:10", "01:10-01:50", "01:50-02:30", "02:40-03:20"
     ];
     const DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri"];
+
+    // Fixed language-elective lessons.  The three divisions of a standard run
+    // in parallel; ANM is deliberately reserved (free) in every one of these
+    // slots.  Period indexes are zero-based in the solver.
+    const LANGUAGE_SYNC_MATRIX = [
+      { slots: [[0, 1], [1, 2], [3, 4], [4, 3]], lessons: [["5B", "VRK", "SKT"], ["5C", "NV", "MI"], ["5D", "SA", "MI"]] },
+      { slots: [[0, 2], [1, 1], [2, 1], [4, 1]], lessons: [["6B", "VRK", "SKT"], ["6C", "SK", "MI"], ["6D", "SA", "MI"]] },
+      { slots: [[0, 4], [2, 2], [3, 3], [4, 4]], lessons: [["7B", "VRK", "SKT"], ["7C", "NV", "MI"], ["7D", "SK", "MI"]] }
+    ];
+
+    const LANGUAGE_SYNC_SLOT_KEYS = new Set(
+      LANGUAGE_SYNC_MATRIX.flatMap(group => group.slots.map(([day, period]) => `${day}:${period}`))
+    );
 
     const dbState = {};
     TEACHERS.forEach(t => {
@@ -1669,8 +1677,8 @@
       document.getElementById("condSameStdLangSync").checked = true;
       document.getElementById("condPE_P2_P7").checked = true;
       document.getElementById("condIT_P2_P7").checked = true;
-      document.getElementById("condMaxContinuousSelect").value = "3";
-      document.getElementById("maxContinuousDisplay").textContent = "Max 3";
+      document.getElementById("condMaxContinuousSelect").value = "2";
+      document.getElementById("maxContinuousDisplay").textContent = "Max 2";
 
       renderActiveRulesList();
       hideDiagnosticPanel();
@@ -1705,6 +1713,37 @@
     // DETERMINISTIC SOLVER
     // =========================================================================
     let isGeneratingTimetable = false;
+
+    function hasTeachingRunAtOrAbove(busyPeriods, period, limit = 2) {
+      let run = 1;
+      for (let p = period - 1; p >= 0 && busyPeriods[p]; p--) run++;
+      for (let p = period + 1; p < 7 && busyPeriods[p]; p++) run++;
+      return run > limit;
+    }
+
+    function getTeacherWorkloadViolations(timetable) {
+      const schedules = Object.fromEntries(TEACHERS.map(t => [t, Array.from({ length: 5 }, () => Array(7).fill(false))]));
+      CLASSES.forEach(c => timetable[c].forEach((day, d) => day.forEach((slot, p) => {
+        if (slot?.teacher && schedules[slot.teacher]) schedules[slot.teacher][d][p] = true;
+      })));
+
+      const violations = [];
+      TEACHERS.forEach(teacher => schedules[teacher].forEach((periods, day) => {
+        const taught = periods.filter(Boolean).length;
+        if (taught < 4) violations.push(`${teacher} has ${taught}/4 lessons on ${DAYS[day]}`);
+        for (let p = 0; p < 6; p++) {
+          if (periods[p] && periods[p + 1] && periods[p + 2]) {
+            violations.push(`${teacher} has more than 2 continuous teaching periods on ${DAYS[day]}`);
+            break;
+          }
+          if (!periods[p] && !periods[p + 1]) {
+            violations.push(`${teacher} has more than 1 continuous free period on ${DAYS[day]}`);
+            break;
+          }
+        }
+      }));
+      return violations;
+    }
 
     async function buildAndRenderTimetables() {
       if (isGeneratingTimetable) return;
@@ -1784,6 +1823,7 @@
         let bestTimetable = null;
         let bestUnplacedReport = [];
         let lowestUnfilledSlots = 9999;
+        let lowestWorkloadViolations = Infinity;
         const maxAttempts = 25;
 
         for (let attempt = 0; attempt < maxAttempts; attempt++) {
@@ -1871,37 +1911,27 @@
             });
           }
 
-          // 4. Parallel Electives Sync (ARB, SKT, MI)
+          // 4. Fixed standard-wise language synchronization matrix.
+          // These placements are intentionally made before general scheduling so
+          // their specified day/period coordinates can never drift between runs.
           if (condSameStdSync) {
-            const standards = [
-              ["5B", "5C", "5D"],
-              ["6B", "6C", "6D"],
-              ["7B", "7C", "7D"]
-            ];
+            LANGUAGE_SYNC_MATRIX.forEach(group => {
+              group.slots.forEach(([d, p]) => {
+                group.lessons.forEach(([c, teacher, subject]) => {
+                  const alloc = classAllotments[c].find(a =>
+                    a.teacher === teacher && a.subject === subject && a.remaining > 0
+                  );
+                  if (!alloc || timetable[c][d][p] || teacherBusy[teacher][d][p]) return;
+                  if (hasTeachingRunAtOrAbove(teacherBusy[teacher][d], p, maxContinuousCap)) return;
+                  if (condMin2Free && teacherDailyCount[teacher][d] >= 5) return;
 
-            standards.forEach(stdClasses => {
-              for (let d = 0; d < 5; d++) {
-                for (let p = 1; p < 7; p++) {
-                  const canSync = stdClasses.every(c => {
-                    if (timetable[c][d][p]) return false;
-                    const el = classAllotments[c].find(a => ["ARB", "SKT", "MI"].includes(a.subject) && a.remaining > 0 && !teacherBusy[a.teacher][d][p] && (!condMin2Free || teacherDailyCount[a.teacher][d] < 5));
-                    return !!el;
-                  });
-
-                  if (canSync) {
-                    stdClasses.forEach(c => {
-                      const el = classAllotments[c].find(a => ["ARB", "SKT", "MI"].includes(a.subject) && a.remaining > 0 && !teacherBusy[a.teacher][d][p]);
-                      if (el) {
-                        timetable[c][d][p] = { subject: el.subject, teacher: el.teacher, conflict: false };
-                        teacherBusy[el.teacher][d][p] = true;
-                        teacherDailyCount[el.teacher][d]++;
-                        classSubjectDayCount[c][d][el.subject] = (classSubjectDayCount[c][d][el.subject] || 0) + 1;
-                        el.remaining--;
-                      }
-                    });
-                  }
-                }
-              }
+                  timetable[c][d][p] = { subject, teacher, conflict: false };
+                  teacherBusy[teacher][d][p] = true;
+                  teacherDailyCount[teacher][d]++;
+                  classSubjectDayCount[c][d][subject] = (classSubjectDayCount[c][d][subject] || 0) + 1;
+                  alloc.remaining--;
+                });
+              });
             });
           }
 
@@ -1912,7 +1942,7 @@
               if (svAlloc) {
                 const daysList = [0, 1, 2, 3, 4].sort(() => Math.random() - 0.5);
                 for (let d of daysList) {
-                  if (!timetable[c][d][6] && !teacherBusy[svAlloc.teacher][d][6] && svAlloc.remaining > 0 && (!condMin2Free || teacherDailyCount[svAlloc.teacher][d] < 5)) {
+                  if (!timetable[c][d][6] && !teacherBusy[svAlloc.teacher][d][6] && !hasTeachingRunAtOrAbove(teacherBusy[svAlloc.teacher][d], 6, maxContinuousCap) && svAlloc.remaining > 0 && (!condMin2Free || teacherDailyCount[svAlloc.teacher][d] < 5)) {
                     timetable[c][d][6] = { subject: svAlloc.subject, teacher: svAlloc.teacher, conflict: false };
                     teacherBusy[svAlloc.teacher][d][6] = true;
                     teacherDailyCount[svAlloc.teacher][d]++;
@@ -1934,7 +1964,7 @@
                 for (let d of daysList) {
                   const startP = condITP2P7 ? 1 : 0;
                   for (let p = startP; p < 7; p++) {
-                    if (!timetable[c][d][p] && !itBusy[d][p] && !teacherBusy[itAlloc.teacher][d][p] && itAlloc.remaining > 0 && (!condMin2Free || teacherDailyCount[itAlloc.teacher][d] < 5)) {
+                    if (!timetable[c][d][p] && !itBusy[d][p] && !teacherBusy[itAlloc.teacher][d][p] && !hasTeachingRunAtOrAbove(teacherBusy[itAlloc.teacher][d], p, maxContinuousCap) && itAlloc.remaining > 0 && (!condMin2Free || teacherDailyCount[itAlloc.teacher][d] < 5)) {
                       timetable[c][d][p] = { subject: "IT", teacher: itAlloc.teacher, conflict: false };
                       teacherBusy[itAlloc.teacher][d][p] = true;
                       teacherDailyCount[itAlloc.teacher][d]++;
@@ -1958,7 +1988,7 @@
                 for (let d of daysList) {
                   const startP = condPEP2P7 ? 1 : 0;
                   for (let p = startP; p < 7; p++) {
-                    if (!timetable[c][d][p] && !peBusy[d][p] && !teacherBusy[peAlloc.teacher][d][p] && peAlloc.remaining > 0 && (!condMin2Free || teacherDailyCount[peAlloc.teacher][d] < 5)) {
+                    if (!timetable[c][d][p] && !peBusy[d][p] && !teacherBusy[peAlloc.teacher][d][p] && !hasTeachingRunAtOrAbove(teacherBusy[peAlloc.teacher][d], p, maxContinuousCap) && peAlloc.remaining > 0 && (!condMin2Free || teacherDailyCount[peAlloc.teacher][d] < 5)) {
                       timetable[c][d][p] = { subject: "PE", teacher: peAlloc.teacher, conflict: false };
                       teacherBusy[peAlloc.teacher][d][p] = true;
                       teacherDailyCount[peAlloc.teacher][d]++;
@@ -2013,17 +2043,13 @@
                 if (condSingleIT && s === "IT" && itBusy[d][p]) return false;
                 if (condSinglePE && s === "PE" && peBusy[d][p]) return false;
                 if (condNoANMP1 && t === "ANM" && p === 0) return false;
+                // ANM must remain free whenever a fixed language sync is running.
+                if (condSameStdSync && t === "ANM" && LANGUAGE_SYNC_SLOT_KEYS.has(`${d}:${p}`)) return false;
                 if (condSVLIBP7 && s === "SV/LIB" && p !== 6) return false;
                 if (condPEP2P7 && s === "PE" && p === 0) return false;
                 if (condITP2P7 && s === "IT" && p === 0) return false;
 
-                if (maxContinuousCap < 99 && p >= maxContinuousCap && attempt < 15) {
-                  let isContinuous = true;
-                  for (let back = 1; back <= maxContinuousCap; back++) {
-                    if (!teacherBusy[t][d][p - back]) { isContinuous = false; break; }
-                  }
-                  if (isContinuous) return false;
-                }
+                if (hasTeachingRunAtOrAbove(teacherBusy[t][d], p, maxContinuousCap)) return false;
 
                 for (let customRule of activeCustomRules) {
                   let match = true;
@@ -2043,6 +2069,12 @@
               candidates.sort((a, b) => {
                 let scoreA = a.remaining * 3;
                 let scoreB = b.remaining * 3;
+                // Fill teachers below the mandatory four lessons/day first.
+                if (teacherDailyCount[a.teacher][d] < 4) scoreA += 40;
+                if (teacherDailyCount[b.teacher][d] < 4) scoreB += 40;
+                // Prefer filling an existing one-period free gap before it grows.
+                if ((p > 0 && !teacherBusy[a.teacher][d][p - 1]) || (p < 6 && !teacherBusy[a.teacher][d][p + 1])) scoreA += 12;
+                if ((p > 0 && !teacherBusy[b.teacher][d][p - 1]) || (p < 6 && !teacherBusy[b.teacher][d][p + 1])) scoreB += 12;
                 if (p < 6 && bannedP7Subjects.includes(a.subject)) scoreA += 15;
                 if (p < 6 && bannedP7Subjects.includes(b.subject)) scoreB += 15;
                 return (scoreB + Math.random() * 0.4) - (scoreA + Math.random() * 0.4);
@@ -2169,13 +2201,15 @@
             });
           });
 
-          if (unfilled < lowestUnfilledSlots) {
+          const workloadViolationCount = getTeacherWorkloadViolations(timetable).length;
+          if (unfilled < lowestUnfilledSlots || (unfilled === lowestUnfilledSlots && workloadViolationCount < lowestWorkloadViolations)) {
             lowestUnfilledSlots = unfilled;
+            lowestWorkloadViolations = workloadViolationCount;
             bestTimetable = timetable;
             bestUnplacedReport = unplacedThisAttempt;
           }
 
-          if (unfilled === 0) break;
+          if (unfilled === 0 && workloadViolationCount === 0) break;
         }
 
         latestGeneratedTimetable = bestTimetable;
@@ -2199,12 +2233,14 @@
         renderTeacherTimetables(teacherSchedules);
         completeTopLoader();
 
-        if (lowestUnfilledSlots > 0 || deficitClasses.length > 0 || bestUnplacedReport.length > 0) {
-          renderDiagnosticReport(deficitClasses, lowestUnfilledSlots, bestUnplacedReport);
-          showStatus(`⚡ Timetable generated with ${lowestUnfilledSlots} empty slot(s). See Unplaced Subject Action Plan below for fixes.`);
+        const workloadViolations = getTeacherWorkloadViolations(bestTimetable);
+        if (lowestUnfilledSlots > 0 || deficitClasses.length > 0 || bestUnplacedReport.length > 0 || workloadViolations.length > 0) {
+          renderDiagnosticReport(deficitClasses, lowestUnfilledSlots, bestUnplacedReport, workloadViolations);
+          const workloadMessage = workloadViolations.length ? ` ${workloadViolations.length} teacher workload rule violation(s) need correction.` : "";
+          showStatus(`⚡ Timetable generated with ${lowestUnfilledSlots} empty slot(s).${workloadMessage} See the action plan below.`, true);
         } else {
           hideDiagnosticPanel();
-          showStatus("🎉 100% Conflict-free Timetable generated successfully (Strict 35 periods/class, no repeated subjects in same day, min 2 free periods daily for all teachers, and clean Period 7)!");
+          showStatus("🎉 100% Conflict-free Timetable generated successfully (minimum 4 lessons/day, max 2 continuous teaching periods, max 1 continuous free period, and clean Period 7)!");
         }
 
         saveTimetableToFirebase(bestTimetable);
@@ -2427,7 +2463,7 @@
       }
     };
 
-    function renderDiagnosticReport(deficits, unfilledCount, unplacedList) {
+    function renderDiagnosticReport(deficits, unfilledCount, unplacedList, workloadViolations = []) {
       const panel = document.getElementById("solverDiagnosticPanel");
       const body = document.getElementById("diagnosticBody");
       const btnBox = document.getElementById("diagnosticQuickActionButtons");
@@ -2435,7 +2471,7 @@
 
       currentUnplacedReport = unplacedList || [];
 
-      if ((!unplacedList || unplacedList.length === 0) && (!deficits || deficits.length === 0)) {
+      if ((!unplacedList || unplacedList.length === 0) && (!deficits || deficits.length === 0) && workloadViolations.length === 0) {
         panel.classList.add("hidden");
         return;
       }
@@ -2495,6 +2531,12 @@
           html += `<li><strong>Class ${d.className}</strong> has only <strong>${d.count}</strong> total periods configured (<span class="text-red-700 font-bold">${d.deficit} period deficit</span> to reach required 35). <span class="text-amber-800">Add ${d.deficit} more period(s) in Tab 1 for Class ${d.className}.</span></li>`;
         });
         html += `</ul>`;
+      }
+
+      if (workloadViolations.length > 0) {
+        html += `<div class="font-bold text-amber-950 mt-3 flex items-center gap-1.5 text-xs sm:text-sm"><span>👩‍🏫</span> Teacher Workload Rule Violations:</div>`;
+        html += `<p class="text-[11px] text-amber-800">A valid timetable requires at least 4 lessons/day, at most 2 continuous teaching periods, and no more than 1 continuous free period for every teacher.</p>`;
+        html += `<ul class="list-disc pl-5 space-y-1 text-xs">${workloadViolations.map(v => `<li>${v}</li>`).join("")}</ul>`;
       }
 
       body.innerHTML = html;
@@ -2722,7 +2764,8 @@
       });
 
       const fillPercentage = Math.round((filledSlots / totalSlots) * 100);
-      let qualityScore = fillPercentage;
+      const workloadViolations = getTeacherWorkloadViolations(latestGeneratedTimetable);
+      let qualityScore = Math.max(0, fillPercentage - (workloadViolations.length * 2));
       let notes = [];
 
       if (fillPercentage === 100) {
@@ -2732,7 +2775,11 @@
       }
 
       notes.push("✅ Non-repetition of same subject for same class within the same day strictly enforced.");
-      notes.push("✅ Minimum 2 free periods guaranteed daily for all 15 teachers (Maximum 5 periods/day).");
+      if (workloadViolations.length === 0) {
+        notes.push("✅ Every teacher has at least 4 lessons/day, no more than 2 continuous teaching periods, and no more than 1 continuous free period.");
+      } else {
+        notes.push(`⚠️ ${workloadViolations.length} teacher workload rule violation(s): ${workloadViolations.slice(0, 3).join("; ")}${workloadViolations.length > 3 ? "…" : ""}`);
+      }
       notes.push("✅ Strictly NO major/core subjects in Period 7 (ENG, BS, SS, MM, HIN, MI, MII).");
       notes.push("✅ Zero teacher collision detected across any day or period.");
       notes.push("✅ Zero IT lab collisions: Maximum 1 IT class across school at any time.");
