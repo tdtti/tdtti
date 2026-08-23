@@ -2263,6 +2263,16 @@
 
         hideDiagnosticPanel();
         showStatus("🎉 100% Conflict-free timetable generated successfully (minimum 4 lessons/day, max 2 continuous teaching periods, max 1 continuous free period, and clean Period 7)!");
+        const workloadViolations = getTeacherWorkloadViolations(bestTimetable);
+        if (lowestUnfilledSlots > 0 || deficitClasses.length > 0 || bestUnplacedReport.length > 0 || workloadViolations.length > 0) {
+          renderDiagnosticReport(deficitClasses, lowestUnfilledSlots, bestUnplacedReport, workloadViolations);
+          const workloadMessage = workloadViolations.length ? ` ${workloadViolations.length} teacher workload rule violation(s) need correction.` : "";
+          showStatus(`⚡ Timetable generated with ${lowestUnfilledSlots} empty slot(s).${workloadMessage} See the action plan below.`, true);
+        } else {
+          hideDiagnosticPanel();
+          showStatus("🎉 100% Conflict-free Timetable generated successfully (minimum 4 lessons/day, max 2 continuous teaching periods, max 1 continuous free period, and clean Period 7)!");
+        }
+
         saveTimetableToFirebase(bestTimetable);
       } catch (err) {
         completeTopLoader();
@@ -2484,6 +2494,7 @@
     };
 
     function renderDiagnosticReport(deficits, unfilledCount, unplacedList, ruleViolations = [], violationTitle = "Teacher workload rule violations") {
+    function renderDiagnosticReport(deficits, unfilledCount, unplacedList, workloadViolations = []) {
       const panel = document.getElementById("solverDiagnosticPanel");
       const body = document.getElementById("diagnosticBody");
       const btnBox = document.getElementById("diagnosticQuickActionButtons");
@@ -2492,6 +2503,7 @@
       currentUnplacedReport = unplacedList || [];
 
       if ((!unplacedList || unplacedList.length === 0) && (!deficits || deficits.length === 0) && ruleViolations.length === 0) {
+      if ((!unplacedList || unplacedList.length === 0) && (!deficits || deficits.length === 0) && workloadViolations.length === 0) {
         panel.classList.add("hidden");
         return;
       }
@@ -2557,6 +2569,10 @@
         html += `<div class="font-bold text-amber-950 mt-3 flex items-center gap-1.5 text-xs sm:text-sm"><span>👩‍🏫</span> ${violationTitle}:</div>`;
         html += `<p class="text-[11px] text-amber-800">A publishable timetable requires exact class totals, 4–5 lessons/day per teacher, at most 2 continuous teaching periods, and no more than 1 continuous free period.</p>`;
         html += `<ul class="list-disc pl-5 space-y-1 text-xs">${ruleViolations.map(v => `<li>${v}</li>`).join("")}</ul>`;
+      if (workloadViolations.length > 0) {
+        html += `<div class="font-bold text-amber-950 mt-3 flex items-center gap-1.5 text-xs sm:text-sm"><span>👩‍🏫</span> Teacher Workload Rule Violations:</div>`;
+        html += `<p class="text-[11px] text-amber-800">A valid timetable requires at least 4 lessons/day, at most 2 continuous teaching periods, and no more than 1 continuous free period for every teacher.</p>`;
+        html += `<ul class="list-disc pl-5 space-y-1 text-xs">${workloadViolations.map(v => `<li>${v}</li>`).join("")}</ul>`;
       }
 
       body.innerHTML = html;
