@@ -218,7 +218,7 @@
       <p class="text-xs sm:text-sm text-slate-600 mt-0.5">Live allocation visualizer & schedule planner (Firebase Powered 🔥 + Localized AI Slot Resolver ✨)</p>
     </header>
 
-    <!-- ADMIN ONLY NAVIGATION BAR (FULL WIDTH COMPACT DOCK) -->
+    <!-- ADMIN ONLY NAVIGATION BAR (FULL WIDTH DOCK) -->
     <div id="mainNavBarContainer" class="admin-only tab-navigation flex flex-wrap justify-center items-center gap-2 sm:gap-3 py-2 px-4 border border-slate-200 bg-white shadow-sm rounded-xl w-full no-print">
       <button type="button" data-main-tab="1" id="tab1-btn" onclick="switchMainTab(1)" title="Basic Details & Allocation Form" class="w-10 h-10 rounded-full flex items-center justify-center transition focus:outline-none focus:ring-2 focus:ring-indigo-500 text-2xl">📝</button>
       <button type="button" data-main-tab="2" id="tab2-btn" onclick="switchMainTab(2)" title="Live Teachers Summary Table" class="w-10 h-10 rounded-full flex items-center justify-center transition focus:outline-none focus:ring-2 focus:ring-indigo-500 text-2xl">📊</button>
@@ -449,7 +449,7 @@
             <div class="text-2xl font-black text-emerald-950" id="statTotalPeriods">315 / 315</div>
             <div class="text-[11px] font-bold text-emerald-700 uppercase tracking-wider mt-0.5">Weekly Slots</div>
           </div>
-          <div class="bg-purple-50/60 p-3.5 rounded-xl border border-purple-100 text-center">
+          <div class="bg-purple-50/60 p-4 rounded-xl border border-purple-100 text-center">
             <div class="text-2xl font-black text-purple-950" id="statActiveUsers">2</div>
             <div class="text-[11px] font-bold text-purple-700 uppercase tracking-wider mt-0.5">System Users</div>
           </div>
@@ -601,10 +601,10 @@
               <p class="text-xs text-indigo-900/70">Analyzes timetable health and automatically resolves open slots.</p>
             </div>
             <div class="flex items-center gap-2">
-              <button type="button" onclick="autoFixAllUnplacedCardsWithAI()" class="px-3 py-1.5 bg-purple-600 hover:bg-purple-700 active:scale-95 text-white font-bold text-xs rounded-md shadow-sm transition flex items-center gap-1">
+              <button type="button" onclick="autoFixAllUnplacedCardsWithAI()" class="px-3.5 py-1.5 bg-purple-600 hover:bg-purple-700 active:scale-95 text-white font-bold text-xs rounded-md shadow-sm transition flex items-center gap-1">
                 <span>Auto-Fix All Empty Slots with AI</span> 🪄
               </button>
-              <button type="button" onclick="runAIScheduleAudit()" class="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white font-bold text-xs rounded-md shadow-sm transition flex items-center gap-1">
+              <button type="button" onclick="runAIScheduleAudit()" class="px-3.5 py-1.5 bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white font-bold text-xs rounded-md shadow-sm transition flex items-center gap-1">
                 <span>Run AI Schedule Audit</span> 🧠
               </button>
             </div>
@@ -632,13 +632,13 @@
             <button type="button" id="generateTimetableBtn" onclick="buildAndRenderTimetables()" class="admin-only bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white px-3.5 py-1.5 rounded-md text-xs font-semibold transition shadow-sm">
               Generate Timetable ⚡
             </button>
-            <button type="button" onclick="openAIAssistantModal()" class="bg-purple-600 hover:bg-purple-700 active:scale-95 text-white px-3 py-1.5 rounded-md text-xs font-semibold transition shadow-sm flex items-center gap-1">
+            <button type="button" onclick="openAIAssistantModal()" class="bg-purple-600 hover:bg-purple-700 active:scale-95 text-white px-3.5 py-1.5 rounded-md text-xs font-semibold transition shadow-sm flex items-center gap-1">
               <span>Substitute Finder</span> 🔍
             </button>
-            <button type="button" onclick="printTimetables('student')" class="bg-indigo-50 text-indigo-700 hover:bg-indigo-100 border border-indigo-200 active:scale-95 px-3 py-1.5 rounded-md text-xs font-semibold transition">
+            <button type="button" onclick="printTimetables('student')" class="bg-indigo-50 text-indigo-700 hover:bg-indigo-100 border border-indigo-200 active:scale-95 px-3.5 py-1.5 rounded-md text-xs font-semibold transition">
               Print Divisions 🖨️
             </button>
-            <button type="button" onclick="printTimetables('teacher')" class="bg-teal-50 text-teal-700 hover:bg-teal-100 border border-teal-200 active:scale-95 px-3 py-1.5 rounded-md text-xs font-semibold transition">
+            <button type="button" onclick="printTimetables('teacher')" class="bg-teal-50 text-teal-700 hover:bg-teal-100 border border-teal-200 active:scale-95 px-3.5 py-1.5 rounded-md text-xs font-semibold transition">
               Print Teachers 🖨️
             </button>
           </div>
@@ -713,7 +713,7 @@
 
         <div>
           <label class="block text-[11px] font-bold text-slate-700 mb-1" for="slotEditClassSelect">Division Class</label>
-          <select id="slotEditClassSelect" onchange="checkSlotConflict()" class="w-full px-3 py-2 border border-slate-300 rounded-lg bg-white font-semibold text-slate-800 focus:ring-2 focus:ring-indigo-500">
+          <select id="slotEditClassSelect" onchange="onSlotEditorTeacherOrClassChange()" class="w-full px-3 py-2 border border-slate-300 rounded-lg bg-white font-semibold text-slate-800 focus:ring-2 focus:ring-indigo-500">
             <option value="5B">5B</option>
             <option value="5C">5C</option>
             <option value="5D">5D</option>
@@ -750,7 +750,7 @@
 
         <div>
           <label class="block text-[11px] font-bold text-slate-700 mb-1" for="slotEditTeacherSelect">Assigned Teacher</label>
-          <select id="slotEditTeacherSelect" onchange="checkSlotConflict()" class="w-full px-3 py-2 border border-slate-300 rounded-lg bg-white font-semibold text-slate-800 focus:ring-2 focus:ring-indigo-500">
+          <select id="slotEditTeacherSelect" onchange="onSlotEditorTeacherOrClassChange()" class="w-full px-3 py-2 border border-slate-300 rounded-lg bg-white font-semibold text-slate-800 focus:ring-2 focus:ring-indigo-500">
             <option value="">-- No Teacher --</option>
             <option value="TAK">TAK</option>
             <option value="SK">SK</option>
@@ -2329,6 +2329,22 @@
       }
     }
 
+    function onSlotEditorTeacherOrClassChange() {
+      const selectedClass = document.getElementById("slotEditClassSelect").value;
+      const selectedTeacher = document.getElementById("slotEditTeacherSelect").value;
+      const subjectSelect = document.getElementById("slotEditSubjectSelect");
+
+      // Auto-suggest configured subject if empty
+      if (!subjectSelect.value && selectedTeacher && selectedClass && dbState[selectedTeacher]) {
+        const matchingAlloc = (dbState[selectedTeacher].allocations || []).find(a => a.className === selectedClass);
+        if (matchingAlloc && matchingAlloc.subject) {
+          subjectSelect.value = matchingAlloc.subject;
+        }
+      }
+
+      checkSlotConflict();
+    }
+
     function openSlotEditor(mode, identifier, dayIdx, periodIdx) {
       if (!currentUser || currentUser.role !== "admin") {
         showStatus("⚠️ Only administrators can edit timetable slots.", true);
@@ -2449,12 +2465,14 @@
           });
         }
       } else {
+        // Automatically unassign the teacher from any other class in this exact period
         CLASSES.forEach(c => {
           if (c !== className && latestGeneratedTimetable[c]?.[day]?.[period]?.teacher === teacherName) {
             latestGeneratedTimetable[c][day][period] = null;
           }
         });
 
+        // If in teacher view, clear any previous teacher that was teaching this class in this period
         if (mode === "teacher") {
           CLASSES.forEach(c => {
             if (c !== className && latestGeneratedTimetable[c]?.[day]?.[period]?.teacher === teacherName) {
@@ -2477,8 +2495,10 @@
     function reflectTimetableChanges(saveToCloud = true) {
       if (!latestGeneratedTimetable) return;
 
+      // 1. Instant re-render of Class Timetables
       renderClassTimetables(latestGeneratedTimetable);
 
+      // 2. Instant re-render of Teacher Timetables
       const teacherSchedules = Object.fromEntries(TEACHERS.map(t => [t, Array.from({ length: 5 }, () => Array(7).fill(null))]));
       CLASSES.forEach(c => {
         for (let d = 0; d < 5; d++) {
@@ -2492,8 +2512,10 @@
       });
       renderTeacherTimetables(teacherSchedules);
 
+      // 3. Instant re-render of Live Summary Tables (Tab 2 & 3)
       updateTables();
 
+      // 4. Commit to cloud in background
       if (saveToCloud) {
         saveTimetableToFirebase(latestGeneratedTimetable);
       }
