@@ -201,7 +201,6 @@
       <span id="lockStatusHeaderBadge" class="hidden text-[10px] bg-amber-500 text-slate-950 px-2 py-0.5 rounded font-bold">🔒 Locked</span>
     </div>
     <div class="flex items-center gap-2">
-      <!-- Quick Action Controls for All Logged-in Users -->
       <button type="button" onclick="openAIAssistantModal()" title="Smart Substitute Teacher Finder" class="bg-purple-800 hover:bg-purple-700 text-purple-100 px-2.5 py-1 rounded text-[11px] font-semibold transition active:scale-95 flex items-center gap-1">
         ✨ Substitute Finder
       </button>
@@ -222,7 +221,7 @@
       <p class="text-sm text-slate-600 mt-1">Live allocation visualizer & schedule planner (Firebase Powered 🔥 + Localized AI Slot Resolver ✨)</p>
     </header>
 
-    <!-- ADMIN ONLY NAVIGATION BAR (Completely hidden in Users Login) -->
+    <!-- ADMIN ONLY NAVIGATION BAR -->
     <div id="mainNavBarContainer" class="admin-only tab-navigation flex flex-wrap justify-center items-center gap-2.5 sm:gap-3 py-2 px-3 border border-slate-200 bg-white shadow-sm rounded-xl max-w-xl mx-auto no-print">
       <button type="button" data-main-tab="1" id="tab1-btn" onclick="switchMainTab(1)" title="Basic Details & Allocation Form" class="w-10 h-10 sm:w-11 sm:h-11 rounded-full flex items-center justify-center transition focus:outline-none focus:ring-2 focus:ring-indigo-500 text-2xl">📝</button>
       <button type="button" data-main-tab="2" id="tab2-btn" onclick="switchMainTab(2)" title="Live Teachers Summary Table" class="w-10 h-10 sm:w-11 sm:h-11 rounded-full flex items-center justify-center transition focus:outline-none focus:ring-2 focus:ring-indigo-500 text-2xl">📊</button>
@@ -232,7 +231,6 @@
       
       <div id="navDivider" class="h-6 w-[1px] bg-slate-200 mx-1"></div>
 
-      <!-- Quick Action Controls inside Admin Nav -->
       <button type="button" onclick="loadDatabaseFromFirebase(true)" title="Force Refresh from Firebase" class="w-10 h-10 sm:w-11 sm:h-11 rounded-full flex items-center justify-center transition bg-indigo-50 text-indigo-700 hover:bg-indigo-100 text-xl active:scale-95 focus:outline-none">🔥</button>
       <button type="button" id="fullscreenToggleBtn" onclick="toggleFullscreenView()" title="Enter Fullscreen" class="w-10 h-10 sm:w-11 sm:h-11 rounded-full flex items-center justify-center transition bg-slate-100 text-slate-700 hover:bg-slate-200 text-xl active:scale-95 focus:outline-none">🖥️</button>
     </div>
@@ -261,7 +259,6 @@
 
       <form id="distributionForm" class="space-y-6">
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-          
           <div class="lg:col-span-4 bg-white rounded-xl shadow-sm border border-slate-200 p-5 space-y-5">
             <h3 class="text-sm font-bold text-slate-800 border-b pb-2 flex items-center justify-between">
               <span>1. Select Teacher & Charge</span>
@@ -339,7 +336,6 @@
               <p class="text-xs text-slate-400 mt-0.5">Select a teacher above and click <span class="font-bold text-indigo-600">"+ Add Subject"</span> to assign classes.</p>
             </div>
           </div>
-
         </div>
 
         <div class="space-y-3">
@@ -447,7 +443,6 @@
           </div>
         </div>
 
-        <!-- School Stats Overview -->
         <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
           <div class="bg-indigo-50/60 p-4 rounded-xl border border-indigo-100 text-center">
             <div class="text-2xl font-black text-indigo-950" id="statTotalTeachers">15</div>
@@ -467,7 +462,6 @@
           </div>
         </div>
 
-        <!-- Database Action Cards -->
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2">
           <div class="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-2 flex flex-col justify-between">
             <div>
@@ -574,7 +568,6 @@
             </label>
           </div>
 
-          <!-- EDITABLE CONSTRAINTS ROW -->
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-3 border-t border-indigo-100">
             <div class="p-3 bg-white rounded-lg border border-slate-200 space-y-2">
               <div class="flex items-center justify-between">
@@ -636,7 +629,7 @@
                 <span>🔒 Locked</span>
               </span>
             </div>
-            <p class="text-xs text-slate-500">Live interactive schedules. Click any period to add or modify subjects & teachers.</p>
+            <p class="text-xs text-slate-500" id="timetableSubtitle">Live weekly schedules.</p>
           </div>
           <div class="section-controls flex flex-wrap gap-2 w-full sm:w-auto justify-between sm:justify-end no-print">
             <button type="button" id="adminLockToggleBtn" onclick="toggleTimetableLock()" class="admin-only bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-300 active:scale-95 px-3 py-2 rounded-md text-xs font-bold transition shadow-sm flex items-center gap-1">
@@ -679,7 +672,7 @@
   </div>
 
   <!-- MODAL: INTERACTIVE PERIOD SLOT EDITOR -->
-  <div id="slotEditModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[2100] flex items-center justify-center p-4 hidden no-print">
+  <div id="slotEditModal" class="modal-overlay fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[2100] flex items-center justify-center p-4 hidden no-print">
     <div class="bg-white rounded-2xl shadow-2xl border border-slate-200 max-w-md w-full p-6 space-y-5">
       <div class="flex items-center justify-between border-b pb-3">
         <h3 class="text-base font-bold text-indigo-950 flex items-center gap-2" id="slotEditModalTitle">
@@ -818,8 +811,8 @@
     </div>
   </div>
 
-  <!-- MODAL: USER MANAGEMENT (Admin Only) -->
-  <div id="userManagementModal" class="admin-only fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden no-print">
+  <!-- MODAL: USER MANAGEMENT -->
+  <div id="userManagementModal" class="modal-overlay fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden no-print">
     <div class="bg-white rounded-2xl shadow-2xl border border-slate-200 max-w-2xl w-full max-h-[90vh] flex flex-col">
       <div class="px-6 py-4 border-b border-indigo-100 bg-indigo-50/50 flex items-center justify-between rounded-t-2xl">
         <h3 class="text-base font-bold text-indigo-950 flex items-center gap-2">
@@ -886,7 +879,7 @@
   </div>
 
   <!-- MODAL: EDIT ALLOCATIONS -->
-  <div id="teacherModal" class="admin-only fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden no-print">
+  <div id="teacherModal" class="modal-overlay fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden no-print">
     <div class="bg-white rounded-lg shadow-xl border border-slate-200 max-w-2xl w-full max-h-[90vh] flex flex-col">
       <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
         <h3 class="text-lg font-bold text-indigo-950" id="modalTitle">Edit Teacher Allocations</h3>
@@ -928,19 +921,19 @@
     </div>
   </div>
 
-  <!-- MODAL: SMART SUBSTITUTE FINDER -->
-  <div id="aiAssistantModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden no-print">
+  <!-- MODAL: SMART SUBSTITUTE FINDER & DAILY ALLOTMENT SUMMARY -->
+  <div id="aiAssistantModal" class="modal-overlay fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden no-print">
     <div class="bg-white rounded-2xl shadow-2xl border border-slate-200 max-w-2xl w-full max-h-[90vh] flex flex-col">
       <div class="px-6 py-4 border-b border-purple-100 bg-gradient-to-r from-purple-50 to-indigo-50 flex items-center justify-between rounded-t-2xl">
         <h3 class="text-base sm:text-lg font-bold text-purple-950 flex items-center gap-2">
-          <span>🔍</span> Smart Substitute Teacher Finder (Absentee Cover)
+          <span>🔍</span> Smart Substitute Teacher Finder & Duty Summary
         </h3>
         <button type="button" onclick="closeAIAssistantModal()" class="text-slate-400 hover:text-slate-600 font-bold text-xl p-1 active:scale-95 transition">✕</button>
       </div>
 
-      <div class="p-6 overflow-y-auto space-y-4 flex-1 text-xs sm:text-sm">
+      <div class="p-6 overflow-y-auto space-y-5 flex-1 text-xs sm:text-sm">
         <div class="flex items-center justify-between">
-          <p class="text-[11px] text-slate-500">Pick an absent teacher and period to find available free staff members.</p>
+          <p class="text-[11px] text-slate-500">Pick an absent teacher and period. Clicking a candidate's WhatsApp icon assigns them and hides remaining candidates.</p>
           <button type="button" onclick="clearDaySubstituteDuties()" class="text-[10px] bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold px-2 py-1 rounded transition">
             Reset Day Duties 🔄
           </button>
@@ -975,11 +968,23 @@
           </div>
         </div>
 
-        <button type="button" onclick="findAISubstitutes()" class="w-full sm:w-auto px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white font-semibold rounded-md text-xs active:scale-95 transition shadow-sm">
-          Search Free Substitutes ⚡
-        </button>
+        <div id="substituteResults" class="p-3 rounded-lg border bg-white border-purple-200 text-xs space-y-2"></div>
 
-        <div id="substituteResults" class="hidden p-3 rounded-lg border text-xs space-y-2"></div>
+        <div class="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-3">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-200 pb-2">
+            <div>
+              <h4 class="font-bold text-slate-900 text-xs flex items-center gap-1.5">
+                <span>📋</span> Daily Substitution Summary for Absent Teacher
+              </h4>
+              <p class="text-[10px] text-slate-500">Free periods require no substitution and are skipped.</p>
+            </div>
+            <button type="button" onclick="shareOfficialGroupWhatsAppSummary()" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-lg text-xs transition active:scale-95 shadow-sm flex items-center gap-1.5 self-start sm:self-auto">
+              <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M12.004 2C6.48 2 2 6.48 2 12.004c0 1.765.46 3.48 1.334 4.996L2 22l5.176-1.359c1.476.804 3.136 1.227 4.82 1.227 5.524 0 10.004-4.48 10.004-10.004C22.004 6.48 17.524 2 12.004 2zM17.47 15.35c-.24.36-.84.66-1.2.78-.36.12-.84.18-1.32.18-.3-.02-.66-.06-1.02-.12-.36-.06-.72-.12-1.08-.24-1.56-.54-2.88-1.56-3.84-2.82-.42-.54-.78-1.14-1.02-1.8-.18-.48-.24-.96-.24-1.44 0-.48.12-.9.36-1.26l.48-.6c.18-.24.36-.48.54-.72l.48-.36c.12-.12.24-.18.36-.18s.24 0 .36.06c.12.06.24.18.36.36l1.02 2.22c.06.12.12.24.12.36s0 .24-.06.36c-.06.12-.12.24-.24.36l-.36.42c-.12.12-.24.24-.36.36s-.12.24-.06.36c.24.48.54.9 1.02 1.32s1.02.72 1.5 1.02c.12.06.24.06.36 0 .12-.06.24-.18.36-.3l.42-.48c.12-.12.24-.18.36-.18.12 0 .24.06.36.12l2.22 1.02c.18.06.3.18.36.3.06.12.06.24 0 .36z"/></svg>
+              <span>Share to Official WhatsApp Group 📢</span>
+            </button>
+          </div>
+          <div id="dayAllotmentSummaryList" class="space-y-1.5 text-xs text-slate-700"></div>
+        </div>
       </div>
 
       <div class="px-6 py-3 border-t border-slate-100 bg-slate-50 flex justify-end">
@@ -1106,7 +1111,6 @@
     const manualSyncBtn = document.getElementById("manualSyncBtn");
     const printBtn = document.getElementById("printBtn");
 
-    // Dynamic P7 badge status
     document.getElementById("condNoMajorLastPeriod")?.addEventListener("change", function() {
       const badge = document.getElementById("p7ConstraintStatusBadge");
       if (badge) {
@@ -1398,6 +1402,7 @@
       const authUserName = document.getElementById("authUserName");
       const adminUserMgmtBtn = document.getElementById("adminUserMgmtBtn");
       const navContainer = document.getElementById("mainNavBarContainer");
+      const subtitle = document.getElementById("timetableSubtitle");
 
       if (roleBadge) {
         roleBadge.textContent = isAdmin ? "Admin" : "User";
@@ -1414,13 +1419,24 @@
         adminUserMgmtBtn.classList.toggle("hidden", !isAdmin);
       }
 
-      // Hide all Admin-only components, forms, and restricted tabs from regular users
-      document.querySelectorAll(".admin-only").forEach(el => {
+      if (subtitle) {
+        subtitle.textContent = isAdmin 
+          ? "Live interactive schedules. Click any period to add or modify subjects & teachers."
+          : "Live weekly division and teacher schedules (Read-Only).";
+      }
+
+      // Hide all Admin-only components (EXCLUDING modal overlays and tab panes)
+      document.querySelectorAll(".admin-only:not(.modal-overlay):not(.tab-pane)").forEach(el => {
         el.classList.toggle("hidden", !isAdmin);
       });
 
+      // Explicitly keep all modal dialogs closed on login
+      document.getElementById("userManagementModal")?.classList.add("hidden");
+      document.getElementById("teacherModal")?.classList.add("hidden");
+      document.getElementById("slotEditModal")?.classList.add("hidden");
+      document.getElementById("aiAssistantModal")?.classList.add("hidden");
+
       if (!isAdmin) {
-        // Regular user: Force directly to Tab 5 (Timetable View) & hide tab navigation switcher
         if (navContainer) navContainer.style.display = "none";
         for (let tab = 1; tab <= 4; tab++) {
           const pane = document.getElementById(`tab${tab}-content`);
@@ -1437,6 +1453,10 @@
       } else {
         if (navContainer) navContainer.style.display = "flex";
         switchMainTab(1);
+      }
+
+      if (latestGeneratedTimetable) {
+        reflectTimetableChanges(false);
       }
     }
 
@@ -2204,11 +2224,16 @@
     }
 
     // =========================================================================
-    // INTERACTIVE PERIOD SLOT EDITOR (CLASS VIEW & TEACHER VIEW REFLECTION)
+    // INTERACTIVE PERIOD SLOT EDITOR (ADMIN ONLY)
     // =========================================================================
     function openSlotEditor(mode, identifier, dayIdx, periodIdx) {
-      if (isTimetableLocked && (!currentUser || currentUser.role !== "admin")) {
-        showStatus("⚠️ Timetable is locked by Administrator. Changes cannot be saved.", true);
+      if (!currentUser || currentUser.role !== "admin") {
+        showStatus("⚠️ Only administrators can edit timetable slots.", true);
+        return;
+      }
+
+      if (isTimetableLocked) {
+        showStatus("⚠️ Timetable is locked by Administrator. Unlock before making changes.", true);
         return;
       }
 
@@ -2269,6 +2294,7 @@
     }
 
     function clearSlotEditor() {
+      if (!currentUser || currentUser.role !== "admin") return;
       const mode = document.getElementById("slotEditContextMode").value;
       const day = parseInt(document.getElementById("slotEditDay").value);
       const period = parseInt(document.getElementById("slotEditPeriod").value);
@@ -2289,12 +2315,13 @@
         });
       }
 
-      reflectTimetableChanges();
+      reflectTimetableChanges(true);
       closeSlotEditor();
       showStatus("🗑️ Slot cleared.");
     }
 
     function saveSlotEditor() {
+      if (!currentUser || currentUser.role !== "admin") return;
       const mode = document.getElementById("slotEditContextMode").value;
       const day = parseInt(document.getElementById("slotEditDay").value);
       const period = parseInt(document.getElementById("slotEditPeriod").value);
@@ -2338,12 +2365,12 @@
         };
       }
 
-      reflectTimetableChanges();
+      reflectTimetableChanges(true);
       closeSlotEditor();
       showStatus(`✅ Successfully updated ${className} (P${period+1}, ${DAYS[day]}): ${subjectName || 'Free'} [${teacherName || '-'}]`);
     }
 
-    function reflectTimetableChanges() {
+    function reflectTimetableChanges(saveToCloud = true) {
       if (!latestGeneratedTimetable) return;
 
       renderClassTimetables(latestGeneratedTimetable);
@@ -2360,13 +2387,21 @@
         }
       });
       renderTeacherTimetables(teacherSchedules);
-      saveTimetableToFirebase(latestGeneratedTimetable);
+
+      if (saveToCloud) {
+        saveTimetableToFirebase(latestGeneratedTimetable);
+      }
     }
 
     // =========================================================================
-    // INLINE AI FIX FOR SPECIFIC CLASS
+    // INLINE AI FIX FOR SPECIFIC CLASS (ADMIN ONLY)
     // =========================================================================
     async function autoFixClassUnplaced(className) {
+      if (!currentUser || currentUser.role !== "admin") {
+        showStatus("⚠️ Only administrators can auto-fix unplaced slots.", true);
+        return;
+      }
+
       if (isTimetableLocked) {
         showStatus("⚠️ Timetable is locked by Administrator. Unlock before editing.", true);
         return;
@@ -2377,7 +2412,6 @@
       const tTable = latestGeneratedTimetable;
       const condNoMajorP7 = document.getElementById("condNoMajorLastPeriod")?.checked ?? true;
 
-      // Find required allotments for this specific class that are missing
       const requiredMap = [];
       TEACHERS.forEach(t => {
         (dbState[t]?.allocations || []).forEach(alloc => {
@@ -2390,7 +2424,6 @@
         });
       });
 
-      // Remove placed ones from required list
       for (let d = 0; d < 5; d++) {
         for (let p = 0; p < 7; p++) {
           const slot = tTable[className][d][p];
@@ -2401,7 +2434,6 @@
         }
       }
 
-      // Assign remaining unplaced into empty slots
       for (let d = 0; d < 5; d++) {
         for (let p = 0; p < 7; p++) {
           if (!tTable[className][d][p]) {
@@ -2424,12 +2456,16 @@
         }
       }
 
-      reflectTimetableChanges();
+      reflectTimetableChanges(true);
       completeTopLoader();
       showStatus(`🪄 AI Auto-Resolved all open slots for Class ${className}!`);
     }
 
     async function autoFixAllUnplacedCardsWithAI() {
+      if (!currentUser || currentUser.role !== "admin") {
+        showStatus("⚠️ Only administrators can auto-fix timetables.", true);
+        return;
+      }
       if (isTimetableLocked) {
         showStatus("⚠️ Timetable is locked by Administrator.", true);
         return;
@@ -2500,6 +2536,11 @@
     }
 
     async function buildAndRenderTimetables() {
+      if (!currentUser || currentUser.role !== "admin") {
+        showStatus("⚠️ Only administrators can generate timetables.", true);
+        return;
+      }
+
       if (isTimetableLocked) {
         showStatus("⚠️ Timetable is locked by Administrator. Unlock to generate a fresh schedule.", true);
         return;
@@ -2584,7 +2625,6 @@
             if (alloc) alloc.remaining--;
           };
 
-          // STAGE 1: Period 1 Rotations (5B & 6D)
           if (cond5BP1) {
             ["RR", "SA", "RR", "SA", "RR"].forEach((t, d) => {
               const a = classAllotments["5B"].find(x => x.teacher === t && x.remaining > 0);
@@ -2598,7 +2638,6 @@
             });
           }
 
-          // STAGE 2: Class Teacher in Period 1
           if (condCTP1) {
             CLASSES.forEach(c => {
               if ((c === "5B" && cond5BP1) || (c === "6D" && cond6DP1)) return;
@@ -2616,7 +2655,6 @@
             });
           }
 
-          // STAGE 3: Standard-wise Language Sync Matrix
           if (condSameStdSync) {
             LANGUAGE_SYNC_MATRIX.forEach(group => {
               group.slots.forEach(([d, p]) => {
@@ -2630,7 +2668,6 @@
             });
           }
 
-          // STAGE 4: SV/LIB strictly in Period 7
           if (condSVLIBP7) {
             CLASSES.forEach(c => {
               const a = classAllotments[c].find(x => x.subject === "SV/LIB" && x.remaining > 0);
@@ -2646,7 +2683,6 @@
             });
           }
 
-          // STAGE 5: Single IT Lab & Single PE Ground across school
           if (condSingleIT) {
             CLASSES.forEach(c => {
               const a = classAllotments[c].find(x => x.subject === "IT" && x.remaining > 0);
@@ -2685,7 +2721,6 @@
             });
           }
 
-          // STAGE 6: Core Subjects in P1-P6
           CLASSES.forEach(c => {
             const fivePeriodSubjects = classAllotments[c].filter(a => a.total === 5 && a.remaining > 0);
             fivePeriodSubjects.forEach(a => {
@@ -2707,7 +2742,6 @@
             });
           });
 
-          // STAGE 7: Remaining Minor Subjects in Period 7
           CLASSES.forEach(c => {
             const minorAllocs = classAllotments[c].filter(a => MINOR_SUBJECTS.includes(a.subject) && a.remaining > 0);
             minorAllocs.forEach(a => {
@@ -2722,7 +2756,6 @@
             });
           });
 
-          // STAGE 8: General Pass
           const allSlots = [];
           for (let p = 0; p < 7; p++) {
             for (let d = 0; d < 5; d++) {
@@ -2775,7 +2808,7 @@
         }
 
         latestGeneratedTimetable = bestTimetable;
-        reflectTimetableChanges();
+        reflectTimetableChanges(true);
         completeTopLoader();
         
         if (lowestUnfilled > 0) {
@@ -2797,7 +2830,7 @@
     }
 
     // =========================================================================
-    // SMART SUBSTITUTE FINDER
+    // SMART SUBSTITUTE FINDER & WHATSAPP GROUP ALLOTMENT ROSTER
     // =========================================================================
     function openAIAssistantModal() {
       const select = document.getElementById("subAbsentTeacher");
@@ -2822,6 +2855,7 @@
       if (!latestGeneratedTimetable) {
         resBox.innerHTML = `<span class="text-red-600 font-semibold">⚠️ Please generate or load a timetable first in Tab 5.</span>`;
         resBox.classList.remove("hidden");
+        renderDailyAllotmentSummary(absentTeacher, day);
         return;
       }
 
@@ -2834,86 +2868,139 @@
         }
       });
 
-      const busyTeachers = new Set();
-      CLASSES.forEach(c => {
-        const slot = latestGeneratedTimetable[c][day][period];
-        if (slot) busyTeachers.add(slot.teacher);
-      });
+      const dutySlotKey = `${day}_${period}_${absentTeacher}`;
+      const existingAssignment = assignedSubstituteDuties[dutySlotKey];
 
-      const freeCandidates = [];
-
-      TEACHERS.forEach(t => {
-        if (t === absentTeacher) return;
-        if (busyTeachers.has(t)) return;
-
-        const dutyKey = `${day}_${t}`;
-        if (assignedSubstituteDuties[dutyKey]) return;
-
-        let taughtToday = 0;
-        for (let p = 0; p < 7; p++) {
-          let isTeaching = false;
-          CLASSES.forEach(c => {
-            if (latestGeneratedTimetable[c][day][p]?.teacher === t) isTeaching = true;
-          });
-          if (isTeaching) taughtToday++;
-        }
-        const freePeriodsCount = 7 - taughtToday;
-
-        freeCandidates.push({ teacher: t, freePeriodsCount });
-      });
-
-      freeCandidates.sort((a, b) => b.freePeriodsCount - a.freePeriodsCount);
-
-      let html = `<div class="font-bold text-slate-900 mb-1">Status for ${absentTeacher} (${DAYS[day]}, Period P${period+1}):</div>`;
-      html += affectedClass 
-        ? `<div class="text-amber-800 font-semibold mb-2">🚨 Has Class <strong>${affectedClass}</strong> [${affectedSubject}].</div>`
-        : `<div class="text-emerald-700 font-semibold mb-2">ℹ️ Teacher ${absentTeacher} was free in this slot.</div>`;
-
-      if (freeCandidates.length === 0) {
-        html += `<div class="text-red-600 font-bold">No eligible free substitutes available for this slot (all busy or already assigned a duty today).</div>`;
+      let html = `<div class="font-bold text-slate-900 mb-1">Status for ${absentTeacher} (${DAYS[day]}, Period P${period+1} - ${PERIOD_TIMES[period]}):</div>`;
+      
+      if (!affectedClass) {
+        html += `<div class="text-emerald-700 font-semibold mb-2 bg-emerald-50 p-2.5 rounded-md border border-emerald-200">ℹ️ Teacher <strong>${absentTeacher}</strong> is FREE in this period. No substitution needed.</div>`;
       } else {
-        html += `<div class="text-slate-700 font-bold mb-1">Eligible Substitutes (${freeCandidates.length}):</div>`;
-        html += `<div class="space-y-1.5 max-h-56 overflow-y-auto pr-1">`;
-        
-        freeCandidates.forEach(({ teacher, freePeriodsCount }) => {
-          const dutyContext = {
-            day,
-            period,
-            className: affectedClass || "Study",
-            subject: affectedSubject || "Revision",
-            absentTeacher
-          };
+        html += `<div class="text-amber-900 font-semibold mb-2 bg-amber-50 p-2 rounded-md border border-amber-200">🚨 Class <strong>${affectedClass}</strong> [${affectedSubject}].</div>`;
 
+        if (existingAssignment) {
           html += `
-            <div class="flex items-center justify-between p-2 bg-white rounded-lg border border-purple-100 shadow-sm">
+            <div class="p-3 bg-emerald-50 rounded-lg border border-emerald-200 flex items-center justify-between">
               <div>
-                <span class="font-bold text-indigo-950">${teacher}</span>
-                <span class="text-[10px] ml-1.5 text-purple-700 font-bold bg-purple-50 px-2 py-0.5 rounded-full border border-purple-200">
-                  ${freePeriodsCount} free periods today
-                </span>
+                <span class="font-bold text-emerald-950 text-xs">✅ Assigned Substitute: <strong class="text-indigo-900 text-sm">${existingAssignment.substituteTeacher}</strong></span>
+                <p class="text-[10px] text-emerald-800 mt-0.5">Engaging Class ${existingAssignment.className} [${existingAssignment.subject}]</p>
               </div>
-              <div class="flex items-center gap-1.5">
-                <button type="button" onclick='assignSubstituteDuty("${teacher}", ${JSON.stringify(dutyContext)})' class="px-2.5 py-1 bg-purple-600 hover:bg-purple-700 active:scale-95 text-white font-bold text-[10px] rounded transition shadow-sm">
-                  Assign Duty
+              <div class="flex items-center gap-2">
+                <button type="button" onclick='sendIndividualSubstituteWhatsApp("${existingAssignment.substituteTeacher}", ${JSON.stringify(existingAssignment)})' title="Resend WhatsApp Message" class="text-emerald-700 bg-white border border-emerald-300 hover:bg-emerald-100 p-1.5 rounded-full w-8 h-8 inline-flex items-center justify-center transition active:scale-95 shadow-sm">
+                  <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M12.004 2C6.48 2 2 6.48 2 12.004c0 1.765.46 3.48 1.334 4.996L2 22l5.176-1.359c1.476.804 3.136 1.227 4.82 1.227 5.524 0 10.004-4.48 10.004-10.004C22.004 6.48 17.524 2 12.004 2zM17.47 15.35c-.24.36-.84.66-1.2.78-.36.12-.84.18-1.32.18-.3-.02-.66-.06-1.02-.12-.36-.06-.72-.12-1.08-.24-1.56-.54-2.88-1.56-3.84-2.82-.42-.54-.78-1.14-1.02-1.8-.18-.48-.24-.96-.24-1.44 0-.48.12-.9.36-1.26l.48-.6c.18-.24.36-.48.54-.72l.48-.36c.12-.12.24-.18.36-.18s.24 0 .36.06c.12.06.24.18.36.36l1.02 2.22c.06.12.12.24.12.36s0 .24-.06.36c-.06.12-.12.24-.24.36l-.36.42c-.12.12-.24.24-.36.36s-.12.24-.06.36c.24.48.54.9 1.02 1.32s1.02.72 1.5 1.02c.12.06.24.06.36 0 .12-.06.24-.18.36-.3l.42-.48c.12-.12.24-.18.36-.18.12 0 .24.06.36.12l2.22 1.02c.18.06.3.18.36.3.06.12.06.24 0 .36z"/></svg>
                 </button>
-                <button type="button" onclick='sendSubstituteWhatsAppNotice("${teacher}", ${JSON.stringify(dutyContext)})' title="Send WhatsApp Notification" class="text-emerald-600 hover:text-emerald-800 bg-emerald-50 hover:bg-emerald-100 p-1.5 rounded-full border border-emerald-200 w-7 h-7 inline-flex items-center justify-center transition active:scale-95">
-                  <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M12.004 2C6.48 2 2 6.48 2 12.004c0 1.765.46 3.48 1.334 4.996L2 22l5.176-1.359c1.476.804 3.136 1.227 4.82 1.227 5.524 0 10.004-4.48 10.004-10.004C22.004 6.48 17.524 2 12.004 2zM17.47 15.35c-.24.36-.84.66-1.2.78-.36.12-.84.18-1.32.18-.3-.02-.66-.06-1.02-.12-.36-.06-.72-.12-1.08-.24-1.56-.54-2.88-1.56-3.84-2.82-.42-.54-.78-1.14-1.02-1.8-.18-.48-.24-.96-.24-1.44 0-.48.12-.9.36-1.26l.48-.6c.18-.24.36-.48.54-.72l.48-.36c.12-.12.24-.18.36-.18s.24 0 .36.06c.12.06.24.18.36.36l1.02 2.22c.06.12.12.24.12.36s0 .24-.06.36c-.06.12-.12.24-.24.36l-.36.42c-.12.12-.24.24-.36.36s-.12.24-.06.36c.24.48.54.9 1.02 1.32s1.02.72 1.5 1.02c.12.06.24.06.36 0 .12-.06.24-.18.36-.3l.42-.48c.12-.12.24-.18.36-.18.12 0 .24.06.36.12l2.22 1.02c.18.06.3.18.36.3.06.12.06.24 0 .36z"/></svg>
+                <button type="button" onclick="cancelSlotSubstitution('${dutySlotKey}')" class="text-[10px] bg-red-100 hover:bg-red-200 text-red-800 font-bold px-2.5 py-1 rounded transition">
+                  Change Substitute 🔄
                 </button>
               </div>
             </div>
           `;
-        });
-        html += `</div>`;
+        } else {
+          const busyTeachers = new Set();
+          CLASSES.forEach(c => {
+            const slot = latestGeneratedTimetable[c][day][period];
+            if (slot) busyTeachers.add(slot.teacher);
+          });
+
+          Object.values(assignedSubstituteDuties).forEach(duty => {
+            if (duty.day === day && duty.period === period) {
+              busyTeachers.add(duty.substituteTeacher);
+            }
+          });
+
+          const freeCandidates = [];
+          TEACHERS.forEach(t => {
+            if (t === absentTeacher) return;
+            if (busyTeachers.has(t)) return;
+
+            let taughtToday = 0;
+            for (let p = 0; p < 7; p++) {
+              let isTeaching = false;
+              CLASSES.forEach(c => {
+                if (latestGeneratedTimetable[c][day][p]?.teacher === t) isTeaching = true;
+              });
+              if (isTeaching) taughtToday++;
+            }
+            const freePeriodsCount = 7 - taughtToday;
+
+            // Check if teacher already has another substitution duty assigned earlier on this day
+            const priorDuties = Object.values(assignedSubstituteDuties).filter(
+              d => d.day === day && d.substituteTeacher === t
+            );
+            const alreadySubstitutedPeriods = priorDuties.map(d => 'P' + (d.period + 1));
+
+            freeCandidates.push({ 
+              teacher: t, 
+              freePeriodsCount,
+              alreadySubstitutedPeriods 
+            });
+          });
+
+          // Sort: teachers who haven't substituted yet first, then by free periods descending
+          freeCandidates.sort((a, b) => {
+            if (a.alreadySubstitutedPeriods.length === 0 && b.alreadySubstitutedPeriods.length > 0) return -1;
+            if (a.alreadySubstitutedPeriods.length > 0 && b.alreadySubstitutedPeriods.length === 0) return 1;
+            return b.freePeriodsCount - a.freePeriodsCount;
+          });
+
+          if (freeCandidates.length === 0) {
+            html += `<div class="text-red-600 font-bold">No eligible free staff available for this period.</div>`;
+          } else {
+            html += `<div class="text-slate-700 font-bold mb-1">Click WhatsApp icon to assign as substitute and notify:</div>`;
+            html += `<div class="space-y-1.5 max-h-52 overflow-y-auto pr-1">`;
+            
+            freeCandidates.forEach(({ teacher, freePeriodsCount, alreadySubstitutedPeriods }) => {
+              const dutyContext = {
+                day,
+                period,
+                className: affectedClass,
+                subject: affectedSubject,
+                absentTeacher
+              };
+
+              const alreadySubBadge = (alreadySubstitutedPeriods && alreadySubstitutedPeriods.length > 0)
+                ? `<span class="text-[10px] font-bold text-red-700 bg-red-100 border border-red-300 px-2 py-0.5 rounded-full shadow-sm">⚠️ Already substituted today (${alreadySubstitutedPeriods.join(', ')})</span>`
+                : '';
+
+              html += `
+                <div class="flex items-center justify-between p-2 bg-slate-50 hover:bg-purple-50/60 rounded-lg border border-slate-200 transition">
+                  <div class="flex flex-wrap items-center gap-1.5">
+                    <span class="font-bold text-indigo-950">${teacher}</span>
+                    <span class="text-[10px] text-purple-700 font-bold bg-purple-50 px-2 py-0.5 rounded-full border border-purple-200">
+                      ${freePeriodsCount} free periods today
+                    </span>
+                    ${alreadySubBadge}
+                  </div>
+                  <button type="button" onclick='selectSubstituteAndNotify("${teacher}", ${JSON.stringify(dutyContext)})' title="Click to Assign as Substitute & Send WhatsApp" class="text-emerald-700 hover:text-emerald-800 bg-emerald-100 hover:bg-emerald-200 p-1.5 rounded-full border border-emerald-300 w-8 h-8 inline-flex items-center justify-center transition active:scale-95 shadow-sm">
+                    <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M12.004 2C6.48 2 2 6.48 2 12.004c0 1.765.46 3.48 1.334 4.996L2 22l5.176-1.359c1.476.804 3.136 1.227 4.82 1.227 5.524 0 10.004-4.48 10.004-10.004C22.004 6.48 17.524 2 12.004 2zM17.47 15.35c-.24.36-.84.66-1.2.78-.36.12-.84.18-1.32.18-.3-.02-.66-.06-1.02-.12-.36-.06-.72-.12-1.08-.24-1.56-.54-2.88-1.56-3.84-2.82-.42-.54-.78-1.14-1.02-1.8-.18-.48-.24-.96-.24-1.44 0-.48.12-.9.36-1.26l.48-.6c.18-.24.36-.48.54-.72l.48-.36c.12-.12.24-.18.36-.18s.24 0 .36.06c.12.06.24.18.36.36l1.02 2.22c.06.12.12.24.12.36s0 .24-.06.36c-.06.12-.12.24-.24.36l-.36.42c-.12.12-.24.24-.36.36s-.12.24-.06.36c.24.48.54.9 1.02 1.32s1.02.72 1.5 1.02c.12.06.24.06.36 0 .12-.06.24-.18.36-.3l.42-.48c.12-.12.24-.18.36-.18.12 0 .24.06.36.12l2.22 1.02c.18.06.3.18.36.3.06.12.06.24 0 .36z"/></svg>
+                  </button>
+                </div>
+              `;
+            });
+            html += `</div>`;
+          }
+        }
       }
 
       resBox.innerHTML = html;
-      resBox.className = "p-3 rounded-lg border bg-white border-purple-200 text-xs space-y-2 block";
+      renderDailyAllotmentSummary(absentTeacher, day);
     }
 
-    function assignSubstituteDuty(teacher, context) {
-      const dutyKey = `${context.day}_${teacher}`;
-      assignedSubstituteDuties[dutyKey] = { teacher, ...context };
-      showStatus(`✅ ${teacher} assigned as substitute for ${DAYS[context.day]} (P${context.period+1}, Class ${context.className}). Excluded from other duties today.`);
+    function selectSubstituteAndNotify(substituteTeacher, context) {
+      const dutySlotKey = `${context.day}_${context.period}_${context.absentTeacher}`;
+      assignedSubstituteDuties[dutySlotKey] = {
+        substituteTeacher,
+        ...context
+      };
+
+      sendIndividualSubstituteWhatsApp(substituteTeacher, context);
+      showStatus(`✅ ${substituteTeacher} assigned to substitute ${context.absentTeacher} (P${context.period+1}, Class ${context.className}).`);
+      findAISubstitutes();
+    }
+
+    function cancelSlotSubstitution(dutySlotKey) {
+      delete assignedSubstituteDuties[dutySlotKey];
+      showStatus("🔄 Substitution cleared. You can select another substitute.");
       findAISubstitutes();
     }
 
@@ -2923,7 +3010,7 @@
       findAISubstitutes();
     }
 
-    function sendSubstituteWhatsAppNotice(teacher, context) {
+    function sendIndividualSubstituteWhatsApp(teacher, context) {
       const mobile = teacherPhones[teacher];
       const timeSlot = PERIOD_TIMES[context.period];
       
@@ -2942,15 +3029,146 @@
     }
 
     // =========================================================================
-    // TIMETABLE RENDERING (SHOWS UNPLACED SUBJECT & TEACHER PER CLASS)
+    // DAILY ROSTER SUMMARY & OFFICIAL WHATSAPP GROUP BROADCAST
+    // =========================================================================
+    function renderDailyAllotmentSummary(absentTeacher, day) {
+      const container = document.getElementById("dayAllotmentSummaryList");
+      if (!container) return;
+
+      if (!latestGeneratedTimetable) {
+        container.innerHTML = `<span class="text-slate-400 italic">Generate a timetable to view period roster.</span>`;
+        return;
+      }
+
+      let html = `<div class="divide-y divide-slate-200 border border-slate-200 rounded-lg overflow-hidden bg-white">`;
+      let totalTeachingSlots = 0;
+      let assignedCount = 0;
+
+      for (let p = 0; p < 7; p++) {
+        let taughtClass = null;
+        let taughtSubj = null;
+        CLASSES.forEach(c => {
+          const slot = latestGeneratedTimetable[c][day][p];
+          if (slot && slot.teacher === absentTeacher) {
+            taughtClass = c;
+            taughtSubj = slot.subject;
+          }
+        });
+
+        const slotKey = `${day}_${p}_${absentTeacher}`;
+        const subRecord = assignedSubstituteDuties[slotKey];
+
+        if (taughtClass) {
+          totalTeachingSlots++;
+          if (subRecord) {
+            assignedCount++;
+            html += `
+              <div class="p-2 flex items-center justify-between bg-emerald-50/50">
+                <span class="font-bold text-slate-800">P${p+1} (${PERIOD_TIMES[p]}): Class ${taughtClass} [${taughtSubj}]</span>
+                <span class="font-bold text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded text-[10px]">
+                  Sub: ${subRecord.substituteTeacher}
+                </span>
+              </div>
+            `;
+          } else {
+            html += `
+              <div class="p-2 flex items-center justify-between bg-amber-50/50">
+                <span class="font-semibold text-slate-700">P${p+1} (${PERIOD_TIMES[p]}): Class ${taughtClass} [${taughtSubj}]</span>
+                <span class="font-bold text-amber-900 bg-amber-100 px-2 py-0.5 rounded text-[10px]">
+                  ⚠️ Pending Assignment
+                </span>
+              </div>
+            `;
+          }
+        } else {
+          html += `
+            <div class="p-2 flex items-center justify-between text-slate-400 bg-slate-50/40">
+              <span>P${p+1} (${PERIOD_TIMES[p]}): Free</span>
+              <span class="text-[10px] italic">No substitution needed</span>
+            </div>
+          `;
+        }
+      }
+      html += `</div>`;
+
+      if (totalTeachingSlots === 0) {
+        html = `<div class="p-3 bg-emerald-50 rounded-lg text-emerald-900 font-semibold border border-emerald-200">Teacher ${absentTeacher} has 0 teaching periods on ${DAYS[day]}. No substitutions required.</div>`;
+      }
+
+      container.innerHTML = html;
+    }
+
+    function shareOfficialGroupWhatsAppSummary() {
+      const absentTeacher = document.getElementById("subAbsentTeacher")?.value;
+      const day = parseInt(document.getElementById("subDay")?.value || "0");
+
+      if (!latestGeneratedTimetable) {
+        showStatus("Please generate or load a timetable first.", true);
+        return;
+      }
+
+      let assignedLines = [];
+      let pendingLines = [];
+
+      for (let p = 0; p < 7; p++) {
+        let taughtClass = null;
+        let taughtSubj = null;
+        CLASSES.forEach(c => {
+          const slot = latestGeneratedTimetable[c][day][p];
+          if (slot && slot.teacher === absentTeacher) {
+            taughtClass = c;
+            taughtSubj = slot.subject;
+          }
+        });
+
+        if (taughtClass) {
+          const slotKey = `${day}_${p}_${absentTeacher}`;
+          const subRecord = assignedSubstituteDuties[slotKey];
+          if (subRecord) {
+            assignedLines.push(`• *P${p+1} (${PERIOD_TIMES[p]})* - Class ${taughtClass} (${taughtSubj}) ➔ *Sub: ${subRecord.substituteTeacher}*`);
+          } else {
+            pendingLines.push(`• *P${p+1} (${PERIOD_TIMES[p]})* - Class ${taughtClass} (${taughtSubj}) ➔ _Unassigned_`);
+          }
+        }
+      }
+
+      if (assignedLines.length === 0 && pendingLines.length === 0) {
+        showStatus(`Teacher ${absentTeacher} has no teaching classes on ${DAYS[day]}.`, false);
+        return;
+      }
+
+      let msg = `*📢 ABSENTEE SUBSTITUTION DUTY ROSTER*\n`;
+      msg += `━━━━━━━━━━━━━━━━━━━━━\n`;
+      msg += `📅 *Day:* ${DAYS[day]}\n`;
+      msg += `👤 *Absent Teacher:* ${absentTeacher}\n\n`;
+
+      if (assignedLines.length > 0) {
+        msg += `*Allocated Substitutions:*\n${assignedLines.join("\n")}\n\n`;
+      }
+
+      if (pendingLines.length > 0) {
+        msg += `*Pending Coverage:*\n${pendingLines.join("\n")}\n\n`;
+      }
+
+      msg += `_(Note: Absent teacher's free periods require no substitution)_\n`;
+      msg += `━━━━━━━━━━━━━━━━━━━━━\n`;
+      msg += `Kindly request the concerned teachers to engage the classes promptly. Thank you.`;
+
+      const targetUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(msg)}`;
+      window.open(targetUrl, "_blank");
+    }
+
+    // =========================================================================
+    // TIMETABLE RENDERING (READ-ONLY FOR USERS, INTERACTIVE FOR ADMINS)
     // =========================================================================
     function renderClassTimetables(timetables) {
       const container = document.getElementById("classTimetableContainer");
       if (!container) return;
       container.innerHTML = "";
 
+      const isAdmin = currentUser && currentUser.role === "admin";
+
       CLASSES.forEach(c => {
-        // 1. Gather all expected allocations for class c from dbState
         const expectedAllocations = [];
         TEACHERS.forEach(t => {
           (dbState[t]?.allocations || []).forEach(alloc => {
@@ -2968,7 +3186,6 @@
           });
         });
 
-        // 2. Count placed periods in current timetable for class c
         let filledCount = 0;
         for (let d = 0; d < 5; d++) {
           for (let p = 0; p < 7; p++) {
@@ -2981,7 +3198,6 @@
           }
         }
 
-        // 3. Filter unplaced subjects & teachers for this division
         const unplacedList = [];
         expectedAllocations.forEach(a => {
           if (a.placed < a.required) {
@@ -3008,10 +3224,9 @@
                 <h3 class="text-sm font-bold text-indigo-950">Division Class: ${c}</h3>
               </div>
               
-              <!-- HEADER BADGE & QUICK ACTIONS -->
               <div class="flex items-center gap-1.5 no-print">
                 <span class="text-[10px] ${badgeStyle} border px-2 py-0.5 rounded font-bold">${badgeText}</span>
-                ${!isComplete ? `
+                ${isAdmin && !isComplete ? `
                   <button type="button" onclick="autoFixClassUnplaced('${c}')" title="Auto-Fill Empty Periods" class="bg-purple-600 hover:bg-purple-700 active:scale-95 text-white font-bold text-[10px] px-2 py-0.5 rounded shadow-sm transition">
                     Fix with AI 🪄
                   </button>
@@ -3023,7 +3238,6 @@
             </div>
         `;
 
-        // 4. UNPLACED SUBJECT & TEACHER BANNER (Visible if any subject/teacher is missing)
         if (unplacedList.length > 0) {
           cardHtml += `
             <div class="p-2 bg-amber-50/90 border border-amber-200 rounded-md text-[11px] text-amber-950 flex flex-wrap items-center justify-between gap-1.5 no-print">
@@ -3035,9 +3249,11 @@
                   </span>
                 `).join('')}
               </div>
-              <button type="button" onclick="autoFixClassUnplaced('${c}')" class="text-[10px] font-bold text-purple-700 bg-purple-50 hover:bg-purple-100 px-2 py-0.5 rounded border border-purple-200 transition active:scale-95">
-                Place with AI 🪄
-              </button>
+              ${isAdmin ? `
+                <button type="button" onclick="autoFixClassUnplaced('${c}')" class="text-[10px] font-bold text-purple-700 bg-purple-50 hover:bg-purple-100 px-2 py-0.5 rounded border border-purple-200 transition active:scale-95">
+                  Place with AI 🪄
+                </button>
+              ` : ''}
             </div>
           `;
         }
@@ -3061,9 +3277,15 @@
             const isP7 = pIdx === 6;
             const bgClass = isP7 ? 'bg-indigo-50/40 text-slate-800' : 'bg-white text-slate-800';
             
-            cardHtml += slot 
-              ? `<td onclick="openSlotEditor('class', '${c}', ${dIdx}, ${pIdx})" title="Click to Modify Period" class="interactive-slot border border-slate-300 p-1 ${bgClass}"><span class="font-bold text-indigo-900">${slot.subject}</span><br><span class="text-[8px] text-slate-500">${slot.teacher}</span></td>`
-              : `<td onclick="openSlotEditor('class', '${c}', ${dIdx}, ${pIdx})" title="Click to Assign Period" class="interactive-slot border border-slate-300 p-1 bg-amber-50 text-amber-700 italic font-medium hover:bg-amber-100">+ Add</td>`;
+            if (isAdmin) {
+              cardHtml += slot 
+                ? `<td onclick="openSlotEditor('class', '${c}', ${dIdx}, ${pIdx})" title="Click to Modify Period" class="interactive-slot border border-slate-300 p-1 ${bgClass}"><span class="font-bold text-indigo-900">${slot.subject}</span><br><span class="text-[8px] text-slate-500">${slot.teacher}</span></td>`
+                : `<td onclick="openSlotEditor('class', '${c}', ${dIdx}, ${pIdx})" title="Click to Assign Period" class="interactive-slot border border-slate-300 p-1 bg-amber-50 text-amber-700 italic font-medium hover:bg-amber-100">+ Add</td>`;
+            } else {
+              cardHtml += slot 
+                ? `<td class="border border-slate-300 p-1 ${bgClass}"><span class="font-bold text-indigo-900">${slot.subject}</span><br><span class="text-[8px] text-slate-500">${slot.teacher}</span></td>`
+                : `<td class="border border-slate-300 p-1 bg-amber-50/50 text-slate-400 italic font-medium">Empty</td>`;
+            }
           }
           cardHtml += `</tr>`;
         });
@@ -3077,6 +3299,8 @@
       const container = document.getElementById("teacherTimetableContainer");
       if (!container) return;
       container.innerHTML = "";
+
+      const isAdmin = currentUser && currentUser.role === "admin";
 
       TEACHERS.forEach(t => {
         let cardHtml = `
@@ -3105,9 +3329,15 @@
           cardHtml += `<tr><td class="border border-slate-300 p-1 font-semibold bg-slate-100">${day}</td>`;
           for (let pIdx = 0; pIdx < 7; pIdx++) {
             const slot = schedules[t][dIdx][pIdx];
-            cardHtml += slot 
-              ? `<td onclick="openSlotEditor('teacher', '${t}', ${dIdx}, ${pIdx})" title="Click to Modify Period" class="interactive-slot border border-slate-300 p-1 bg-white text-slate-800"><span class="font-bold text-teal-800">Class ${slot.className}</span><br><span class="text-[8px] text-slate-500">${slot.subject}</span></td>`
-              : `<td onclick="openSlotEditor('teacher', '${t}', ${dIdx}, ${pIdx})" title="Click to Assign Class" class="interactive-slot border border-slate-300 p-1 bg-white text-slate-300 font-normal hover:bg-slate-100 hover:text-slate-600">+ Free</td>`;
+            if (isAdmin) {
+              cardHtml += slot 
+                ? `<td onclick="openSlotEditor('teacher', '${t}', ${dIdx}, ${pIdx})" title="Click to Modify Period" class="interactive-slot border border-slate-300 p-1 bg-white text-slate-800"><span class="font-bold text-teal-800">Class ${slot.className}</span><br><span class="text-[8px] text-slate-500">${slot.subject}</span></td>`
+                : `<td onclick="openSlotEditor('teacher', '${t}', ${dIdx}, ${pIdx})" title="Click to Assign Class" class="interactive-slot border border-slate-300 p-1 bg-white text-slate-300 font-normal hover:bg-slate-100 hover:text-slate-600">+ Free</td>`;
+            } else {
+              cardHtml += slot 
+                ? `<td class="border border-slate-300 p-1 bg-white text-slate-800"><span class="font-bold text-teal-800">Class ${slot.className}</span><br><span class="text-[8px] text-slate-500">${slot.subject}</span></td>`
+                : `<td class="border border-slate-300 p-1 bg-white text-slate-300 font-normal">Free</td>`;
+            }
           }
           cardHtml += `</tr>`;
         });
@@ -3202,12 +3432,10 @@
         return;
       }
 
-      // 1. Sync Phones
       db.collection("school_data").doc("teacher_phones").get().then(doc => {
         if (doc.exists) teacherPhones = doc.data().phones || INITIAL_PHONES;
       }).catch(() => {});
 
-      // 2. Sync Lock State
       db.collection("school_data").doc("timetable_lock").get().then(doc => {
         if (doc.exists) {
           isTimetableLocked = Boolean(doc.data().isLocked);
@@ -3215,7 +3443,6 @@
         }
       }).catch(() => {});
 
-      // 3. Sync Users
       db.collection("school_data").doc("app_users").get().then(doc => {
         if (doc.exists && doc.data().users) {
           systemUsers = doc.data().users;
@@ -3224,7 +3451,6 @@
         }
       }).catch(() => {});
 
-      // 4. Fetch Stored Weekly Timetable
       db.collection("school_data").doc("weekly_timetable").get().then(doc => {
         if (doc.exists && doc.data().timetable) {
           const payload = doc.data().timetable;
@@ -3247,24 +3473,10 @@
           });
 
           latestGeneratedTimetable = restored;
-          renderClassTimetables(restored);
-
-          const teacherSchedules = Object.fromEntries(TEACHERS.map(t => [t, Array.from({ length: 5 }, () => Array(7).fill(null))]));
-          CLASSES.forEach(c => {
-            for (let d = 0; d < 5; d++) {
-              for (let p = 0; p < 7; p++) {
-                const slot = restored[c][d][p];
-                if (slot && teacherSchedules[slot.teacher]) {
-                  teacherSchedules[slot.teacher][d][p] = { className: c, subject: slot.subject };
-                }
-              }
-            }
-          });
-          renderTeacherTimetables(teacherSchedules);
+          reflectTimetableChanges(false);
         }
       }).catch(err => console.warn("Timetable fetch warning:", err.message));
 
-      // 5. Live Snapshot of Allocations
       db.collection("teacher_allocations").onSnapshot(snapshot => {
         snapshot.forEach(doc => {
           const t = doc.id;
