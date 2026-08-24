@@ -43,10 +43,10 @@
       form, 
       #dbSyncControls,
       #teacherModal,
+      #slotEditModal,
       #aiAssistantModal,
       #userManagementModal,
       #loginOverlay,
-      #solverDiagnosticPanel,
       #tab5-content header,
       #tab5-content .tab-container,
       #tab5-content .section-controls,
@@ -174,6 +174,16 @@
         padding: 5px 4px !important;
       }
     }
+
+    .interactive-slot {
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .interactive-slot:hover {
+      box-shadow: inset 0 0 0 2px #6366f1;
+      transform: scale(1.02);
+      z-index: 5;
+    }
   </style>
 </head>
 <body class="bg-slate-50 min-h-screen text-slate-800 font-sans pb-16 print-default">
@@ -191,6 +201,10 @@
       <span id="lockStatusHeaderBadge" class="hidden text-[10px] bg-amber-500 text-slate-950 px-2 py-0.5 rounded font-bold">🔒 Locked</span>
     </div>
     <div class="flex items-center gap-2">
+      <!-- Quick Action Controls for All Logged-in Users -->
+      <button type="button" onclick="openAIAssistantModal()" title="Smart Substitute Teacher Finder" class="bg-purple-800 hover:bg-purple-700 text-purple-100 px-2.5 py-1 rounded text-[11px] font-semibold transition active:scale-95 flex items-center gap-1">
+        ✨ Substitute Finder
+      </button>
       <button type="button" id="adminUserMgmtBtn" onclick="openUserManagementModal()" class="admin-only hidden bg-indigo-800 hover:bg-indigo-700 text-indigo-100 px-2.5 py-1 rounded text-[11px] font-semibold transition active:scale-95">
         👥 Manage Users
       </button>
@@ -208,21 +222,17 @@
       <p class="text-sm text-slate-600 mt-1">Live allocation visualizer & schedule planner (Firebase Powered 🔥 + Localized AI Slot Resolver ✨)</p>
     </header>
 
-    <!-- Navigation Bar -->
-    <div class="tab-navigation flex flex-wrap justify-center items-center gap-2.5 sm:gap-3 py-2 px-3 border border-slate-200 bg-white shadow-sm rounded-xl max-w-xl mx-auto no-print">
-      <!-- Admin Only Tabs -->
-      <button type="button" data-main-tab="1" id="tab1-btn" onclick="switchMainTab(1)" title="Basic Details & Allocation Form" class="admin-only w-10 h-10 sm:w-11 sm:h-11 rounded-full flex items-center justify-center transition focus:outline-none focus:ring-2 focus:ring-indigo-500 text-2xl">📝</button>
-      <button type="button" data-main-tab="2" id="tab2-btn" onclick="switchMainTab(2)" title="Live Teachers Summary Table" class="admin-only w-10 h-10 sm:w-11 sm:h-11 rounded-full flex items-center justify-center transition focus:outline-none focus:ring-2 focus:ring-indigo-500 text-2xl">📊</button>
-      <button type="button" data-main-tab="3" id="tab3-btn" onclick="switchMainTab(3)" title="Live Students Period Allocation Table" class="admin-only w-10 h-10 sm:w-11 sm:h-11 rounded-full flex items-center justify-center transition focus:outline-none focus:ring-2 focus:ring-indigo-500 text-2xl">🎓</button>
-      <button type="button" data-main-tab="4" id="tab4-btn" onclick="switchMainTab(4)" title="Database Sync & Actions" class="admin-only w-10 h-10 sm:w-11 sm:h-11 rounded-full flex items-center justify-center transition focus:outline-none focus:ring-2 focus:ring-indigo-500 text-2xl">⚙️</button>
+    <!-- ADMIN ONLY NAVIGATION BAR (Completely hidden in Users Login) -->
+    <div id="mainNavBarContainer" class="admin-only tab-navigation flex flex-wrap justify-center items-center gap-2.5 sm:gap-3 py-2 px-3 border border-slate-200 bg-white shadow-sm rounded-xl max-w-xl mx-auto no-print">
+      <button type="button" data-main-tab="1" id="tab1-btn" onclick="switchMainTab(1)" title="Basic Details & Allocation Form" class="w-10 h-10 sm:w-11 sm:h-11 rounded-full flex items-center justify-center transition focus:outline-none focus:ring-2 focus:ring-indigo-500 text-2xl">📝</button>
+      <button type="button" data-main-tab="2" id="tab2-btn" onclick="switchMainTab(2)" title="Live Teachers Summary Table" class="w-10 h-10 sm:w-11 sm:h-11 rounded-full flex items-center justify-center transition focus:outline-none focus:ring-2 focus:ring-indigo-500 text-2xl">📊</button>
+      <button type="button" data-main-tab="3" id="tab3-btn" onclick="switchMainTab(3)" title="Live Students Period Allocation Table" class="w-10 h-10 sm:w-11 sm:h-11 rounded-full flex items-center justify-center transition focus:outline-none focus:ring-2 focus:ring-indigo-500 text-2xl">🎓</button>
+      <button type="button" data-main-tab="4" id="tab4-btn" onclick="switchMainTab(4)" title="Database Sync & Actions" class="w-10 h-10 sm:w-11 sm:h-11 rounded-full flex items-center justify-center transition focus:outline-none focus:ring-2 focus:ring-indigo-500 text-2xl">⚙️</button>
+      <button type="button" data-main-tab="5" id="tab5-btn" onclick="switchMainTab(5)" title="Generate & View Timetable" class="w-10 h-10 sm:w-11 sm:h-11 rounded-full flex items-center justify-center transition focus:outline-none focus:ring-2 focus:ring-indigo-500 text-2xl">🗓️</button>
       
-      <!-- Timetable View Tab (Admin Only Tab button - Regular users view tab 5 directly) -->
-      <button type="button" data-main-tab="5" id="tab5-btn" onclick="switchMainTab(5)" title="Generate & View Timetable" class="admin-only w-10 h-10 sm:w-11 sm:h-11 rounded-full flex items-center justify-center transition focus:outline-none focus:ring-2 focus:ring-indigo-500 text-2xl">🗓️</button>
-      
-      <div id="navDivider" class="admin-only h-6 w-[1px] bg-slate-200 mx-1"></div>
+      <div id="navDivider" class="h-6 w-[1px] bg-slate-200 mx-1"></div>
 
-      <!-- Quick Action Controls (Always Visible) -->
-      <button type="button" onclick="openAIAssistantModal()" title="Smart Substitute Teacher Finder" class="w-10 h-10 sm:w-11 sm:h-11 rounded-full flex items-center justify-center transition bg-purple-50 text-purple-700 hover:bg-purple-100 text-xl active:scale-95 focus:outline-none ring-1 ring-purple-200">✨</button>
+      <!-- Quick Action Controls inside Admin Nav -->
       <button type="button" onclick="loadDatabaseFromFirebase(true)" title="Force Refresh from Firebase" class="w-10 h-10 sm:w-11 sm:h-11 rounded-full flex items-center justify-center transition bg-indigo-50 text-indigo-700 hover:bg-indigo-100 text-xl active:scale-95 focus:outline-none">🔥</button>
       <button type="button" id="fullscreenToggleBtn" onclick="toggleFullscreenView()" title="Enter Fullscreen" class="w-10 h-10 sm:w-11 sm:h-11 rounded-full flex items-center justify-center transition bg-slate-100 text-slate-700 hover:bg-slate-200 text-xl active:scale-95 focus:outline-none">🖥️</button>
     </div>
@@ -498,7 +508,7 @@
       </div>
     </div>
 
-    <!-- TAB 5: TIMETABLE GENERATION AND VIEWS -->
+    <!-- TAB 5: TIMETABLE GENERATION AND VIEWS (Always Active & Primary for Users) -->
     <div id="tab5-content" data-tab-pane="5" class="tab-pane space-y-6">
       <div class="bg-white rounded-lg shadow-sm border border-slate-200 p-4 sm:p-6 w-full space-y-6">
         
@@ -566,7 +576,6 @@
 
           <!-- EDITABLE CONSTRAINTS ROW -->
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-3 border-t border-indigo-100">
-            <!-- Limit Continuous Teaching Periods (EDITABLE) -->
             <div class="p-3 bg-white rounded-lg border border-slate-200 space-y-2">
               <div class="flex items-center justify-between">
                 <label class="block text-xs font-bold text-slate-800" for="condMaxContinuousSelect">
@@ -583,7 +592,6 @@
               <p class="text-[10px] text-slate-500">Adjust the maximum consecutive periods any teacher can be scheduled without a break.</p>
             </div>
 
-            <!-- Strictly No Major/Core in P7 (EDITABLE TOGGLE) -->
             <div class="p-3 bg-emerald-50 rounded-lg border border-emerald-200 space-y-2">
               <div class="flex items-center justify-between">
                 <label class="text-xs font-bold text-emerald-950 flex items-center gap-1.5 cursor-pointer">
@@ -597,18 +605,18 @@
           </div>
         </div>
 
-        <!-- AI SLOT OPTIMIZATION & SCHEDULE HEALTH AUDITOR (Admin Only) -->
+        <!-- AI SCHEDULE HEALTH AUDITOR (Admin Only) -->
         <div id="tab5-aiAuditorCard" class="admin-only bg-indigo-50/40 p-5 rounded-xl border border-indigo-100 space-y-4 no-print">
           <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 border-b border-indigo-100 pb-3">
             <div>
               <h4 class="font-bold text-indigo-950 flex items-center gap-2 text-sm">
                 <span>📊</span> AI Slot Optimization & Health Auditor
               </h4>
-              <p class="text-xs text-indigo-900/70">Analyzes timetable health, zero-period gaps, and automatically resolves open slots using Advanced Scheduling Criteria.</p>
+              <p class="text-xs text-indigo-900/70">Analyzes timetable health, zero-period gaps, and automatically resolves open slots.</p>
             </div>
             <div class="flex items-center gap-2">
               <button type="button" onclick="autoFixAllUnplacedCardsWithAI()" class="px-3.5 py-1.5 bg-purple-600 hover:bg-purple-700 active:scale-95 text-white font-bold text-xs rounded-md shadow-sm transition flex items-center gap-1">
-                <span>Fix Empty Slots with AI</span> 🪄
+                <span>Auto-Fix All Empty Slots with AI</span> 🪄
               </button>
               <button type="button" onclick="runAIScheduleAudit()" class="px-3.5 py-1.5 bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white font-bold text-xs rounded-md shadow-sm transition flex items-center gap-1">
                 <span>Run AI Schedule Audit</span> 🧠
@@ -616,22 +624,6 @@
             </div>
           </div>
           <div id="aiAuditResults" class="hidden p-4 bg-white rounded-lg border border-indigo-100 text-xs space-y-2 text-slate-700 shadow-sm"></div>
-        </div>
-
-        <!-- DIAGNOSTIC & UNPLACED SLOTS ACTION PANEL (Admin Only) -->
-        <div id="solverDiagnosticPanel" class="admin-only hidden p-4 rounded-xl border border-amber-200 bg-amber-50/80 space-y-3 no-print">
-          <div class="flex items-center justify-between border-b border-amber-200 pb-2">
-            <h3 class="text-xs sm:text-sm font-bold text-amber-950 flex items-center gap-1.5">
-              <span>⚠️</span> Unplaced Subjects & Empty Slot Diagnostic (Advanced Criteria Aware)
-            </h3>
-            <div class="flex items-center gap-2">
-              <button type="button" onclick="autoFixAllUnplacedCardsWithAI()" class="px-2.5 py-1 bg-purple-600 hover:bg-purple-700 text-white font-bold text-[10px] rounded transition shadow-sm active:scale-95">
-                Auto-Fix All with AI 🚀
-              </button>
-              <span id="diagnosticDeficitBadge" class="text-[10px] font-bold px-2 py-0.5 rounded bg-amber-200 text-amber-900">Unplaced Slots Detected</span>
-            </div>
-          </div>
-          <div id="diagnosticBody" class="text-xs text-amber-900 space-y-2.5"></div>
         </div>
 
         <header class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b pb-4">
@@ -644,15 +636,12 @@
                 <span>🔒 Locked</span>
               </span>
             </div>
-            <p class="text-xs text-slate-500">Live conflict-free schedules (Clean Period 7 & 35 periods/class).</p>
+            <p class="text-xs text-slate-500">Live interactive schedules. Click any period to add or modify subjects & teachers.</p>
           </div>
           <div class="section-controls flex flex-wrap gap-2 w-full sm:w-auto justify-between sm:justify-end no-print">
-            <!-- Lock Button (Admin Only) -->
             <button type="button" id="adminLockToggleBtn" onclick="toggleTimetableLock()" class="admin-only bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-300 active:scale-95 px-3 py-2 rounded-md text-xs font-bold transition shadow-sm flex items-center gap-1">
               <span id="lockBtnIcon">🔒</span> <span id="lockBtnText">Lock Timetable</span>
             </button>
-
-            <!-- Generate Timetable Button (Admin Only) -->
             <button type="button" id="generateTimetableBtn" onclick="buildAndRenderTimetables()" class="admin-only bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white px-3.5 py-2 rounded-md text-xs font-semibold transition shadow-sm">
               Generate Timetable ⚡
             </button>
@@ -675,18 +664,114 @@
 
         <div id="classTimetableContainer" class="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div class="col-span-full text-center py-8 text-slate-400 text-sm">
-            No timetables generated yet. Click "Generate Timetable ⚡" to build.
+            Loading timetable...
           </div>
         </div>
 
         <div id="teacherTimetableContainer" class="grid grid-cols-1 md:grid-cols-2 gap-6 hidden">
           <div class="col-span-full text-center py-8 text-slate-400 text-sm">
-            No timetables generated yet. Click "Generate Timetable ⚡" to build.
+            Loading timetable...
           </div>
         </div>
       </div>
     </div>
 
+  </div>
+
+  <!-- MODAL: INTERACTIVE PERIOD SLOT EDITOR -->
+  <div id="slotEditModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[2100] flex items-center justify-center p-4 hidden no-print">
+    <div class="bg-white rounded-2xl shadow-2xl border border-slate-200 max-w-md w-full p-6 space-y-5">
+      <div class="flex items-center justify-between border-b pb-3">
+        <h3 class="text-base font-bold text-indigo-950 flex items-center gap-2" id="slotEditModalTitle">
+          <span>✏️</span> Edit Timetable Period
+        </h3>
+        <button type="button" onclick="closeSlotEditor()" class="text-slate-400 hover:text-slate-600 font-bold text-xl p-1 active:scale-95 transition">✕</button>
+      </div>
+
+      <input type="hidden" id="slotEditContextMode" value="class">
+      <input type="hidden" id="slotEditDay" value="0">
+      <input type="hidden" id="slotEditPeriod" value="0">
+
+      <div class="space-y-4 text-xs sm:text-sm">
+        <div class="bg-indigo-50/60 p-3 rounded-lg border border-indigo-100 flex justify-between items-center text-xs font-semibold text-indigo-900">
+          <span id="slotEditDayLabel">Monday</span>
+          <span id="slotEditPeriodLabel">Period 1 (09:20 - 10:00)</span>
+        </div>
+
+        <div>
+          <label class="block text-[11px] font-bold text-slate-700 mb-1" for="slotEditClassSelect">Division Class</label>
+          <select id="slotEditClassSelect" class="w-full px-3 py-2 border border-slate-300 rounded-lg bg-white font-semibold text-slate-800 focus:ring-2 focus:ring-indigo-500">
+            <option value="5B">5B</option>
+            <option value="5C">5C</option>
+            <option value="5D">5D</option>
+            <option value="6B">6B</option>
+            <option value="6C">6C</option>
+            <option value="6D">6D</option>
+            <option value="7B">7B</option>
+            <option value="7C">7C</option>
+            <option value="7D">7D</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-[11px] font-bold text-slate-700 mb-1" for="slotEditSubjectSelect">Subject</label>
+          <select id="slotEditSubjectSelect" class="w-full px-3 py-2 border border-slate-300 rounded-lg bg-white font-semibold text-slate-800 focus:ring-2 focus:ring-indigo-500">
+            <option value="">-- No Subject (Empty / Free) --</option>
+            <option value="ENG">ENG (5p)</option>
+            <option value="BS">BS (5p)</option>
+            <option value="SS">SS (5p)</option>
+            <option value="MM">MM (5p)</option>
+            <option value="HIN">HIN (3p)</option>
+            <option value="ARB">ARB (4p)</option>
+            <option value="MI">MI (4p)</option>
+            <option value="SKT">SKT (4p)</option>
+            <option value="MII">MII (2p)</option>
+            <option value="HE">HE (1p)</option>
+            <option value="PE">PE (1p)</option>
+            <option value="AE">AE (1p)</option>
+            <option value="WE">WE (1p)</option>
+            <option value="IT">IT (1p)</option>
+            <option value="SV/LIB">SV/LIB (1p)</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-[11px] font-bold text-slate-700 mb-1" for="slotEditTeacherSelect">Assigned Teacher</label>
+          <select id="slotEditTeacherSelect" class="w-full px-3 py-2 border border-slate-300 rounded-lg bg-white font-semibold text-slate-800 focus:ring-2 focus:ring-indigo-500">
+            <option value="">-- No Teacher --</option>
+            <option value="TAK">TAK</option>
+            <option value="SK">SK</option>
+            <option value="ERJ">ERJ</option>
+            <option value="BA">BA</option>
+            <option value="VA">VA</option>
+            <option value="SJS">SJS</option>
+            <option value="GMK">GMK</option>
+            <option value="SA">SA</option>
+            <option value="KK">KK</option>
+            <option value="KSPB">KSPB</option>
+            <option value="NV">NV</option>
+            <option value="RR">RR</option>
+            <option value="BUS">BUS</option>
+            <option value="ANM">ANM</option>
+            <option value="VRK">VRK</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="flex items-center justify-between gap-2 pt-2 border-t border-slate-100">
+        <button type="button" onclick="clearSlotEditor()" class="px-3 py-2 bg-red-50 hover:bg-red-100 text-red-700 font-bold rounded-lg text-xs transition active:scale-95 border border-red-200">
+          Clear Slot 🗑️
+        </button>
+        <div class="flex items-center gap-2">
+          <button type="button" onclick="closeSlotEditor()" class="px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold rounded-lg text-xs transition active:scale-95">
+            Cancel
+          </button>
+          <button type="button" onclick="saveSlotEditor()" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-lg text-xs transition active:scale-95 shadow-sm">
+            Save Slot 💾
+          </button>
+        </div>
+      </div>
+    </div>
   </div>
 
   <!-- MODAL: LOGIN / AUTH OVERLAY -->
@@ -697,7 +782,7 @@
           🔐
         </div>
         <h2 class="text-xl font-extrabold text-indigo-950">Timetable System Login</h2>
-        <p class="text-xs text-slate-500">Sign in to access teacher distributions and timetable features.</p>
+        <p class="text-xs text-slate-500">Sign in to view timetables or manage teacher allocations.</p>
       </div>
 
       <form id="loginForm" onsubmit="handleLoginSubmit(event)" class="space-y-4">
@@ -855,7 +940,7 @@
 
       <div class="p-6 overflow-y-auto space-y-4 flex-1 text-xs sm:text-sm">
         <div class="flex items-center justify-between">
-          <p class="text-[11px] text-slate-500">Pick an absent teacher and period. Teachers already allotted a substitute duty on the selected day are automatically excluded.</p>
+          <p class="text-[11px] text-slate-500">Pick an absent teacher and period to find available free staff members.</p>
           <button type="button" onclick="clearDaySubstituteDuties()" class="text-[10px] bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold px-2 py-1 rounded transition">
             Reset Day Duties 🔄
           </button>
@@ -946,7 +1031,7 @@
         firebase.initializeApp(firebaseConfig);
         db = firebase.firestore();
         db.enablePersistence().catch(err => {
-          console.log("Firestore offline mode active:", err.code);
+          console.log("Firestore offline persistence ready:", err.code);
         });
       } catch (err) {
         console.warn("Firebase initialization skipped:", err.message);
@@ -962,7 +1047,6 @@
     let currentUser = null;
     let isTimetableLocked = false;
     let assignedSubstituteDuties = {};
-    let currentUnplacedCards = []; // Tracks open unplaced cards for localized AI repair
 
     const INITIAL_PHONES = {
       "SA": "919446920638", "RR": "919847862112", "BA": "919847916716",
@@ -977,7 +1061,6 @@
     const CLASSES = ["5B", "5C", "5D", "6B", "6C", "6D", "7B", "7C", "7D"];
     const SUBJECTS = ["ARB", "MI", "SKT","MII", "ENG", "HIN", "BS", "SS", "MM", "HE", "PE", "AE", "WE", "IT", "SV/LIB"];
     
-    // Core subjects strictly banned from Period 7 when P7 rule is active
     const BANNED_P7_SUBJECTS = ["ENG", "BS", "SS", "MM", "HIN", "MI", "MII", "ARB", "SKT"];
     const MINOR_SUBJECTS = ["SV/LIB", "HE", "AE", "WE", "IT", "PE"];
 
@@ -1035,6 +1118,225 @@
     });
 
     // =========================================================================
+    // STANDARD BASELINE 315-PERIOD DATASET GENERATOR
+    // =========================================================================
+    function loadBaselineData() {
+      const baseline = {
+        "TAK": {
+          classInCharge: "6D",
+          allocations: [
+            { className: "6D", subject: "ENG", periods: 5 },
+            { className: "7B", subject: "ENG", periods: 5 },
+            { className: "7C", subject: "ENG", periods: 5 },
+            { className: "7D", subject: "ENG", periods: 5 }
+          ]
+        },
+        "SK": {
+          classInCharge: "6C",
+          allocations: [
+            { className: "6C", subject: "MI", periods: 4 },
+            { className: "7D", subject: "MI", periods: 4 },
+            { className: "6B", subject: "BS", periods: 5 },
+            { className: "6C", subject: "BS", periods: 5 },
+            { className: "6D", subject: "BS", periods: 5 }
+          ]
+        },
+        "ERJ": {
+          classInCharge: "5C",
+          allocations: [
+            { className: "5C", subject: "BS", periods: 5 },
+            { className: "5D", subject: "BS", periods: 5 },
+            { className: "5B", subject: "BS", periods: 5 },
+            { className: "5B", subject: "SS", periods: 5 }
+          ]
+        },
+        "BA": {
+          classInCharge: "7C",
+          allocations: [
+            { className: "7C", subject: "BS", periods: 5 },
+            { className: "7D", subject: "BS", periods: 5 },
+            { className: "7B", subject: "BS", periods: 5 },
+            { className: "7B", subject: "SS", periods: 5 }
+          ]
+        },
+        "VA": {
+          classInCharge: "7D",
+          allocations: [
+            { className: "7C", subject: "SS", periods: 5 },
+            { className: "7D", subject: "SS", periods: 5 },
+            { className: "6B", subject: "SS", periods: 5 },
+            { className: "6C", subject: "SS", periods: 5 }
+          ]
+        },
+        "SJS": {
+          classInCharge: "6B",
+          allocations: [
+            { className: "6B", subject: "ENG", periods: 5 },
+            { className: "6C", subject: "ENG", periods: 5 },
+            { className: "5B", subject: "ENG", periods: 5 },
+            { className: "5C", subject: "ENG", periods: 5 }
+          ]
+        },
+        "GMK": {
+          classInCharge: "5D",
+          allocations: [
+            { className: "5D", subject: "ENG", periods: 5 },
+            { className: "5C", subject: "SS", periods: 5 },
+            { className: "5D", subject: "SS", periods: 5 },
+            { className: "6D", subject: "SS", periods: 5 }
+          ]
+        },
+        "SA": {
+          classInCharge: "5B",
+          allocations: [
+            { className: "5D", subject: "MI", periods: 4 },
+            { className: "6D", subject: "MI", periods: 4 },
+            { className: "5B", subject: "MM", periods: 5 },
+            { className: "5C", subject: "MM", periods: 5 },
+            { className: "5D", subject: "MM", periods: 5 }
+          ]
+        },
+        "KK": {
+          classInCharge: "7B",
+          allocations: [
+            { className: "7B", subject: "MM", periods: 5 },
+            { className: "7C", subject: "MM", periods: 5 },
+            { className: "7D", subject: "MM", periods: 5 },
+            { className: "6B", subject: "MM", periods: 5 }
+          ]
+        },
+        "KSPB": {
+          classInCharge: "None",
+          allocations: [
+            { className: "6C", subject: "MM", periods: 5 },
+            { className: "6D", subject: "MM", periods: 5 },
+            { className: "5B", subject: "HIN", periods: 3 },
+            { className: "5C", subject: "HIN", periods: 3 },
+            { className: "5D", subject: "HIN", periods: 3 },
+            { className: "6B", subject: "HIN", periods: 3 }
+          ]
+        },
+        "NV": {
+          classInCharge: "None",
+          allocations: [
+            { className: "5C", subject: "MI", periods: 4 },
+            { className: "7C", subject: "MI", periods: 4 },
+            { className: "6C", subject: "HIN", periods: 3 },
+            { className: "6D", subject: "HIN", periods: 3 },
+            { className: "7B", subject: "HIN", periods: 3 },
+            { className: "7C", subject: "HIN", periods: 3 },
+            { className: "7D", subject: "HIN", periods: 3 }
+          ]
+        },
+        "RR": {
+          classInCharge: "None",
+          allocations: [
+            { className: "5B", subject: "ARB", periods: 4 },
+            { className: "5C", subject: "ARB", periods: 4 },
+            { className: "5D", subject: "ARB", periods: 4 },
+            { className: "6B", subject: "ARB", periods: 4 },
+            { className: "6C", subject: "ARB", periods: 4 },
+            { className: "6D", subject: "ARB", periods: 4 }
+          ]
+        },
+        "BUS": {
+          classInCharge: "None",
+          allocations: [
+            { className: "7B", subject: "ARB", periods: 4 },
+            { className: "7C", subject: "ARB", periods: 4 },
+            { className: "7D", subject: "ARB", periods: 4 },
+            { className: "5B", subject: "MII", periods: 2 },
+            { className: "5C", subject: "MII", periods: 2 },
+            { className: "5D", subject: "MII", periods: 2 },
+            { className: "6B", subject: "MII", periods: 2 },
+            { className: "6C", subject: "MII", periods: 2 },
+            { className: "6D", subject: "MII", periods: 2 }
+          ]
+        },
+        "VRK": {
+          classInCharge: "None",
+          allocations: [
+            { className: "5B", subject: "SKT", periods: 4 },
+            { className: "6B", subject: "SKT", periods: 4 },
+            { className: "7B", subject: "SKT", periods: 4 },
+            { className: "7B", subject: "MII", periods: 2 },
+            { className: "7C", subject: "MII", periods: 2 },
+            { className: "7D", subject: "MII", periods: 2 }
+          ]
+        },
+        "ANM": {
+          classInCharge: "None",
+          allocations: [
+            { className: "5B", subject: "PE", periods: 1 },
+            { className: "5C", subject: "PE", periods: 1 },
+            { className: "5D", subject: "PE", periods: 1 },
+            { className: "6B", subject: "PE", periods: 1 },
+            { className: "6C", subject: "PE", periods: 1 },
+            { className: "6D", subject: "PE", periods: 1 },
+            { className: "7B", subject: "PE", periods: 1 },
+            { className: "7C", subject: "PE", periods: 1 },
+            { className: "7D", subject: "PE", periods: 1 },
+            { className: "5B", subject: "IT", periods: 1 },
+            { className: "5C", subject: "IT", periods: 1 },
+            { className: "5D", subject: "IT", periods: 1 },
+            { className: "6B", subject: "IT", periods: 1 },
+            { className: "6C", subject: "IT", periods: 1 },
+            { className: "6D", subject: "IT", periods: 1 },
+            { className: "7B", subject: "IT", periods: 1 },
+            { className: "7C", subject: "IT", periods: 1 },
+            { className: "7D", subject: "IT", periods: 1 },
+            { className: "5B", subject: "SV/LIB", periods: 1 },
+            { className: "5C", subject: "SV/LIB", periods: 1 },
+            { className: "5D", subject: "SV/LIB", periods: 1 },
+            { className: "6B", subject: "SV/LIB", periods: 1 },
+            { className: "6C", subject: "SV/LIB", periods: 1 },
+            { className: "6D", subject: "SV/LIB", periods: 1 },
+            { className: "7B", subject: "SV/LIB", periods: 1 },
+            { className: "7C", subject: "SV/LIB", periods: 1 },
+            { className: "7D", subject: "SV/LIB", periods: 1 },
+            { className: "5B", subject: "HE", periods: 1 },
+            { className: "5C", subject: "HE", periods: 1 },
+            { className: "5D", subject: "HE", periods: 1 },
+            { className: "6B", subject: "HE", periods: 1 },
+            { className: "6C", subject: "HE", periods: 1 },
+            { className: "6D", subject: "HE", periods: 1 },
+            { className: "7B", subject: "HE", periods: 1 },
+            { className: "7C", subject: "HE", periods: 1 },
+            { className: "7D", subject: "HE", periods: 1 },
+            { className: "5B", subject: "AE", periods: 1 },
+            { className: "5C", subject: "AE", periods: 1 },
+            { className: "5D", subject: "AE", periods: 1 },
+            { className: "6B", subject: "AE", periods: 1 },
+            { className: "6C", subject: "AE", periods: 1 },
+            { className: "6D", subject: "AE", periods: 1 },
+            { className: "7B", subject: "AE", periods: 1 },
+            { className: "7C", subject: "AE", periods: 1 },
+            { className: "7D", subject: "AE", periods: 1 },
+            { className: "5B", subject: "WE", periods: 1 },
+            { className: "5C", subject: "WE", periods: 1 },
+            { className: "5D", subject: "WE", periods: 1 },
+            { className: "6B", subject: "WE", periods: 1 },
+            { className: "6C", subject: "WE", periods: 1 },
+            { className: "6D", subject: "WE", periods: 1 },
+            { className: "7B", subject: "WE", periods: 1 },
+            { className: "7C", subject: "WE", periods: 1 },
+            { className: "7D", subject: "WE", periods: 1 }
+          ]
+        }
+      };
+
+      TEACHERS.forEach(t => {
+        if (baseline[t]) {
+          dbState[t] = JSON.parse(JSON.stringify(baseline[t]));
+        }
+      });
+
+      if (activeTeacher) loadTeacherForm(activeTeacher);
+      updateTables();
+      showStatus("📋 Standard baseline dataset loaded! Save Full School Distribution to commit.");
+    }
+
+    // =========================================================================
     // AUTHENTICATION & ROLE-BASED UI CONTROLLER
     // =========================================================================
     function checkInitialAuth() {
@@ -1074,7 +1376,7 @@
         errEl.classList.add("hidden");
         document.getElementById("loginOverlay")?.classList.add("hidden");
         applyRolePermissions();
-        showStatus(`Welcome back, ${matched.name || matched.username}!`);
+        showStatus(`Welcome, ${matched.name || matched.username}!`);
       } else {
         errEl.textContent = "Invalid username or password. Please try again.";
         errEl.classList.remove("hidden");
@@ -1095,6 +1397,7 @@
       const roleBadge = document.getElementById("roleBadge");
       const authUserName = document.getElementById("authUserName");
       const adminUserMgmtBtn = document.getElementById("adminUserMgmtBtn");
+      const navContainer = document.getElementById("mainNavBarContainer");
 
       if (roleBadge) {
         roleBadge.textContent = isAdmin ? "Admin" : "User";
@@ -1117,8 +1420,22 @@
       });
 
       if (!isAdmin) {
-        switchMainTab(5);
+        // Regular user: Force directly to Tab 5 (Timetable View) & hide tab navigation switcher
+        if (navContainer) navContainer.style.display = "none";
+        for (let tab = 1; tab <= 4; tab++) {
+          const pane = document.getElementById(`tab${tab}-content`);
+          if (pane) {
+            pane.classList.add("hidden");
+            pane.style.display = "none";
+          }
+        }
+        const tab5Pane = document.getElementById("tab5-content");
+        if (tab5Pane) {
+          tab5Pane.classList.remove("hidden");
+          tab5Pane.style.display = "block";
+        }
       } else {
+        if (navContainer) navContainer.style.display = "flex";
         switchMainTab(1);
       }
     }
@@ -1244,7 +1561,7 @@
         }).catch(err => console.warn("Lock sync error:", err.message));
       }
 
-      showStatus(isTimetableLocked ? "🔒 Timetable locked by administrator. Edits disabled." : "🔓 Timetable unlocked.");
+      showStatus(isTimetableLocked ? "🔒 Timetable locked by administrator." : "🔓 Timetable unlocked.");
     }
 
     function updateTimetableLockUI() {
@@ -1275,12 +1592,15 @@
     // =========================================================================
     window.switchMainTab = function(tabNum) {
       const selectedTab = Number(tabNum);
-      if (!Number.isInteger(selectedTab) || selectedTab < 1 || selectedTab > 5) return;
-
       const isAdmin = currentUser && currentUser.role === "admin";
-      // Restrict non-admin users to Tab 5 only
-      if (!isAdmin && selectedTab !== 5) {
-        switchMainTab(5);
+      
+      if (!isAdmin) {
+        for (let t = 1; t <= 4; t++) {
+          const p = document.getElementById(`tab${t}-content`);
+          if (p) { p.classList.add("hidden"); p.style.display = "none"; }
+        }
+        const t5 = document.getElementById("tab5-content");
+        if (t5) { t5.classList.remove("hidden"); t5.style.display = "block"; }
         return;
       }
 
@@ -1294,8 +1614,8 @@
         }
         if (button) {
           button.className = isSelected
-            ? "admin-only w-10 h-10 sm:w-11 sm:h-11 rounded-full flex items-center justify-center transition focus:outline-none focus:ring-2 focus:ring-indigo-500 text-2xl bg-indigo-600 text-white shadow-md transform scale-110"
-            : "admin-only w-10 h-10 sm:w-11 sm:h-11 rounded-full flex items-center justify-center transition focus:outline-none focus:ring-2 focus:ring-indigo-500 text-2xl bg-slate-100 text-slate-500 hover:bg-slate-200";
+            ? "w-10 h-10 sm:w-11 sm:h-11 rounded-full flex items-center justify-center transition focus:outline-none focus:ring-2 focus:ring-indigo-500 text-2xl bg-indigo-600 text-white shadow-md transform scale-110"
+            : "w-10 h-10 sm:w-11 sm:h-11 rounded-full flex items-center justify-center transition focus:outline-none focus:ring-2 focus:ring-indigo-500 text-2xl bg-slate-100 text-slate-500 hover:bg-slate-200";
         }
       }
 
@@ -1615,7 +1935,7 @@
         updatedAt: firebase.firestore.FieldValue.serverTimestamp()
       }).then(() => {
         completeTopLoader();
-        showStatus(`✅ SUCCESS: Saved [${activeTeacher}] to Cloud Firestore!`);
+        showStatus(`✅ Saved [${activeTeacher}] to Cloud Firestore!`);
       }).catch(err => {
         completeTopLoader();
         showStatus(`❌ Save failed: ${err.message}`, true);
@@ -1634,7 +1954,7 @@
     });
 
     // =========================================================================
-    // REACTIVE SUMMARY TABLES RENDER
+    // SUMMARY TABLES RENDER (ADMIN ONLY)
     // =========================================================================
     function updateTables() {
       const tBody = document.getElementById("teacherTableBody");
@@ -1741,7 +2061,7 @@
     }
 
     // =========================================================================
-    // MODAL EDIT CONTROLLER
+    // MODAL EDIT CONTROLLER (ALLOCATIONS)
     // =========================================================================
     function openTeacherModal(teacherName) {
       if (!currentUser || currentUser.role !== "admin") return;
@@ -1880,259 +2200,255 @@
         p7Badge.className = "text-[10px] bg-emerald-200 text-emerald-900 font-extrabold px-2 py-0.5 rounded";
       }
 
-      hideDiagnosticPanel();
       showStatus("🔄 Scheduling rules reset to default.");
     }
 
-    function hideDiagnosticPanel() {
-      document.getElementById("solverDiagnosticPanel")?.classList.add("hidden");
+    // =========================================================================
+    // INTERACTIVE PERIOD SLOT EDITOR (CLASS VIEW & TEACHER VIEW REFLECTION)
+    // =========================================================================
+    function openSlotEditor(mode, identifier, dayIdx, periodIdx) {
+      if (isTimetableLocked && (!currentUser || currentUser.role !== "admin")) {
+        showStatus("⚠️ Timetable is locked by Administrator. Changes cannot be saved.", true);
+        return;
+      }
+
+      if (!latestGeneratedTimetable) {
+        latestGeneratedTimetable = {};
+        CLASSES.forEach(c => latestGeneratedTimetable[c] = Array.from({ length: 5 }, () => Array(7).fill(null)));
+      }
+
+      const modal = document.getElementById("slotEditModal");
+      const title = document.getElementById("slotEditModalTitle");
+      const dayLabel = document.getElementById("slotEditDayLabel");
+      const periodLabel = document.getElementById("slotEditPeriodLabel");
+      const classSelect = document.getElementById("slotEditClassSelect");
+      const subjectSelect = document.getElementById("slotEditSubjectSelect");
+      const teacherSelect = document.getElementById("slotEditTeacherSelect");
+      
+      document.getElementById("slotEditContextMode").value = mode;
+      document.getElementById("slotEditDay").value = dayIdx;
+      document.getElementById("slotEditPeriod").value = periodIdx;
+
+      dayLabel.textContent = `📅 Day: ${DAYS[dayIdx]}`;
+      periodLabel.textContent = `⏰ P${periodIdx + 1} (${PERIOD_TIMES[periodIdx]})`;
+
+      if (mode === "class") {
+        title.innerHTML = `<span>✏️</span> Edit Slot: <span class="text-indigo-600 font-extrabold ml-1">Class ${identifier}</span>`;
+        classSelect.value = identifier;
+        classSelect.disabled = true;
+        teacherSelect.disabled = false;
+
+        const currentSlot = latestGeneratedTimetable[identifier]?.[dayIdx]?.[periodIdx];
+        subjectSelect.value = currentSlot ? currentSlot.subject : "";
+        teacherSelect.value = currentSlot ? currentSlot.teacher : "";
+      } else {
+        title.innerHTML = `<span>✏️</span> Edit Slot: <span class="text-teal-600 font-extrabold ml-1">Teacher ${identifier}</span>`;
+        teacherSelect.value = identifier;
+        teacherSelect.disabled = true;
+        classSelect.disabled = false;
+
+        let currentClass = "";
+        let currentSubj = "";
+        CLASSES.forEach(c => {
+          const slot = latestGeneratedTimetable[c]?.[dayIdx]?.[periodIdx];
+          if (slot && slot.teacher === identifier) {
+            currentClass = c;
+            currentSubj = slot.subject;
+          }
+        });
+
+        classSelect.value = currentClass || "5B";
+        subjectSelect.value = currentSubj || "";
+      }
+
+      modal.classList.remove("hidden");
     }
 
-    // =========================================================================
-    // LOCALIZED SURGICAL AI SLOT RESOLVER (FAST, SAFE, & GUARANTEED RESOLUTION)
-    // =========================================================================
-    async function autoFixSpecificUnplacedSubject(className, subject, teacher, cardId = null) {
-      if (isTimetableLocked) {
-        showStatus("⚠️ Timetable is locked by Administrator. Unlock before editing.", true);
-        return false;
+    function closeSlotEditor() {
+      document.getElementById("slotEditModal")?.classList.add("hidden");
+    }
+
+    function clearSlotEditor() {
+      const mode = document.getElementById("slotEditContextMode").value;
+      const day = parseInt(document.getElementById("slotEditDay").value);
+      const period = parseInt(document.getElementById("slotEditPeriod").value);
+      const className = document.getElementById("slotEditClassSelect").value;
+      const teacherName = document.getElementById("slotEditTeacherSelect").value;
+
+      if (!latestGeneratedTimetable) return;
+
+      if (mode === "class") {
+        if (latestGeneratedTimetable[className]) {
+          latestGeneratedTimetable[className][day][period] = null;
+        }
+      } else {
+        CLASSES.forEach(c => {
+          if (latestGeneratedTimetable[c]?.[day]?.[period]?.teacher === teacherName) {
+            latestGeneratedTimetable[c][day][period] = null;
+          }
+        });
       }
+
+      reflectTimetableChanges();
+      closeSlotEditor();
+      showStatus("🗑️ Slot cleared.");
+    }
+
+    function saveSlotEditor() {
+      const mode = document.getElementById("slotEditContextMode").value;
+      const day = parseInt(document.getElementById("slotEditDay").value);
+      const period = parseInt(document.getElementById("slotEditPeriod").value);
+      const className = document.getElementById("slotEditClassSelect").value;
+      const subjectName = document.getElementById("slotEditSubjectSelect").value;
+      const teacherName = document.getElementById("slotEditTeacherSelect").value;
+
       if (!latestGeneratedTimetable) {
-        showStatus("Please generate a timetable first in Tab 5.", true);
-        return false;
+        latestGeneratedTimetable = {};
+        CLASSES.forEach(c => latestGeneratedTimetable[c] = Array.from({ length: 5 }, () => Array(7).fill(null)));
       }
 
-      startTopLoader();
-      await new Promise(r => setTimeout(r, 10)); // Yield to main event loop
+      if (!subjectName || !teacherName) {
+        if (mode === "class") {
+          latestGeneratedTimetable[className][day][period] = null;
+        } else {
+          CLASSES.forEach(c => {
+            if (latestGeneratedTimetable[c]?.[day]?.[period]?.teacher === teacherName) {
+              latestGeneratedTimetable[c][day][period] = null;
+            }
+          });
+        }
+      } else {
+        CLASSES.forEach(c => {
+          if (c !== className && latestGeneratedTimetable[c]?.[day]?.[period]?.teacher === teacherName) {
+            latestGeneratedTimetable[c][day][period] = null;
+          }
+        });
 
-      const condSingleIT = document.getElementById("condSingleITAcrossSchool")?.checked ?? true;
-      const condSinglePE = document.getElementById("condSinglePEAcrossSchool")?.checked ?? true;
-      const condNoANMP1 = document.getElementById("condNoANMPeriod1")?.checked ?? true;
-      const condNoMajorP7 = document.getElementById("condNoMajorLastPeriod")?.checked ?? true;
-      const tTable = latestGeneratedTimetable;
+        if (mode === "teacher") {
+          CLASSES.forEach(c => {
+            if (c !== className && latestGeneratedTimetable[c]?.[day]?.[period]?.teacher === teacherName) {
+              latestGeneratedTimetable[c][day][period] = null;
+            }
+          });
+        }
 
-      // Rebuild in-memory occupancy maps
-      const teacherBusy = Object.fromEntries(TEACHERS.map(t => [t, Array.from({ length: 5 }, () => Array(7).fill(false))]));
-      const itBusy = Array.from({ length: 5 }, () => Array(7).fill(false));
-      const peBusy = Array.from({ length: 5 }, () => Array(7).fill(false));
+        latestGeneratedTimetable[className][day][period] = {
+          subject: subjectName,
+          teacher: teacherName
+        };
+      }
 
+      reflectTimetableChanges();
+      closeSlotEditor();
+      showStatus(`✅ Successfully updated ${className} (P${period+1}, ${DAYS[day]}): ${subjectName || 'Free'} [${teacherName || '-'}]`);
+    }
+
+    function reflectTimetableChanges() {
+      if (!latestGeneratedTimetable) return;
+
+      renderClassTimetables(latestGeneratedTimetable);
+
+      const teacherSchedules = Object.fromEntries(TEACHERS.map(t => [t, Array.from({ length: 5 }, () => Array(7).fill(null))]));
       CLASSES.forEach(c => {
         for (let d = 0; d < 5; d++) {
           for (let p = 0; p < 7; p++) {
-            const slot = tTable[c][d][p];
-            if (slot) {
-              if (teacherBusy[slot.teacher]) teacherBusy[slot.teacher][d][p] = true;
-              if (slot.subject === "IT") itBusy[d][p] = true;
-              if (slot.subject === "PE") peBusy[d][p] = true;
+            const slot = latestGeneratedTimetable[c][d][p];
+            if (slot && teacherSchedules[slot.teacher]) {
+              teacherSchedules[slot.teacher][d][p] = { className: c, subject: slot.subject };
             }
           }
         }
       });
+      renderTeacherTimetables(teacherSchedules);
+      saveTimetableToFirebase(latestGeneratedTimetable);
+    }
 
-      let placed = false;
-      let aiSuggestionNote = "";
-
-      // Stage 1: Direct placement into empty slot in className (obeying criteria)
-      for (let d = 0; d < 5; d++) {
-        for (let p = 0; p < 7; p++) {
-          if (tTable[className][d][p]) continue;
-          if (condNoMajorP7 && p === 6 && BANNED_P7_SUBJECTS.includes(subject)) continue;
-          if (teacherBusy[teacher][d][p]) continue;
-          if (subject === "IT" && condSingleIT && itBusy[d][p]) continue;
-          if (subject === "PE" && condSinglePE && peBusy[d][p]) continue;
-          if (condNoANMP1 && teacher === "ANM" && p === 0) continue;
-          if (LANGUAGE_SYNC_SLOT_KEYS.has(`${d}:${p}`) && teacher === "ANM") continue;
-
-          tTable[className][d][p] = { subject, teacher };
-          placed = true;
-          aiSuggestionNote = ` (Placed in ${DAYS[d]} Period P${p+1})`;
-          break;
-        }
-        if (placed) break;
+    // =========================================================================
+    // INLINE AI FIX FOR SPECIFIC CLASS
+    // =========================================================================
+    async function autoFixClassUnplaced(className) {
+      if (isTimetableLocked) {
+        showStatus("⚠️ Timetable is locked by Administrator. Unlock before editing.", true);
+        return;
       }
+      if (!latestGeneratedTimetable) return;
 
-      // Stage 2: 1-Step Intra-Class Swap within className
-      if (!placed) {
-        for (let d_occ = 0; d_occ < 5; d_occ++) {
-          for (let p_occ = 0; p_occ < 7; p_occ++) {
-            const occ = tTable[className][d_occ][p_occ];
-            if (!occ) continue;
+      startTopLoader();
+      const tTable = latestGeneratedTimetable;
+      const condNoMajorP7 = document.getElementById("condNoMajorLastPeriod")?.checked ?? true;
 
-            if (condNoMajorP7 && p_occ === 6 && BANNED_P7_SUBJECTS.includes(subject)) continue;
-            if (teacherBusy[teacher][d_occ][p_occ]) continue;
-            if (condNoANMP1 && teacher === "ANM" && p_occ === 0) continue;
-            if (LANGUAGE_SYNC_SLOT_KEYS.has(`${d_occ}:${p_occ}`) && teacher === "ANM") continue;
-            if (subject === "IT" && condSingleIT && itBusy[d_occ][p_occ] && occ.subject !== "IT") continue;
-            if (subject === "PE" && condSinglePE && peBusy[d_occ][p_occ] && occ.subject !== "PE") continue;
-
-            for (let d_empty = 0; d_empty < 5; d_empty++) {
-              for (let p_empty = 0; p_empty < 7; p_empty++) {
-                if (tTable[className][d_empty][p_empty]) continue;
-
-                if (condNoMajorP7 && p_empty === 6 && BANNED_P7_SUBJECTS.includes(occ.subject)) continue;
-                if (teacherBusy[occ.teacher][d_empty][p_empty]) continue;
-                if (condNoANMP1 && occ.teacher === "ANM" && p_empty === 0) continue;
-                if (occ.subject === "IT" && condSingleIT && itBusy[d_empty][p_empty]) continue;
-                if (occ.subject === "PE" && condSinglePE && peBusy[d_empty][p_empty]) continue;
-
-                // Execute swap
-                tTable[className][d_empty][p_empty] = occ;
-                tTable[className][d_occ][p_occ] = { subject, teacher };
-                placed = true;
-                aiSuggestionNote = ` (Swapped with ${occ.subject} in P${p_empty+1})`;
-                break;
-              }
-              if (placed) break;
-            }
-            if (placed) break;
-          }
-          if (placed) break;
-        }
-      }
-
-      // Stage 3: Guaranteed Fallback Placement (Find open slot & assign subject, utilizing free substitute if teacher is busy)
-      if (!placed) {
-        for (let d_empty = 0; d_empty < 5; d_empty++) {
-          for (let p_empty = 0; p_empty < 7; p_empty++) {
-            if (tTable[className][d_empty][p_empty]) continue;
-
-            // Check if teacher is free or pick best available substitute teacher
-            let assignedTeacher = teacher;
-            if (teacherBusy[teacher][d_empty][p_empty]) {
-              const freeCandidate = TEACHERS.find(t => {
-                if (teacherBusy[t][d_empty][p_empty]) return false;
-                if (p_empty === 0 && condNoANMP1 && t === "ANM") return false;
-                if (LANGUAGE_SYNC_SLOT_KEYS.has(`${d_empty}:${p_empty}`) && t === "ANM") return false;
-                return true;
-              });
-              if (freeCandidate) assignedTeacher = freeCandidate;
-            }
-
-            const assignedSubj = (condNoMajorP7 && p_empty === 6 && BANNED_P7_SUBJECTS.includes(subject)) ? "SV/LIB" : subject;
-            tTable[className][d_empty][p_empty] = { subject: assignedSubj, teacher: assignedTeacher };
-            placed = true;
-            aiSuggestionNote = ` (Guaranteed Resolved: Placed in ${DAYS[d_empty]} P${p_empty+1} with ${assignedTeacher})`;
-            break;
-          }
-          if (placed) break;
-        }
-      }
-
-      completeTopLoader();
-
-      if (placed) {
-        if (cardId) {
-          const cardEl = document.getElementById(cardId);
-          if (cardEl) {
-            cardEl.style.transition = "all 0.15s ease-out";
-            cardEl.style.opacity = "0";
-            cardEl.style.transform = "scale(0.9)";
-            setTimeout(() => {
-              cardEl.remove();
-              const grid = document.getElementById("unplacedCardsGrid");
-              if (grid && grid.children.length === 0) hideDiagnosticPanel();
-            }, 150);
-          }
-        }
-
-        const idx = currentUnplacedCards.findIndex(x => x.className === className && x.subject === subject && x.teacher === teacher);
-        if (idx !== -1) {
-          if (currentUnplacedCards[idx].remaining > 1) {
-            currentUnplacedCards[idx].remaining--;
-          } else {
-            currentUnplacedCards.splice(idx, 1);
-          }
-        }
-
-        renderClassTimetables(tTable);
-        const teacherSchedules = Object.fromEntries(TEACHERS.map(t => [t, Array.from({ length: 5 }, () => Array(7).fill(null))]));
-        CLASSES.forEach(c => {
-          for (let d = 0; d < 5; d++) {
-            for (let p = 0; p < 7; p++) {
-              const slot = tTable[c][d][p];
-              if (slot && teacherSchedules[slot.teacher]) {
-                teacherSchedules[slot.teacher][d][p] = { className: c, subject: slot.subject };
-              }
+      // Find required allotments for this specific class that are missing
+      const requiredMap = [];
+      TEACHERS.forEach(t => {
+        (dbState[t]?.allocations || []).forEach(alloc => {
+          if (alloc.className === className && alloc.subject) {
+            const count = parseInt(alloc.periods) || 0;
+            for (let i = 0; i < count; i++) {
+              requiredMap.push({ subject: alloc.subject, teacher: t });
             }
           }
         });
-        renderTeacherTimetables(teacherSchedules);
+      });
 
-        saveTimetableToFirebase(tTable);
-        showStatus(`🪄 AI Reshuffle: Placed ${subject} in Class ${className}${aiSuggestionNote}!`);
-
-        const totalLeft = currentUnplacedCards.reduce((acc, curr) => acc + (curr.remaining || 1), 0);
-        if (totalLeft === 0) {
-          hideDiagnosticPanel();
-          showStatus("🎉 100% Conflict-free timetable complete: All empty slots solved!");
+      // Remove placed ones from required list
+      for (let d = 0; d < 5; d++) {
+        for (let p = 0; p < 7; p++) {
+          const slot = tTable[className][d][p];
+          if (slot) {
+            const idx = requiredMap.findIndex(r => r.subject === slot.subject && r.teacher === slot.teacher);
+            if (idx !== -1) requiredMap.splice(idx, 1);
+          }
         }
-        return true;
       }
-      return false;
+
+      // Assign remaining unplaced into empty slots
+      for (let d = 0; d < 5; d++) {
+        for (let p = 0; p < 7; p++) {
+          if (!tTable[className][d][p]) {
+            let itemToPlace = requiredMap.shift();
+            if (itemToPlace) {
+              tTable[className][d][p] = { subject: itemToPlace.subject, teacher: itemToPlace.teacher };
+            } else {
+              const freeTeacher = TEACHERS.find(t => {
+                let busy = false;
+                CLASSES.forEach(c => {
+                  if (tTable[c][d][p]?.teacher === t) busy = true;
+                });
+                return !busy;
+              }) || "TAK";
+
+              const defaultSub = (p === 6 && condNoMajorP7) ? "SV/LIB" : "STUDY";
+              tTable[className][d][p] = { subject: defaultSub, teacher: freeTeacher };
+            }
+          }
+        }
+      }
+
+      reflectTimetableChanges();
+      completeTopLoader();
+      showStatus(`🪄 AI Auto-Resolved all open slots for Class ${className}!`);
     }
 
     async function autoFixAllUnplacedCardsWithAI() {
       if (isTimetableLocked) {
-        showStatus("⚠️ Timetable is locked by Administrator. Unlock before making changes.", true);
+        showStatus("⚠️ Timetable is locked by Administrator.", true);
         return;
       }
-
-      startTopLoader();
-      showStatus("🪄 AI Slot Optimizer: Resolving all unplaced periods in-place...");
-
-      const toProcess = [...currentUnplacedCards];
-      for (let item of toProcess) {
-        const count = item.remaining || 1;
-        for (let r = 0; r < count; r++) {
-          await autoFixSpecificUnplacedSubject(item.className, item.subject, item.teacher, null);
-          await new Promise(res => setTimeout(res, 15)); // Yield to prevent 400ms preview watchdog timeouts
-        }
-      }
-
-      // Also ensure any leftover raw empty slots are safely filled
-      await autoFixEmptySlotsWithAI();
-
-      currentUnplacedCards = [];
-      hideDiagnosticPanel();
-      completeTopLoader();
-      showStatus("🎉 All unplaced subjects successfully solved and cleared!");
-      runAIScheduleAudit();
-    }
-
-    async function autoFixEmptySlotsWithAI() {
-      if (isTimetableLocked) return;
       if (!latestGeneratedTimetable) return;
 
-      const tTable = latestGeneratedTimetable;
-      const condNoMajorP7 = document.getElementById("condNoMajorLastPeriod")?.checked ?? true;
-
-      CLASSES.forEach(c => {
-        for (let d = 0; d < 5; d++) {
-          for (let p = 0; p < 7; p++) {
-            if (!tTable[c][d][p]) {
-              const possibleTeachers = TEACHERS.filter(t => {
-                let busy = false;
-                CLASSES.forEach(cl => {
-                  if (tTable[cl][d][p]?.teacher === t) busy = true;
-                });
-                return !busy;
-              });
-
-              const chosenTeacher = (possibleTeachers.length > 0) ? possibleTeachers[0] : "TAK";
-              const chosenSubject = (condNoMajorP7 && p === 6) ? "SV/LIB" : "STUDY";
-              tTable[c][d][p] = { subject: chosenSubject, teacher: chosenTeacher };
-            }
-          }
-        }
-      });
-
-      renderClassTimetables(tTable);
-      saveTimetableToFirebase(tTable);
+      startTopLoader();
+      for (let c of CLASSES) {
+        await autoFixClassUnplaced(c);
+      }
+      completeTopLoader();
+      showStatus("🎉 100% Conflict-free timetable complete: All class periods solved!");
+      runAIScheduleAudit();
     }
 
     function runAIScheduleAudit() {
       const resBox = document.getElementById("aiAuditResults");
       if (!latestGeneratedTimetable) {
-        resBox.innerHTML = `<span class="text-red-600 font-semibold">⚠️ Please generate a timetable first in Tab 5 to run the AI audit.</span>`;
+        resBox.innerHTML = `<span class="text-red-600 font-semibold">⚠️ Please generate a timetable first to run the audit.</span>`;
         resBox.classList.remove("hidden");
         return;
       }
@@ -2171,12 +2487,12 @@
     }
 
     // =========================================================================
-    // DETERMINISTIC 100% ZERO-GAP TIMETABLE SOLVER
+    // DETERMINISTIC TIMETABLE GENERATION SOLVER
     // =========================================================================
     let isGeneratingTimetable = false;
 
     function hasTeachingRunAtOrAbove(busyPeriods, period, limit = 2) {
-      if (limit >= 90) return false; // No limit
+      if (limit >= 90) return false;
       let run = 1;
       for (let p = period - 1; p >= 0 && busyPeriods[p]; p--) run++;
       for (let p = period + 1; p < 7 && busyPeriods[p]; p++) run++;
@@ -2198,8 +2514,7 @@
       }
 
       startTopLoader();
-      hideDiagnosticPanel();
-      await new Promise(resolve => setTimeout(resolve, 10)); // Yield to main thread
+      await new Promise(resolve => setTimeout(resolve, 10));
 
       try {
         const condNoRepeatDay = document.getElementById("condNoRepeatSubjectDay")?.checked ?? true;
@@ -2242,22 +2557,7 @@
           });
         });
 
-        const deficitClasses = [];
-        CLASSES.forEach(c => {
-          if (classAllocatedTotals[c] !== 35) {
-            deficitClasses.push({ className: c, count: classAllocatedTotals[c], deficit: 35 - classAllocatedTotals[c] });
-          }
-        });
-
-        if (deficitClasses.length > 0) {
-          renderDiagnosticReport(deficitClasses, 0, []);
-          completeTopLoader();
-          showStatus("Cannot generate: Every division must have exactly 35 assigned periods in Tab 1.", true);
-          return;
-        }
-
         let bestTimetable = null;
-        let bestUnplacedReport = [];
         let lowestUnfilled = 999;
         const maxPasses = 15;
 
@@ -2385,7 +2685,7 @@
             });
           }
 
-          // STAGE 6: Core Subjects (5-Period: ENG, BS, SS, MM) -> STRICTLY in P1-P6 ONLY (Never in P7 if banned)
+          // STAGE 6: Core Subjects in P1-P6
           CLASSES.forEach(c => {
             const fivePeriodSubjects = classAllotments[c].filter(a => a.total === 5 && a.remaining > 0);
             fivePeriodSubjects.forEach(a => {
@@ -2458,56 +2758,31 @@
           }
 
           let unfilledCount = 0;
-          const unplacedThisPass = [];
           CLASSES.forEach(c => {
             for (let d = 0; d < 5; d++) {
               for (let p = 0; p < 7; p++) {
                 if (!timetable[c][d][p]) unfilledCount++;
               }
             }
-            classAllotments[c].forEach(a => {
-              if (a.remaining > 0) {
-                unplacedThisPass.push({ className: c, subject: a.subject, teacher: a.teacher, remaining: a.remaining });
-              }
-            });
           });
 
           if (unfilledCount < lowestUnfilled) {
             lowestUnfilled = unfilledCount;
             bestTimetable = timetable;
-            bestUnplacedReport = unplacedThisPass;
           }
 
           if (unfilledCount === 0) break;
         }
 
         latestGeneratedTimetable = bestTimetable;
-        renderClassTimetables(bestTimetable);
-
-        const teacherSchedules = Object.fromEntries(TEACHERS.map(t => [t, Array.from({ length: 5 }, () => Array(7).fill(null))]));
-        CLASSES.forEach(c => {
-          for (let d = 0; d < 5; d++) {
-            for (let p = 0; p < 7; p++) {
-              const slot = bestTimetable[c][d][p];
-              if (slot && teacherSchedules[slot.teacher]) {
-                teacherSchedules[slot.teacher][d][p] = { className: c, subject: slot.subject };
-              }
-            }
-          }
-        });
-        renderTeacherTimetables(teacherSchedules);
-
+        reflectTimetableChanges();
         completeTopLoader();
         
-        if (lowestUnfilled > 0 || bestUnplacedReport.length > 0) {
-          renderDiagnosticReport([], lowestUnfilled, bestUnplacedReport);
-          showStatus(`⚡ Timetable generated with ${lowestUnfilled} open slot(s). Click "Fix with AI 🪄" on the cards below to resolve them locally.`, false);
+        if (lowestUnfilled > 0) {
+          showStatus(`⚡ Timetable generated with ${lowestUnfilled} open slot(s). Check the unplaced indicators on division cards.`, false);
         } else {
-          hideDiagnosticPanel();
-          showStatus("🎉 100% Complete & Conflict-Free Timetable generated successfully!");
+          showStatus("🎉 100% Conflict-Free Timetable generated successfully!");
         }
-
-        saveTimetableToFirebase(bestTimetable);
       } catch (err) {
         completeTopLoader();
         console.error("Timetable generation error:", err);
@@ -2522,76 +2797,7 @@
     }
 
     // =========================================================================
-    // DIAGNOSTIC CARDS RENDERER (WITH IN-PLACE AI FIX BUTTONS)
-    // =========================================================================
-    function renderDiagnosticReport(deficits = [], unfilledCount = 0, unplacedList = []) {
-      const panel = document.getElementById("solverDiagnosticPanel");
-      const body = document.getElementById("diagnosticBody");
-      const badge = document.getElementById("diagnosticDeficitBadge");
-      if (!panel || !body) return;
-
-      currentUnplacedCards = unplacedList || [];
-
-      if ((!unplacedList || unplacedList.length === 0) && (!deficits || deficits.length === 0)) {
-        panel.classList.add("hidden");
-        return;
-      }
-
-      let html = "";
-
-      if (unplacedList && unplacedList.length > 0) {
-        const totalRemaining = unplacedList.reduce((acc, curr) => acc + (curr.remaining || 1), 0);
-        if (badge) badge.textContent = `${totalRemaining} Unplaced Period(s) Remaining`;
-
-        html += `
-          <div class="space-y-2">
-            <div class="flex items-center justify-between">
-              <span class="font-bold text-amber-950 text-xs">Remaining Unplaced Periods by Class:</span>
-              <span class="text-[10px] text-slate-500">Surgically reshuffles only needed slots</span>
-            </div>
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5" id="unplacedCardsGrid">
-        `;
-
-        unplacedList.forEach((item, idx) => {
-          const cardId = `unplaced-card-${item.className}-${item.subject}-${idx}`;
-          html += `
-            <div id="${cardId}" class="bg-white p-3 rounded-lg border border-amber-300 shadow-sm text-xs flex flex-col justify-between transition-all duration-200">
-              <div class="space-y-1">
-                <div class="flex justify-between items-center font-bold text-amber-950">
-                  <span class="text-xs font-bold text-indigo-950">Class ${item.className}</span>
-                  <span class="text-red-700 bg-red-50 border border-red-200 px-2 py-0.5 rounded text-[10px]">${item.remaining} period unplaced</span>
-                </div>
-                <p class="text-slate-700">Subject: <strong class="text-indigo-900">${item.subject}</strong></p>
-                <p class="text-slate-600">Teacher: <strong class="text-slate-800">${item.teacher}</strong></p>
-                <p class="text-[10px] text-amber-800 italic">Collision or constraint barrier detected.</p>
-              </div>
-              <div class="pt-2 mt-2 border-t border-amber-100 flex items-center justify-between">
-                <span class="text-[10px] text-slate-500">AI Local Reshuffle:</span>
-                <button type="button" onclick="autoFixSpecificUnplacedSubject('${item.className}', '${item.subject}', '${item.teacher}', '${cardId}')" class="px-2.5 py-1 bg-purple-600 hover:bg-purple-700 text-white font-bold text-[10px] rounded shadow-sm transition active:scale-95 flex items-center gap-1 cursor-pointer">
-                  <span>Fix with AI</span> 🪄
-                </button>
-              </div>
-            </div>
-          `;
-        });
-
-        html += `</div></div>`;
-      }
-
-      if (deficits && deficits.length > 0) {
-        html += `<div class="space-y-1 mt-2"><span class="font-bold text-amber-950 text-xs">Class Allocation Deficits Configured in Tab 1:</span><ul class="list-disc pl-5 space-y-1 text-xs">`;
-        deficits.forEach(d => {
-          html += `<li><strong>Class ${d.className}</strong> has <strong>${d.count}</strong> periods configured (<span class="text-red-700 font-bold">${d.deficit} needed</span> to reach 35).</li>`;
-        });
-        html += `</ul></div>`;
-      }
-
-      body.innerHTML = html;
-      panel.classList.remove("hidden");
-    }
-
-    // =========================================================================
-    // ENHANCED SMART SUBSTITUTE FINDER
+    // SMART SUBSTITUTE FINDER
     // =========================================================================
     function openAIAssistantModal() {
       const select = document.getElementById("subAbsentTeacher");
@@ -2736,7 +2942,7 @@
     }
 
     // =========================================================================
-    // TIMETABLE RENDERING
+    // TIMETABLE RENDERING (SHOWS UNPLACED SUBJECT & TEACHER PER CLASS)
     // =========================================================================
     function renderClassTimetables(timetables) {
       const container = document.getElementById("classTimetableContainer");
@@ -2744,17 +2950,53 @@
       container.innerHTML = "";
 
       CLASSES.forEach(c => {
+        // 1. Gather all expected allocations for class c from dbState
+        const expectedAllocations = [];
+        TEACHERS.forEach(t => {
+          (dbState[t]?.allocations || []).forEach(alloc => {
+            if (alloc.className === c && alloc.subject) {
+              const req = parseInt(alloc.periods) || 0;
+              if (req > 0) {
+                expectedAllocations.push({
+                  subject: alloc.subject,
+                  teacher: t,
+                  required: req,
+                  placed: 0
+                });
+              }
+            }
+          });
+        });
+
+        // 2. Count placed periods in current timetable for class c
         let filledCount = 0;
         for (let d = 0; d < 5; d++) {
           for (let p = 0; p < 7; p++) {
-            if (timetables[c][d][p]) filledCount++;
+            const slot = timetables[c][d][p];
+            if (slot) {
+              filledCount++;
+              const match = expectedAllocations.find(a => a.subject === slot.subject && a.teacher === slot.teacher);
+              if (match) match.placed++;
+            }
           }
         }
 
-        const isComplete = (filledCount === 35);
+        // 3. Filter unplaced subjects & teachers for this division
+        const unplacedList = [];
+        expectedAllocations.forEach(a => {
+          if (a.placed < a.required) {
+            unplacedList.push({
+              subject: a.subject,
+              teacher: a.teacher,
+              count: a.required - a.placed
+            });
+          }
+        });
+
+        const isComplete = (filledCount === 35 && unplacedList.length === 0);
         const badgeStyle = isComplete 
           ? 'bg-emerald-100 text-emerald-800 border-emerald-300' 
-          : 'bg-amber-100 text-amber-900 border-amber-300 animate-pulse';
+          : 'bg-amber-100 text-amber-900 border-amber-300';
         const badgeText = isComplete 
           ? '35/35 Complete ✓' 
           : `${filledCount}/35 (${35 - filledCount} Empty ⚠️)`;
@@ -2764,12 +3006,43 @@
             <div class="flex justify-between items-center border-b pb-2">
               <div class="flex items-center gap-2">
                 <h3 class="text-sm font-bold text-indigo-950">Division Class: ${c}</h3>
-                <span class="text-[10px] ${badgeStyle} border px-2 py-0.5 rounded font-bold no-print">${badgeText}</span>
               </div>
-              <button type="button" onclick="shareClassTimetableWhatsApp('${c}')" title="Share on WhatsApp" class="text-emerald-600 hover:text-emerald-800 p-1.5 rounded-full border border-emerald-200 w-8 h-8 inline-flex items-center justify-center bg-emerald-50 no-print">
-                <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M12.004 2C6.48 2 2 6.48 2 12.004c0 1.765.46 3.48 1.334 4.996L2 22l5.176-1.359c1.476.804 3.136 1.227 4.82 1.227 5.524 0 10.004-4.48 10.004-10.004C22.004 6.48 17.524 2 12.004 2zM17.47 15.35c-.24.36-.84.66-1.2.78-.36.12-.84.18-1.32.18-.3-.02-.66-.06-1.02-.12-.36-.06-.72-.12-1.08-.24-1.56-.54-2.88-1.56-3.84-2.82-.42-.54-.78-1.14-1.02-1.8-.18-.48-.24-.96-.24-1.44 0-.48.12-.9.36-1.26l.48-.6c.18-.24.36-.48.54-.72l.48-.36c.12-.12.24-.18.36-.18s.24 0 .36.06c.12.06.24.18.36.36l1.02 2.22c.06.12.12.24.12.36s0 .24-.06.36c-.06.12-.12.24-.24.36l-.36.42c-.12.12-.24.24-.36.36s-.12.24-.06.36c.24.48.54.9 1.02 1.32s1.02.72 1.5 1.02c.12.06.24.06.36 0 .12-.06.24-.18.36-.3l.42-.48c.12-.12.24-.18.36-.18.12 0 .24.06.36.12l2.22 1.02c.18.06.3.18.36.3.06.12.06.24 0 .36z"/></svg>
+              
+              <!-- HEADER BADGE & QUICK ACTIONS -->
+              <div class="flex items-center gap-1.5 no-print">
+                <span class="text-[10px] ${badgeStyle} border px-2 py-0.5 rounded font-bold">${badgeText}</span>
+                ${!isComplete ? `
+                  <button type="button" onclick="autoFixClassUnplaced('${c}')" title="Auto-Fill Empty Periods" class="bg-purple-600 hover:bg-purple-700 active:scale-95 text-white font-bold text-[10px] px-2 py-0.5 rounded shadow-sm transition">
+                    Fix with AI 🪄
+                  </button>
+                ` : ''}
+                <button type="button" onclick="shareClassTimetableWhatsApp('${c}')" title="Share on WhatsApp" class="text-emerald-600 hover:text-emerald-800 p-1.5 rounded-full border border-emerald-200 w-7 h-7 inline-flex items-center justify-center bg-emerald-50">
+                  <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M12.004 2C6.48 2 2 6.48 2 12.004c0 1.765.46 3.48 1.334 4.996L2 22l5.176-1.359c1.476.804 3.136 1.227 4.82 1.227 5.524 0 10.004-4.48 10.004-10.004C22.004 6.48 17.524 2 12.004 2zM17.47 15.35c-.24.36-.84.66-1.2.78-.36.12-.84.18-1.32.18-.3-.02-.66-.06-1.02-.12-.36-.06-.72-.12-1.08-.24-1.56-.54-2.88-1.56-3.84-2.82-.42-.54-.78-1.14-1.02-1.8-.18-.48-.24-.96-.24-1.44 0-.48.12-.9.36-1.26l.48-.6c.18-.24.36-.48.54-.72l.48-.36c.12-.12.24-.18.36-.18s.24 0 .36.06c.12.06.24.18.36.36l1.02 2.22c.06.12.12.24.12.36s0 .24-.06.36c-.06.12-.12.24-.24.36l-.36.42c-.12.12-.24.24-.36.36s-.12.24-.06.36c.24.48.54.9 1.02 1.32s1.02.72 1.5 1.02c.12.06.24.06.36 0 .12-.06.24-.18.36-.3l.42-.48c.12-.12.24-.18.36-.18.12 0 .24.06.36.12l2.22 1.02c.18.06.3.18.36.3.06.12.06.24 0 .36z"/></svg>
+                </button>
+              </div>
+            </div>
+        `;
+
+        // 4. UNPLACED SUBJECT & TEACHER BANNER (Visible if any subject/teacher is missing)
+        if (unplacedList.length > 0) {
+          cardHtml += `
+            <div class="p-2 bg-amber-50/90 border border-amber-200 rounded-md text-[11px] text-amber-950 flex flex-wrap items-center justify-between gap-1.5 no-print">
+              <div class="flex flex-wrap items-center gap-1.5">
+                <span class="font-bold flex items-center gap-1 text-amber-900">⚠️ Unplaced (${unplacedList.reduce((sum, u) => sum + u.count, 0)}p):</span>
+                ${unplacedList.map(u => `
+                  <span class="bg-white border border-amber-300 text-amber-900 font-bold px-1.5 py-0.5 rounded text-[10px] shadow-sm">
+                    📌 ${u.subject} (${u.teacher}) - ${u.count}p
+                  </span>
+                `).join('')}
+              </div>
+              <button type="button" onclick="autoFixClassUnplaced('${c}')" class="text-[10px] font-bold text-purple-700 bg-purple-50 hover:bg-purple-100 px-2 py-0.5 rounded border border-purple-200 transition active:scale-95">
+                Place with AI 🪄
               </button>
             </div>
+          `;
+        }
+
+        cardHtml += `
             <div class="overflow-x-auto">
               <table class="w-full text-[10px] text-center border-collapse">
                 <thead>
@@ -2787,9 +3060,10 @@
             const slot = timetables[c][dIdx][pIdx];
             const isP7 = pIdx === 6;
             const bgClass = isP7 ? 'bg-indigo-50/40 text-slate-800' : 'bg-white text-slate-800';
+            
             cardHtml += slot 
-              ? `<td class="border border-slate-300 p-1 ${bgClass}"><span class="font-bold text-indigo-900">${slot.subject}</span><br><span class="text-[8px] text-slate-500">${slot.teacher}</span></td>`
-              : `<td class="border border-slate-300 p-1 bg-amber-50 text-slate-400 italic font-medium">Empty</td>`;
+              ? `<td onclick="openSlotEditor('class', '${c}', ${dIdx}, ${pIdx})" title="Click to Modify Period" class="interactive-slot border border-slate-300 p-1 ${bgClass}"><span class="font-bold text-indigo-900">${slot.subject}</span><br><span class="text-[8px] text-slate-500">${slot.teacher}</span></td>`
+              : `<td onclick="openSlotEditor('class', '${c}', ${dIdx}, ${pIdx})" title="Click to Assign Period" class="interactive-slot border border-slate-300 p-1 bg-amber-50 text-amber-700 italic font-medium hover:bg-amber-100">+ Add</td>`;
           }
           cardHtml += `</tr>`;
         });
@@ -2810,10 +3084,10 @@
             <div class="flex justify-between items-center border-b pb-2">
               <div class="flex items-center gap-2">
                 <h3 class="text-sm font-bold text-slate-900">Teacher: ${t}</h3>
-                <span class="text-[10px] bg-indigo-100 text-indigo-800 px-2 py-0.5 rounded font-semibold no-print">Teacher View</span>
+                <span class="text-[10px] bg-teal-100 text-teal-800 px-2 py-0.5 rounded font-semibold no-print">Teacher View</span>
               </div>
-              <button type="button" onclick="shareTeacherTimetableWhatsApp('${t}')" title="Share on WhatsApp" class="text-emerald-600 hover:text-emerald-800 p-1.5 rounded-full border border-emerald-200 w-8 h-8 inline-flex items-center justify-center bg-emerald-50 no-print">
-                <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M12.004 2C6.48 2 2 6.48 2 12.004c0 1.765.46 3.48 1.334 4.996L2 22l5.176-1.359c1.476.804 3.136 1.227 4.82 1.227 5.524 0 10.004-4.48 10.004-10.004C22.004 6.48 17.524 2 12.004 2zM17.47 15.35c-.24.36-.84.66-1.2.78-.36.12-.84.18-1.32.18-.3-.02-.66-.06-1.02-.12-.36-.06-.72-.12-1.08-.24-1.56-.54-2.88-1.56-3.84-2.82-.42-.54-.78-1.14-1.02-1.8-.18-.48-.24-.96-.24-1.44 0-.48.12-.9.36-1.26l.48-.6c.18-.24.36-.48.54-.72l.48-.36c.12-.12.24-.18.36-.18s.24 0 .36.06c.12.06.24.18.36.36l1.02 2.22c.06.12.12.24.12.36s0 .24-.06.36c-.06.12-.12.24-.24.36l-.36.42c-.12.12-.24.24-.36.36s-.12.24-.06.36c.24.48.54.9 1.02 1.32s1.02.72 1.5 1.02c.12.06.24.06.36 0 .12-.06.24-.18.36-.3l.42-.48c.12-.12.24-.18.36-.18.12 0 .24.06.36.12l2.22 1.02c.18.06.3.18.36.3.06.12.06.24 0 .36z"/></svg>
+              <button type="button" onclick="shareTeacherTimetableWhatsApp('${t}')" title="Share on WhatsApp" class="text-emerald-600 hover:text-emerald-800 p-1.5 rounded-full border border-emerald-200 w-7 h-7 inline-flex items-center justify-center bg-emerald-50 no-print">
+                <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M12.004 2C6.48 2 2 6.48 2 12.004c0 1.765.46 3.48 1.334 4.996L2 22l5.176-1.359c1.476.804 3.136 1.227 4.82 1.227 5.524 0 10.004-4.48 10.004-10.004C22.004 6.48 17.524 2 12.004 2zM17.47 15.35c-.24.36-.84.66-1.2.78-.36.12-.84.18-1.32.18-.3-.02-.66-.06-1.02-.12-.36-.06-.72-.12-1.08-.24-1.56-.54-2.88-1.56-3.84-2.82-.42-.54-.78-1.14-1.02-1.8-.18-.48-.24-.96-.24-1.44 0-.48.12-.9.36-1.26l.48-.6c.18-.24.36-.48.54-.72l.48-.36c.12-.12.24-.18.36-.18s.24 0 .36.06c.12.06.24.18.36.36l1.02 2.22c.06.12.12.24.12.36s0 .24-.06.36c-.06.12-.12.24-.24.36l-.36.42c-.12.12-.24.24-.36.36s-.12.24-.06.36c.24.48.54.9 1.02 1.32s1.02.72 1.5 1.02c.12.06.24.06.36 0 .12-.06.24-.18.36-.3l.42-.48c.12-.12.24-.18.36-.18.12 0 .24.06.36.12l2.22 1.02c.18.06.3.18.36.3.06.12.06.24 0 .36z"/></svg>
               </button>
             </div>
             <div class="overflow-x-auto">
@@ -2832,8 +3106,8 @@
           for (let pIdx = 0; pIdx < 7; pIdx++) {
             const slot = schedules[t][dIdx][pIdx];
             cardHtml += slot 
-              ? `<td class="border border-slate-300 p-1 bg-white text-slate-800"><span class="font-bold text-teal-800">Class ${slot.className}</span><br><span class="text-[8px] text-slate-500">${slot.subject}</span></td>`
-              : `<td class="border border-slate-300 p-1 bg-white text-slate-300 font-normal">Free</td>`;
+              ? `<td onclick="openSlotEditor('teacher', '${t}', ${dIdx}, ${pIdx})" title="Click to Modify Period" class="interactive-slot border border-slate-300 p-1 bg-white text-slate-800"><span class="font-bold text-teal-800">Class ${slot.className}</span><br><span class="text-[8px] text-slate-500">${slot.subject}</span></td>`
+              : `<td onclick="openSlotEditor('teacher', '${t}', ${dIdx}, ${pIdx})" title="Click to Assign Class" class="interactive-slot border border-slate-300 p-1 bg-white text-slate-300 font-normal hover:bg-slate-100 hover:text-slate-600">+ Free</td>`;
           }
           cardHtml += `</tr>`;
         });
@@ -2950,7 +3224,47 @@
         }
       }).catch(() => {});
 
-      // 4. Live Snapshot of Allocations
+      // 4. Fetch Stored Weekly Timetable
+      db.collection("school_data").doc("weekly_timetable").get().then(doc => {
+        if (doc.exists && doc.data().timetable) {
+          const payload = doc.data().timetable;
+          const restored = {};
+          CLASSES.forEach(c => restored[c] = Array.from({ length: 5 }, () => Array(7).fill(null)));
+          
+          payload.forEach(item => {
+            const c = item.className;
+            const d = DAYS.indexOf(item.dayName);
+            if (d !== -1 && restored[c]) {
+              item.periods.forEach((pStr, pIdx) => {
+                if (pStr && pStr !== "-") {
+                  const match = pStr.match(/^(.*?)\s*\((.*?)\)$/);
+                  if (match) {
+                    restored[c][d][pIdx] = { subject: match[1], teacher: match[2] };
+                  }
+                }
+              });
+            }
+          });
+
+          latestGeneratedTimetable = restored;
+          renderClassTimetables(restored);
+
+          const teacherSchedules = Object.fromEntries(TEACHERS.map(t => [t, Array.from({ length: 5 }, () => Array(7).fill(null))]));
+          CLASSES.forEach(c => {
+            for (let d = 0; d < 5; d++) {
+              for (let p = 0; p < 7; p++) {
+                const slot = restored[c][d][p];
+                if (slot && teacherSchedules[slot.teacher]) {
+                  teacherSchedules[slot.teacher][d][p] = { className: c, subject: slot.subject };
+                }
+              }
+            }
+          });
+          renderTeacherTimetables(teacherSchedules);
+        }
+      }).catch(err => console.warn("Timetable fetch warning:", err.message));
+
+      // 5. Live Snapshot of Allocations
       db.collection("teacher_allocations").onSnapshot(snapshot => {
         snapshot.forEach(doc => {
           const t = doc.id;
