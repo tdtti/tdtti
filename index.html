@@ -671,9 +671,9 @@
 
   </div>
 
-  <!-- MODAL: INTERACTIVE PERIOD SLOT EDITOR -->
+  <!-- MODAL: INTERACTIVE PERIOD SLOT EDITOR (WITH LIVE CONFLICT WARNING) -->
   <div id="slotEditModal" class="modal-overlay fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[2100] flex items-center justify-center p-4 hidden no-print">
-    <div class="bg-white rounded-2xl shadow-2xl border border-slate-200 max-w-md w-full p-6 space-y-5">
+    <div class="bg-white rounded-2xl shadow-2xl border border-slate-200 max-w-md w-full p-6 space-y-4">
       <div class="flex items-center justify-between border-b pb-3">
         <h3 class="text-base font-bold text-indigo-950 flex items-center gap-2" id="slotEditModalTitle">
           <span>✏️</span> Edit Timetable Period
@@ -685,15 +685,18 @@
       <input type="hidden" id="slotEditDay" value="0">
       <input type="hidden" id="slotEditPeriod" value="0">
 
-      <div class="space-y-4 text-xs sm:text-sm">
-        <div class="bg-indigo-50/60 p-3 rounded-lg border border-indigo-100 flex justify-between items-center text-xs font-semibold text-indigo-900">
+      <div class="space-y-3.5 text-xs sm:text-sm">
+        <div class="bg-indigo-50/60 p-2.5 rounded-lg border border-indigo-100 flex justify-between items-center text-xs font-semibold text-indigo-900">
           <span id="slotEditDayLabel">Monday</span>
           <span id="slotEditPeriodLabel">Period 1 (09:20 - 10:00)</span>
         </div>
 
+        <!-- LIVE CONFLICT / ALLOTMENT CONCERN BANNER -->
+        <div id="slotEditConflictWarning" class="hidden text-[11px] font-semibold p-2.5 rounded-lg border bg-amber-50 text-amber-900 border-amber-300 space-y-1"></div>
+
         <div>
           <label class="block text-[11px] font-bold text-slate-700 mb-1" for="slotEditClassSelect">Division Class</label>
-          <select id="slotEditClassSelect" class="w-full px-3 py-2 border border-slate-300 rounded-lg bg-white font-semibold text-slate-800 focus:ring-2 focus:ring-indigo-500">
+          <select id="slotEditClassSelect" onchange="checkSlotConflict()" class="w-full px-3 py-2 border border-slate-300 rounded-lg bg-white font-semibold text-slate-800 focus:ring-2 focus:ring-indigo-500">
             <option value="5B">5B</option>
             <option value="5C">5C</option>
             <option value="5D">5D</option>
@@ -708,7 +711,7 @@
 
         <div>
           <label class="block text-[11px] font-bold text-slate-700 mb-1" for="slotEditSubjectSelect">Subject</label>
-          <select id="slotEditSubjectSelect" class="w-full px-3 py-2 border border-slate-300 rounded-lg bg-white font-semibold text-slate-800 focus:ring-2 focus:ring-indigo-500">
+          <select id="slotEditSubjectSelect" onchange="checkSlotConflict()" class="w-full px-3 py-2 border border-slate-300 rounded-lg bg-white font-semibold text-slate-800 focus:ring-2 focus:ring-indigo-500">
             <option value="">-- No Subject (Empty / Free) --</option>
             <option value="ENG">ENG (5p)</option>
             <option value="BS">BS (5p)</option>
@@ -730,7 +733,7 @@
 
         <div>
           <label class="block text-[11px] font-bold text-slate-700 mb-1" for="slotEditTeacherSelect">Assigned Teacher</label>
-          <select id="slotEditTeacherSelect" class="w-full px-3 py-2 border border-slate-300 rounded-lg bg-white font-semibold text-slate-800 focus:ring-2 focus:ring-indigo-500">
+          <select id="slotEditTeacherSelect" onchange="checkSlotConflict()" class="w-full px-3 py-2 border border-slate-300 rounded-lg bg-white font-semibold text-slate-800 focus:ring-2 focus:ring-indigo-500">
             <option value="">-- No Teacher --</option>
             <option value="TAK">TAK</option>
             <option value="SK">SK</option>
@@ -1425,12 +1428,10 @@
           : "Live weekly division and teacher schedules (Read-Only).";
       }
 
-      // Hide all Admin-only components (EXCLUDING modal overlays and tab panes)
       document.querySelectorAll(".admin-only:not(.modal-overlay):not(.tab-pane)").forEach(el => {
         el.classList.toggle("hidden", !isAdmin);
       });
 
-      // Explicitly keep all modal dialogs closed on login
       document.getElementById("userManagementModal")?.classList.add("hidden");
       document.getElementById("teacherModal")?.classList.add("hidden");
       document.getElementById("slotEditModal")?.classList.add("hidden");
@@ -2224,8 +2225,50 @@
     }
 
     // =========================================================================
-    // INTERACTIVE PERIOD SLOT EDITOR (ADMIN ONLY)
+    // INTERACTIVE PERIOD SLOT EDITOR & LIVE CONFLICT DETECTOR
     // =========================================================================
+    function checkSlotConflict() {
+      const mode = document.getElementById("slotEditContextMode").value;
+      const day = parseInt(document.getElementById("slotEditDay").value);
+      const period = parseInt(document.getElementById("slotEditPeriod").value);
+      const selectedClass = document.getElementById("slotEditClassSelect").value;
+      const selectedTeacher = document.getElementById("slotEditTeacherSelect").value;
+      const selectedSubject = document.getElementById("slotEditSubjectSelect").value;
+      const warnBox = document.getElementById("slotEditConflictWarning");
+
+      if (!warnBox || !latestGeneratedTimetable) return;
+
+      const warnings = [];
+
+      // 1. Check if the selected teacher is already teaching another class in this same slot
+      if (selectedTeacher) {
+        CLASSES.forEach(c => {
+          if (c !== selectedClass) {
+            const slot = latestGeneratedTimetable[c]?.[day]?.[period];
+            if (slot && slot.teacher === selectedTeacher) {
+              warnings.push(`⚠️ <strong>Teacher ${selectedTeacher}</strong> is already allotted to <strong>Class ${c} [${slot.subject}]</strong> in this period. Saving will unassign them from Class ${c}.`);
+            }
+          }
+        });
+      }
+
+      // 2. Check if the selected class already has a different teacher in this slot
+      const currentClassSlot = latestGeneratedTimetable[selectedClass]?.[day]?.[period];
+      if (currentClassSlot) {
+        if (selectedTeacher && (currentClassSlot.teacher !== selectedTeacher || currentClassSlot.subject !== selectedSubject)) {
+          warnings.push(`ℹ️ <strong>Class ${selectedClass}</strong> is currently engaged by <strong>${currentClassSlot.teacher} (${currentClassSlot.subject})</strong>. Saving will replace this allotment.`);
+        }
+      }
+
+      if (warnings.length > 0) {
+        warnBox.innerHTML = warnings.join("<br>");
+        warnBox.classList.remove("hidden");
+      } else {
+        warnBox.innerHTML = "";
+        warnBox.classList.add("hidden");
+      }
+    }
+
     function openSlotEditor(mode, identifier, dayIdx, periodIdx) {
       if (!currentUser || currentUser.role !== "admin") {
         showStatus("⚠️ Only administrators can edit timetable slots.", true);
@@ -2286,6 +2329,7 @@
         subjectSelect.value = currentSubj || "";
       }
 
+      checkSlotConflict();
       modal.classList.remove("hidden");
     }
 
@@ -2345,12 +2389,14 @@
           });
         }
       } else {
+        // Automatically unassign the teacher from any other class in this exact period
         CLASSES.forEach(c => {
           if (c !== className && latestGeneratedTimetable[c]?.[day]?.[period]?.teacher === teacherName) {
             latestGeneratedTimetable[c][day][period] = null;
           }
         });
 
+        // If in teacher view, clear any previous teacher that was teaching this class in this period
         if (mode === "teacher") {
           CLASSES.forEach(c => {
             if (c !== className && latestGeneratedTimetable[c]?.[day]?.[period]?.teacher === teacherName) {
@@ -2367,14 +2413,16 @@
 
       reflectTimetableChanges(true);
       closeSlotEditor();
-      showStatus(`✅ Successfully updated ${className} (P${period+1}, ${DAYS[day]}): ${subjectName || 'Free'} [${teacherName || '-'}]`);
+      showStatus(`✅ Instantly updated ${className} (P${period+1}, ${DAYS[day]}): ${subjectName || 'Free'} [${teacherName || '-'}]`);
     }
 
     function reflectTimetableChanges(saveToCloud = true) {
       if (!latestGeneratedTimetable) return;
 
+      // 1. Instant re-render of Class Timetables
       renderClassTimetables(latestGeneratedTimetable);
 
+      // 2. Instant re-render of Teacher Timetables
       const teacherSchedules = Object.fromEntries(TEACHERS.map(t => [t, Array.from({ length: 5 }, () => Array(7).fill(null))]));
       CLASSES.forEach(c => {
         for (let d = 0; d < 5; d++) {
@@ -2388,6 +2436,10 @@
       });
       renderTeacherTimetables(teacherSchedules);
 
+      // 3. Instant re-render of Summary Tables
+      updateTables();
+
+      // 4. Commit to cloud
       if (saveToCloud) {
         saveTimetableToFirebase(latestGeneratedTimetable);
       }
@@ -2923,7 +2975,6 @@
             }
             const freePeriodsCount = 7 - taughtToday;
 
-            // Check if teacher already has another substitution duty assigned earlier on this day
             const priorDuties = Object.values(assignedSubstituteDuties).filter(
               d => d.day === day && d.substituteTeacher === t
             );
@@ -2936,7 +2987,6 @@
             });
           });
 
-          // Sort: teachers who haven't substituted yet first, then by free periods descending
           freeCandidates.sort((a, b) => {
             if (a.alreadySubstitutedPeriods.length === 0 && b.alreadySubstitutedPeriods.length > 0) return -1;
             if (a.alreadySubstitutedPeriods.length > 0 && b.alreadySubstitutedPeriods.length === 0) return 1;
@@ -3159,7 +3209,7 @@
     }
 
     // =========================================================================
-    // TIMETABLE RENDERING (READ-ONLY FOR USERS, INTERACTIVE FOR ADMINS)
+    // TIMETABLE RENDERING (WITH TEACHER VIEW WORKLOAD RATIO BADGE)
     // =========================================================================
     function renderClassTimetables(timetables) {
       const container = document.getElementById("classTimetableContainer");
@@ -3303,6 +3353,35 @@
       const isAdmin = currentUser && currentUser.role === "admin";
 
       TEACHERS.forEach(t => {
+        // 1. Calculate configured target periods for teacher t
+        let targetPeriods = 0;
+        (dbState[t]?.allocations || []).forEach(a => {
+          if (a.className && a.subject) {
+            targetPeriods += parseInt(a.periods) || 0;
+          }
+        });
+
+        // 2. Calculate currently active allotted periods in timetable
+        let allottedPeriods = 0;
+        CLASSES.forEach(c => {
+          for (let d = 0; d < 5; d++) {
+            for (let p = 0; p < 7; p++) {
+              if (latestGeneratedTimetable?.[c]?.[d]?.[p]?.teacher === t) {
+                allottedPeriods++;
+              }
+            }
+          }
+        });
+
+        // Workload Ratio Badge calculation
+        const isMatched = (allottedPeriods === targetPeriods && targetPeriods > 0);
+        const badgeStyle = isMatched
+          ? 'bg-emerald-100 text-emerald-800 border-emerald-300'
+          : (allottedPeriods > targetPeriods 
+              ? 'bg-red-100 text-red-800 border-red-300' 
+              : 'bg-amber-100 text-amber-900 border-amber-300');
+        const badgeText = `${allottedPeriods} / ${targetPeriods} Periods`;
+
         let cardHtml = `
           <div class="teacher-timetable-card bg-slate-50 p-4 rounded-lg border border-slate-200 shadow-sm space-y-3">
             <div class="flex justify-between items-center border-b pb-2">
@@ -3310,9 +3389,14 @@
                 <h3 class="text-sm font-bold text-slate-900">Teacher: ${t}</h3>
                 <span class="text-[10px] bg-teal-100 text-teal-800 px-2 py-0.5 rounded font-semibold no-print">Teacher View</span>
               </div>
-              <button type="button" onclick="shareTeacherTimetableWhatsApp('${t}')" title="Share on WhatsApp" class="text-emerald-600 hover:text-emerald-800 p-1.5 rounded-full border border-emerald-200 w-7 h-7 inline-flex items-center justify-center bg-emerald-50 no-print">
-                <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M12.004 2C6.48 2 2 6.48 2 12.004c0 1.765.46 3.48 1.334 4.996L2 22l5.176-1.359c1.476.804 3.136 1.227 4.82 1.227 5.524 0 10.004-4.48 10.004-10.004C22.004 6.48 17.524 2 12.004 2zM17.47 15.35c-.24.36-.84.66-1.2.78-.36.12-.84.18-1.32.18-.3-.02-.66-.06-1.02-.12-.36-.06-.72-.12-1.08-.24-1.56-.54-2.88-1.56-3.84-2.82-.42-.54-.78-1.14-1.02-1.8-.18-.48-.24-.96-.24-1.44 0-.48.12-.9.36-1.26l.48-.6c.18-.24.36-.48.54-.72l.48-.36c.12-.12.24-.18.36-.18s.24 0 .36.06c.12.06.24.18.36.36l1.02 2.22c.06.12.12.24.12.36s0 .24-.06.36c-.06.12-.12.24-.24.36l-.36.42c-.12.12-.24.24-.36.36s-.12.24-.06.36c.24.48.54.9 1.02 1.32s1.02.72 1.5 1.02c.12.06.24.06.36 0 .12-.06.24-.18.36-.3l.42-.48c.12-.12.24-.18.36-.18.12 0 .24.06.36.12l2.22 1.02c.18.06.3.18.36.3.06.12.06.24 0 .36z"/></svg>
-              </button>
+              
+              <!-- RATIO BADGE & WHATSAPP SHARE -->
+              <div class="flex items-center gap-1.5 no-print">
+                <span class="text-[10px] ${badgeStyle} border px-2 py-0.5 rounded font-bold" title="Total Periods Allotted / Target Periods">${badgeText}</span>
+                <button type="button" onclick="shareTeacherTimetableWhatsApp('${t}')" title="Share on WhatsApp" class="text-emerald-600 hover:text-emerald-800 p-1.5 rounded-full border border-emerald-200 w-7 h-7 inline-flex items-center justify-center bg-emerald-50">
+                  <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M12.004 2C6.48 2 2 6.48 2 12.004c0 1.765.46 3.48 1.334 4.996L2 22l5.176-1.359c1.476.804 3.136 1.227 4.82 1.227 5.524 0 10.004-4.48 10.004-10.004C22.004 6.48 17.524 2 12.004 2zM17.47 15.35c-.24.36-.84.66-1.2.78-.36.12-.84.18-1.32.18-.3-.02-.66-.06-1.02-.12-.36-.06-.72-.12-1.08-.24-1.56-.54-2.88-1.56-3.84-2.82-.42-.54-.78-1.14-1.02-1.8-.18-.48-.24-.96-.24-1.44 0-.48.12-.9.36-1.26l.48-.6c.18-.24.36-.48.54-.72l.48-.36c.12-.12.24-.18.36-.18s.24 0 .36.06c.12.06.24.18.36.36l1.02 2.22c.06.12.12.24.12.36s0 .24-.06.36c-.06.12-.12.24-.24.36l-.36.42c-.12.12-.24.24-.36.36s-.12.24-.06.36c.24.48.54.9 1.02 1.32s1.02.72 1.5 1.02c.12.06.24.06.36 0 .12-.06.24-.18.36-.3l.42-.48c.12-.12.24-.18.36-.18.12 0 .24.06.36.12l2.22 1.02c.18.06.3.18.36.3.06.12.06.24 0 .36z"/></svg>
+                </button>
+              </div>
             </div>
             <div class="overflow-x-auto">
               <table class="w-full text-[10px] text-center border-collapse">
