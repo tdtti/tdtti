@@ -182,12 +182,12 @@
     }
   </style>
 </head>
-<body class="bg-slate-50 min-h-screen text-slate-800 font-sans pb-12 w-full print-default overflow-x-hidden">
+<body class="bg-slate-50 min-h-screen text-slate-800 font-sans pb-10 w-full print-default overflow-x-hidden">
 
   <!-- TOP PROGRESS BAR -->
   <div id="topProgressBar" class="fixed top-0 left-0 h-1 bg-gradient-to-r from-indigo-500 via-purple-500 to-emerald-500 z-[1000] transition-all duration-300 ease-out w-0 opacity-0 pointer-events-none"></div>
 
-  <!-- AUTHENTICATION STATUS HEADER (FULL WIDTH) -->
+  <!-- AUTHENTICATION STATUS HEADER (100% FULL WIDTH) -->
   <div id="authHeaderBar" class="bg-indigo-950 text-slate-200 text-xs px-4 py-2 flex justify-between items-center no-print w-full shadow-sm">
     <div class="flex items-center gap-2">
       <span class="font-bold flex items-center gap-1.5">
@@ -209,17 +209,17 @@
     </div>
   </div>
 
-  <!-- MAIN APPLICATION ROOT (100% FLUID FULL WIDTH) -->
-  <div class="w-full px-2 sm:px-4 lg:px-6 py-4 space-y-4">
+  <!-- MAIN APPLICATION ROOT (100% FLUID FULL WIDTH - NO NESTED CONTAINER BOTTLENECKS) -->
+  <main class="w-full px-3 sm:px-5 lg:px-6 py-3 space-y-3">
     
     <!-- Header -->
-    <header id="mainAppHeader" class="text-center px-2 py-2">
+    <header id="mainAppHeader" class="text-center px-2 py-1">
       <h1 class="text-2xl sm:text-3xl font-extrabold text-indigo-950">Teacher Subject Distribution System</h1>
       <p class="text-xs sm:text-sm text-slate-600 mt-0.5">Live allocation visualizer & schedule planner (Firebase Powered 🔥 + Localized AI Slot Resolver ✨)</p>
     </header>
 
-    <!-- ADMIN ONLY NAVIGATION BAR (FULL WIDTH DOCK) -->
-    <div id="mainNavBarContainer" class="admin-only tab-navigation flex flex-wrap justify-center items-center gap-2 sm:gap-3 py-2 px-4 border border-slate-200 bg-white shadow-sm rounded-xl w-full no-print">
+    <!-- ADMIN ONLY NAVIGATION BAR (100% FULL WIDTH DOCK) -->
+    <nav id="mainNavBarContainer" aria-label="Admin Navigation" class="admin-only tab-navigation flex flex-wrap justify-center items-center gap-2 sm:gap-3 py-2 px-4 border border-slate-200 bg-white shadow-sm rounded-xl w-full no-print">
       <button type="button" data-main-tab="1" id="tab1-btn" onclick="switchMainTab(1)" title="Basic Details & Allocation Form" class="w-10 h-10 rounded-full flex items-center justify-center transition focus:outline-none focus:ring-2 focus:ring-indigo-500 text-2xl">📝</button>
       <button type="button" data-main-tab="2" id="tab2-btn" onclick="switchMainTab(2)" title="Live Teachers Summary Table" class="w-10 h-10 rounded-full flex items-center justify-center transition focus:outline-none focus:ring-2 focus:ring-indigo-500 text-2xl">📊</button>
       <button type="button" data-main-tab="3" id="tab3-btn" onclick="switchMainTab(3)" title="Live Students Period Allocation Table" class="w-10 h-10 rounded-full flex items-center justify-center transition focus:outline-none focus:ring-2 focus:ring-indigo-500 text-2xl">🎓</button>
@@ -230,13 +230,13 @@
 
       <button type="button" onclick="loadDatabaseFromFirebase(true)" title="Force Refresh from Firebase" class="w-10 h-10 rounded-full flex items-center justify-center transition bg-indigo-50 text-indigo-700 hover:bg-indigo-100 text-xl active:scale-95 focus:outline-none">🔥</button>
       <button type="button" id="fullscreenToggleBtn" onclick="toggleFullscreenView()" title="Enter Fullscreen" class="w-10 h-10 rounded-full flex items-center justify-center transition bg-slate-100 text-slate-700 hover:bg-slate-200 text-xl active:scale-95 focus:outline-none">🖥️</button>
-    </div>
+    </nav>
 
-    <!-- TAB 1: ALLOTMENT FORM (100% WIDTH) -->
-    <div id="tab1-content" data-tab-pane="1" class="tab-pane space-y-4 admin-only w-full">
-      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 bg-white p-4 rounded-xl border border-slate-200 shadow-sm w-full">
+    <!-- TAB 1: ALLOTMENT FORM (FLAT 100% WIDTH) -->
+    <div id="tab1-content" data-tab-pane="1" class="tab-pane space-y-3 admin-only w-full">
+      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 bg-white p-3.5 rounded-xl border border-slate-200 shadow-sm w-full">
         <div>
-          <h2 class="text-base font-bold text-slate-900 flex items-center gap-2">
+          <h2 class="text-sm sm:text-base font-bold text-slate-900 flex items-center gap-2">
             <span>📝</span> Teacher Distribution Configurator
           </h2>
           <p class="text-xs text-slate-500">Configure teacher subject allocations per division. Ensure all 9 classes sum to exactly 35 periods (315 periods total).</p>
@@ -254,9 +254,9 @@
         </div>
       </div>
 
-      <form id="distributionForm" class="space-y-4 w-full">
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 items-start w-full">
-          <div class="lg:col-span-4 bg-white rounded-xl shadow-sm border border-slate-200 p-4 space-y-4 w-full">
+      <form id="distributionForm" class="space-y-3 w-full">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-3 items-start w-full">
+          <div class="lg:col-span-4 bg-white rounded-xl shadow-sm border border-slate-200 p-4 space-y-3 w-full">
             <h3 class="text-sm font-bold text-slate-800 border-b pb-2 flex items-center justify-between">
               <span>1. Select Teacher & Charge</span>
               <span id="teacherLoadBadge" class="hidden text-[11px] font-extrabold px-2.5 py-0.5 rounded-full bg-indigo-100 text-indigo-800">0 Periods</span>
@@ -302,14 +302,14 @@
               </div>
             </div>
 
-            <div id="teacherSummaryBox" class="bg-slate-50 p-3 rounded-lg border border-slate-200 hidden space-y-1">
+            <div id="teacherSummaryBox" class="bg-slate-50 p-2.5 rounded-lg border border-slate-200 hidden space-y-1">
               <p class="text-[11px] font-bold text-slate-700" id="summaryBoxTitle">Allocated Load Summary:</p>
               <p class="text-xs text-slate-600 leading-snug" id="summaryBoxList">None</p>
             </div>
           </div>
 
           <div class="lg:col-span-8 bg-white rounded-xl shadow-sm border border-slate-200 p-4 space-y-3 w-full">
-            <div class="flex items-center justify-between border-b pb-2.5">
+            <div class="flex items-center justify-between border-b pb-2">
               <div>
                 <h3 class="text-sm font-bold text-slate-800">2. Class & Subject Allotment</h3>
                 <p class="text-[11px] text-slate-500">Periods auto-calculate upon selecting subject and class.</p>
@@ -326,17 +326,17 @@
               <div class="sm:col-span-1 text-center">Action</div>
             </div>
 
-            <div id="allocationsContainer" class="space-y-2.5 max-h-[380px] overflow-y-auto pr-1"></div>
+            <div id="allocationsContainer" class="space-y-2 max-h-[380px] overflow-y-auto pr-1"></div>
 
-            <div id="emptyState" class="text-center py-10 text-slate-400 text-sm border-2 border-dashed border-slate-200 rounded-lg">
+            <div id="emptyState" class="text-center py-8 text-slate-400 text-sm border-2 border-dashed border-slate-200 rounded-lg">
               <p class="font-medium text-slate-500">No subject allotments configured yet.</p>
               <p class="text-xs text-slate-400 mt-0.5">Select a teacher and click <span class="font-bold text-indigo-600">"+ Add Subject"</span>.</p>
             </div>
           </div>
         </div>
 
-        <div class="space-y-3 w-full">
-          <div id="statusMessage" class="text-xs font-semibold px-4 py-3 rounded-lg hidden border flex items-center justify-between shadow-sm"></div>
+        <div class="space-y-2 w-full">
+          <div id="statusMessage" class="text-xs font-semibold px-4 py-2.5 rounded-lg hidden border flex items-center justify-between shadow-sm"></div>
 
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full">
             <button type="button" onclick="saveSelectedTeacherOnly()" class="bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white font-semibold py-2.5 rounded-lg shadow-md transition text-xs sm:text-sm">
@@ -350,347 +350,348 @@
       </form>
     </div>
 
-    <!-- TAB 2: LIVE TEACHERS SUMMARY TABLE (100% WIDTH) -->
-    <div id="tab2-content" data-tab-pane="2" class="tab-pane hidden space-y-4 admin-only w-full">
-      <div id="teacherTableCard" class="bg-white rounded-xl shadow-sm border border-slate-200 p-4 sm:p-5 w-full">
-        <h2 class="text-base sm:text-lg font-bold text-slate-950 mb-0.5 flex items-center gap-2">
-          <span class="text-indigo-600">📊</span> Live Teachers Summary Table
-        </h2>
-        <p class="text-xs text-slate-500 mb-3">Displays mapped configurations, charges, and loads per teacher. <span class="font-semibold text-indigo-700">Click name to edit.</span></p>
-        
-        <div class="overflow-x-auto border border-slate-200 rounded-lg w-full">
-          <table class="w-full text-[11px] sm:text-xs text-left divide-y divide-slate-200" id="teacherSummaryTable">
-            <thead class="bg-slate-100 text-slate-700 uppercase font-semibold">
-              <tr>
-                <th class="px-3 py-2 border-r border-slate-200 sticky left-0 bg-slate-100 z-10 shadow-[2px_0_5px_rgba(0,0,0,0.05)] w-32">Teacher</th>
-                <th class="px-2 py-2 text-center border-r border-slate-200 w-20">Charge</th>
-                <th class="px-1 py-2 text-center border-r border-slate-200">5B</th>
-                <th class="px-1 py-2 text-center border-r border-slate-200">5C</th>
-                <th class="px-1 py-2 text-center border-r border-slate-200">5D</th>
-                <th class="px-1 py-2 text-center border-r border-slate-200">6B</th>
-                <th class="px-1 py-2 text-center border-r border-slate-200">6C</th>
-                <th class="px-1 py-2 text-center border-r border-slate-200">6D</th>
-                <th class="px-1 py-2 text-center border-r border-slate-200">7B</th>
-                <th class="px-1 py-2 text-center border-r border-slate-200">7C</th>
-                <th class="px-1 py-2 text-center border-r border-slate-200">7D</th>
-                <th class="px-3 py-2 text-center bg-indigo-50 text-indigo-900 font-bold w-16">Total</th>
-                <th class="px-2 py-2 text-center bg-slate-50 text-slate-700 font-semibold w-16 share-col">Share</th>
-              </tr>
-            </thead>
-            <tbody class="divide-y divide-slate-100 bg-white" id="teacherTableBody"></tbody>
-          </table>
+    <!-- TAB 2: LIVE TEACHERS SUMMARY TABLE (FLAT 100% WIDTH) -->
+    <div id="tab2-content" data-tab-pane="2" class="tab-pane hidden admin-only w-full bg-white rounded-xl shadow-sm border border-slate-200 p-3 sm:p-4 space-y-2">
+      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-1 border-b pb-2">
+        <div>
+          <h2 class="text-base font-bold text-slate-950 flex items-center gap-2">
+            <span class="text-indigo-600">📊</span> Live Teachers Summary Table
+          </h2>
+          <p class="text-xs text-slate-500">Displays mapped configurations, charges, and loads per teacher. <span class="font-semibold text-indigo-700">Click name to edit.</span></p>
         </div>
+      </div>
+      
+      <div class="overflow-x-auto border border-slate-200 rounded-lg w-full">
+        <table class="w-full text-[11px] sm:text-xs text-left divide-y divide-slate-200" id="teacherSummaryTable">
+          <thead class="bg-slate-100 text-slate-700 uppercase font-semibold">
+            <tr>
+              <th class="px-3 py-2 border-r border-slate-200 sticky left-0 bg-slate-100 z-10 shadow-[2px_0_5px_rgba(0,0,0,0.05)] w-32">Teacher</th>
+              <th class="px-2 py-2 text-center border-r border-slate-200 w-20">Charge</th>
+              <th class="px-1 py-2 text-center border-r border-slate-200">5B</th>
+              <th class="px-1 py-2 text-center border-r border-slate-200">5C</th>
+              <th class="px-1 py-2 text-center border-r border-slate-200">5D</th>
+              <th class="px-1 py-2 text-center border-r border-slate-200">6B</th>
+              <th class="px-1 py-2 text-center border-r border-slate-200">6C</th>
+              <th class="px-1 py-2 text-center border-r border-slate-200">6D</th>
+              <th class="px-1 py-2 text-center border-r border-slate-200">7B</th>
+              <th class="px-1 py-2 text-center border-r border-slate-200">7C</th>
+              <th class="px-1 py-2 text-center border-r border-slate-200">7D</th>
+              <th class="px-3 py-2 text-center bg-indigo-50 text-indigo-900 font-bold w-16">Total</th>
+              <th class="px-2 py-2 text-center bg-slate-50 text-slate-700 font-semibold w-16 share-col">Share</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100 bg-white" id="teacherTableBody"></tbody>
+        </table>
       </div>
     </div>
 
-    <!-- TAB 3: LIVE STUDENTS PERIOD ALLOCATION TABLE (100% WIDTH) -->
-    <div id="tab3-content" data-tab-pane="3" class="tab-pane hidden space-y-4 admin-only w-full">
-      <div id="studentTableCard" class="bg-white rounded-xl shadow-sm border border-slate-200 p-4 sm:p-5 w-full">
-        <h2 class="text-base sm:text-lg font-bold text-slate-950 mb-0.5 flex items-center gap-2">
-          <span class="text-teal-600">🎓</span> Live Students Period Allocation Table
-        </h2>
-        <p class="text-xs text-slate-500 mb-3">Displays mapped numbers of active student periods (target: exactly 35 periods/week per division).</p>
-        
-        <div class="overflow-x-auto border border-slate-200 rounded-lg w-full">
-          <table class="w-full text-[11px] sm:text-xs text-left divide-y divide-slate-200" id="studentSummaryTable">
-            <thead class="bg-slate-100 text-slate-700 uppercase font-semibold">
-              <tr>
-                <th class="px-3 py-2 border-r border-slate-200 sticky left-0 bg-slate-100 z-10 shadow-[2px_0_5px_rgba(0,0,0,0.05)] w-24">Subject</th>
-                <th class="px-1 py-2 text-center border-r border-slate-200">5B</th>
-                <th class="px-1 py-2 text-center border-r border-slate-200">5C</th>
-                <th class="px-1 py-2 text-center border-r border-slate-200">5D</th>
-                <th class="px-1 py-2 text-center border-r border-slate-200">6B</th>
-                <th class="px-1 py-2 text-center border-r border-slate-200">6C</th>
-                <th class="px-1 py-2 text-center border-r border-slate-200">6D</th>
-                <th class="px-1 py-2 text-center border-r border-slate-200">7B</th>
-                <th class="px-1 py-2 text-center border-r border-slate-200">7C</th>
-                <th class="px-1 py-2 text-center border-r border-slate-200">7D</th>
-                <th class="px-3 py-2 text-center bg-teal-50 text-teal-900 font-bold w-20">Total</th>
-              </tr>
-            </thead>
-            <tbody class="divide-y divide-slate-100 bg-white" id="studentTableBody"></tbody>
-            <tfoot class="bg-slate-200 text-slate-900 font-bold" id="studentTableFooter"></tfoot>
-          </table>
+    <!-- TAB 3: LIVE STUDENTS PERIOD ALLOCATION TABLE (FLAT 100% WIDTH) -->
+    <div id="tab3-content" data-tab-pane="3" class="tab-pane hidden admin-only w-full bg-white rounded-xl shadow-sm border border-slate-200 p-3 sm:p-4 space-y-2">
+      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-1 border-b pb-2">
+        <div>
+          <h2 class="text-base font-bold text-slate-950 flex items-center gap-2">
+            <span class="text-teal-600">🎓</span> Live Students Period Allocation Table
+          </h2>
+          <p class="text-xs text-slate-500">Displays mapped numbers of active student periods (target: exactly 35 periods/week per division).</p>
         </div>
+      </div>
+      
+      <div class="overflow-x-auto border border-slate-200 rounded-lg w-full">
+        <table class="w-full text-[11px] sm:text-xs text-left divide-y divide-slate-200" id="studentSummaryTable">
+          <thead class="bg-slate-100 text-slate-700 uppercase font-semibold">
+            <tr>
+              <th class="px-3 py-2 border-r border-slate-200 sticky left-0 bg-slate-100 z-10 shadow-[2px_0_5px_rgba(0,0,0,0.05)] w-24">Subject</th>
+              <th class="px-1 py-2 text-center border-r border-slate-200">5B</th>
+              <th class="px-1 py-2 text-center border-r border-slate-200">5C</th>
+              <th class="px-1 py-2 text-center border-r border-slate-200">5D</th>
+              <th class="px-1 py-2 text-center border-r border-slate-200">6B</th>
+              <th class="px-1 py-2 text-center border-r border-slate-200">6C</th>
+              <th class="px-1 py-2 text-center border-r border-slate-200">6D</th>
+              <th class="px-1 py-2 text-center border-r border-slate-200">7B</th>
+              <th class="px-1 py-2 text-center border-r border-slate-200">7C</th>
+              <th class="px-1 py-2 text-center border-r border-slate-200">7D</th>
+              <th class="px-3 py-2 text-center bg-teal-50 text-teal-900 font-bold w-20">Total</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100 bg-white" id="studentTableBody"></tbody>
+          <tfoot class="bg-slate-200 text-slate-900 font-bold" id="studentTableFooter"></tfoot>
+        </table>
       </div>
     </div>
 
-    <!-- TAB 4: DATABASE SYNCHRONIZATION & ACTIONS (100% WIDTH) -->
-    <div id="tab4-content" data-tab-pane="4" class="tab-pane hidden space-y-4 admin-only w-full">
-      <div id="dbSyncControls" class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-4 w-full">
-        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 border-b pb-3">
+    <!-- TAB 4: DATABASE SYNCHRONIZATION & ACTIONS (FLAT 100% WIDTH) -->
+    <div id="tab4-content" data-tab-pane="4" class="tab-pane hidden admin-only w-full bg-white rounded-xl border border-slate-200 shadow-sm p-4 space-y-4">
+      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 border-b pb-3 w-full">
+        <div>
+          <h3 class="text-base font-bold text-slate-900 flex items-center gap-2">
+            <span>⚙️</span> Firebase Cloud Firestore Sync & Database Management
+          </h3>
+          <p class="text-xs text-slate-500">Real-time Cloud Firestore updates active across all connected devices (offline persistence enabled).</p>
+        </div>
+        <div class="flex flex-wrap items-center gap-2 w-full sm:w-auto justify-end">
+          <span id="syncTimestamp" class="text-[11px] text-slate-500 italic mr-1">Last Synced: Never</span>
+          <button type="button" id="manualSyncBtn" class="bg-indigo-50 text-indigo-700 hover:bg-indigo-100 border border-indigo-200 active:scale-95 px-3 py-1.5 rounded-md text-xs font-semibold transition flex items-center gap-1">
+            <span>Sync Cloud</span> 🔥
+          </button>
+          <button type="button" id="printBtn" class="bg-slate-800 text-white hover:bg-slate-900 active:scale-95 px-3 py-1.5 rounded-md text-xs font-semibold transition">
+            Print Summary 🖨️
+          </button>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 w-full">
+        <div class="bg-indigo-50/60 p-3 rounded-xl border border-indigo-100 text-center">
+          <div class="text-2xl font-black text-indigo-950" id="statTotalTeachers">15</div>
+          <div class="text-[11px] font-bold text-indigo-700 uppercase tracking-wider mt-0.5">Teachers</div>
+        </div>
+        <div class="bg-teal-50/60 p-3 rounded-xl border border-teal-100 text-center">
+          <div class="text-2xl font-black text-teal-950" id="statTotalClasses">9</div>
+          <div class="text-[11px] font-bold text-teal-700 uppercase tracking-wider mt-0.5">Divisions</div>
+        </div>
+        <div class="bg-emerald-50/60 p-3 rounded-xl border border-emerald-100 text-center">
+          <div class="text-2xl font-black text-emerald-950" id="statTotalPeriods">315 / 315</div>
+          <div class="text-[11px] font-bold text-emerald-700 uppercase tracking-wider mt-0.5">Weekly Slots</div>
+        </div>
+        <div class="bg-purple-50/60 p-3 rounded-xl border border-purple-100 text-center">
+          <div class="text-2xl font-black text-purple-950" id="statActiveUsers">2</div>
+          <div class="text-[11px] font-bold text-purple-700 uppercase tracking-wider mt-0.5">System Users</div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1 w-full">
+        <div class="p-3.5 bg-slate-50 rounded-xl border border-slate-200 space-y-2 flex flex-col justify-between">
           <div>
-            <h3 class="text-base font-bold text-slate-900 flex items-center gap-2">
-              <span>⚙️</span> Firebase Cloud Firestore Sync & Database Management
-            </h3>
-            <p class="text-xs text-slate-500">Real-time Cloud Firestore updates active across all connected devices (offline persistence enabled).</p>
+            <h4 class="font-bold text-slate-800 text-xs flex items-center gap-1.5">
+              <span>🚀</span> Batch Push Allocations
+            </h4>
+            <p class="text-[11px] text-slate-500">Commits all 15 teacher profiles and allocations to Firestore in a single atomic batch.</p>
           </div>
-          <div class="flex flex-wrap items-center gap-2 w-full sm:w-auto justify-end">
-            <span id="syncTimestamp" class="text-[11px] text-slate-500 italic mr-1">Last Synced: Never</span>
-            <button type="button" id="manualSyncBtn" class="bg-indigo-50 text-indigo-700 hover:bg-indigo-100 border border-indigo-200 active:scale-95 px-3 py-1.5 rounded-md text-xs font-semibold transition flex items-center gap-1">
-              <span>Sync Cloud</span> 🔥
-            </button>
-            <button type="button" id="printBtn" class="bg-slate-800 text-white hover:bg-slate-900 active:scale-95 px-3 py-1.5 rounded-md text-xs font-semibold transition">
-              Print Summary 🖨️
-            </button>
-          </div>
+          <button type="button" onclick="postFullStateToFirebase(false)" class="w-full mt-2 px-3 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-lg text-xs transition active:scale-95 shadow-sm">
+            Push to Firestore 🚀
+          </button>
         </div>
 
-        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 w-full">
-          <div class="bg-indigo-50/60 p-3.5 rounded-xl border border-indigo-100 text-center">
-            <div class="text-2xl font-black text-indigo-950" id="statTotalTeachers">15</div>
-            <div class="text-[11px] font-bold text-indigo-700 uppercase tracking-wider mt-0.5">Teachers</div>
-          </div>
-          <div class="bg-teal-50/60 p-3.5 rounded-xl border border-teal-100 text-center">
-            <div class="text-2xl font-black text-teal-950" id="statTotalClasses">9</div>
-            <div class="text-[11px] font-bold text-teal-700 uppercase tracking-wider mt-0.5">Divisions</div>
-          </div>
-          <div class="bg-emerald-50/60 p-3.5 rounded-xl border border-emerald-100 text-center">
-            <div class="text-2xl font-black text-emerald-950" id="statTotalPeriods">315 / 315</div>
-            <div class="text-[11px] font-bold text-emerald-700 uppercase tracking-wider mt-0.5">Weekly Slots</div>
-          </div>
-          <div class="bg-purple-50/60 p-4 rounded-xl border border-purple-100 text-center">
-            <div class="text-2xl font-black text-purple-950" id="statActiveUsers">2</div>
-            <div class="text-[11px] font-bold text-purple-700 uppercase tracking-wider mt-0.5">System Users</div>
-          </div>
-        </div>
-
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1 w-full">
-          <div class="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-2 flex flex-col justify-between">
-            <div>
-              <h4 class="font-bold text-slate-800 text-xs flex items-center gap-1.5">
-                <span>🚀</span> Batch Push Allocations
-              </h4>
-              <p class="text-[11px] text-slate-500">Commits all 15 teacher profiles and allocations to Firestore in a single atomic batch.</p>
-            </div>
-            <button type="button" onclick="postFullStateToFirebase(false)" class="w-full mt-2 px-3 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-lg text-xs transition active:scale-95 shadow-sm">
-              Push to Firestore 🚀
-            </button>
-          </div>
-
-          <div class="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-2 flex flex-col justify-between">
-            <div>
-              <h4 class="font-bold text-slate-800 text-xs flex items-center gap-1.5">
-                <span>📋</span> Load Standard Baseline
-              </h4>
-              <p class="text-[11px] text-slate-500">Populates the institutional 315-period balanced distribution across all 15 teachers.</p>
-            </div>
-            <button type="button" onclick="loadBaselineData()" class="w-full mt-2 px-3 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-lg text-xs transition active:scale-95 shadow-sm">
-              Load Baseline Dataset 📋
-            </button>
-          </div>
-
-          <div class="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-2 flex flex-col justify-between">
-            <div>
-              <h4 class="font-bold text-slate-800 text-xs flex items-center gap-1.5">
-                <span>👥</span> Manage Credentials
-              </h4>
-              <p class="text-[11px] text-slate-500">Add, edit, or remove administrator and staff member access credentials.</p>
-            </div>
-            <button type="button" onclick="openUserManagementModal()" class="w-full mt-2 px-3 py-2 bg-purple-600 hover:bg-purple-700 text-white font-bold rounded-lg text-xs transition active:scale-95 shadow-sm">
-              Open User Manager 👥
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- TAB 5: TIMETABLE GENERATION AND VIEWS (100% FLUID FULL WIDTH) -->
-    <div id="tab5-content" data-tab-pane="5" class="tab-pane space-y-4 w-full">
-      <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-3 sm:p-5 w-full space-y-4">
-        
-        <!-- SCHEDULING CRITERIA (Admin Only) -->
-        <div id="tab5AdminCriteriaCard" class="admin-only bg-indigo-50/50 p-4 rounded-xl border border-indigo-100 space-y-4 no-print w-full">
-          <div class="flex justify-between items-center border-b border-indigo-100 pb-2">
-            <h3 class="text-sm font-bold text-indigo-950 flex items-center gap-1.5">
-              <span>⚙️</span> Advanced Scheduling Criteria & Constraints
-            </h3>
-            <button type="button" onclick="clearCustomRules()" class="text-xs bg-indigo-100 text-indigo-900 hover:bg-indigo-200 px-2.5 py-1 rounded-md font-semibold transition flex items-center gap-1 shadow-sm active:scale-95">
-              <span>Reset Rules</span> 🔄
-            </button>
-          </div>
-          
-          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2.5 text-xs w-full">
-            <label class="flex items-center gap-2 cursor-pointer p-2 bg-white rounded-lg border border-slate-200 hover:bg-slate-50 transition font-semibold text-indigo-950">
-              <input type="checkbox" id="condNoRepeatSubjectDay" checked class="rounded text-indigo-600 focus:ring-indigo-500 w-4 h-4">
-              <span>🚫 No repeat subject same class/day</span>
-            </label>
-            <label class="flex items-center gap-2 cursor-pointer p-2 bg-white rounded-lg border border-slate-200 hover:bg-slate-50 transition font-semibold text-indigo-950">
-              <input type="checkbox" id="condMin2FreePeriodsPerDay" checked class="rounded text-indigo-600 focus:ring-indigo-500 w-4 h-4">
-              <span>☕ Min 2 Free Periods/Day (Max 5)</span>
-            </label>
-            <label class="flex items-center gap-2 cursor-pointer p-2 bg-white rounded-lg border border-slate-200 hover:bg-slate-50 transition font-semibold text-indigo-950">
-              <input type="checkbox" id="condSingleITAcrossSchool" checked class="rounded text-indigo-600 focus:ring-indigo-500 w-4 h-4">
-              <span>💻 Single IT Lab Ground</span>
-            </label>
-            <label class="flex items-center gap-2 cursor-pointer p-2 bg-white rounded-lg border border-slate-200 hover:bg-slate-50 transition font-semibold text-indigo-950">
-              <input type="checkbox" id="condSinglePEAcrossSchool" checked class="rounded text-indigo-600 focus:ring-indigo-500 w-4 h-4">
-              <span>⚽ Single PE Ground</span>
-            </label>
-            <label class="flex items-center gap-2 cursor-pointer p-2 bg-white rounded-lg border border-slate-200 hover:bg-slate-50 transition font-semibold text-indigo-950">
-              <input type="checkbox" id="cond5BP1Rotation" checked class="rounded text-indigo-600 focus:ring-indigo-500 w-4 h-4">
-              <span>🎯 5B P1 Rotation (RR/SA)</span>
-            </label>
-            <label class="flex items-center gap-2 cursor-pointer p-2 bg-white rounded-lg border border-slate-200 hover:bg-slate-50 transition font-semibold text-indigo-950">
-              <input type="checkbox" id="cond6DP1Rotation" checked class="rounded text-indigo-600 focus:ring-indigo-500 w-4 h-4">
-              <span>🎯 6D P1 Rotation (BUS/TAK)</span>
-            </label>
-            <label class="flex items-center gap-2 cursor-pointer p-2 bg-white rounded-lg border border-slate-200 hover:bg-slate-50 transition font-semibold text-indigo-950">
-              <input type="checkbox" id="condSVLIBPeriod7Only" checked class="rounded text-indigo-600 focus:ring-indigo-500 w-4 h-4">
-              <span>📚 SV/LIB in Period 7 Only</span>
-            </label>
-            <label class="flex items-center gap-2 cursor-pointer p-2 bg-white rounded-lg border border-slate-200 hover:bg-slate-50 transition font-semibold text-indigo-950">
-              <input type="checkbox" id="condClassTeacherP1" checked class="rounded text-indigo-600 focus:ring-indigo-500 w-4 h-4">
-              <span>👑 Class Teacher in P1 compulsory</span>
-            </label>
-            <label class="flex items-center gap-2 cursor-pointer p-2 bg-white rounded-lg border border-slate-200 hover:bg-slate-50 transition font-semibold text-indigo-950">
-              <input type="checkbox" id="condSameStdLangSync" checked class="rounded text-indigo-600 focus:ring-indigo-500 w-4 h-4">
-              <span>🔄 Language Sync Matrix (5D,6D,7D: MI & ARB simultaneous)</span>
-            </label>
-            <label class="flex items-center gap-2 cursor-pointer p-2 bg-white rounded-lg border border-slate-200 hover:bg-slate-50 transition font-semibold text-indigo-950">
-              <input type="checkbox" id="condPE_P2_P7" checked class="rounded text-indigo-600 focus:ring-indigo-500 w-4 h-4">
-              <span>⚽ Keep PE in P2-P7 only</span>
-            </label>
-            <label class="flex items-center gap-2 cursor-pointer p-2 bg-white rounded-lg border border-slate-200 hover:bg-slate-50 transition font-semibold text-indigo-950">
-              <input type="checkbox" id="condIT_P2_P7" checked class="rounded text-indigo-600 focus:ring-indigo-500 w-4 h-4">
-              <span>💻 IT in P2-P7 only</span>
-            </label>
-            <label class="flex items-center gap-2 cursor-pointer p-2 bg-white rounded-lg border border-slate-200 hover:bg-slate-50 transition font-semibold text-indigo-950">
-              <input type="checkbox" id="condNoANMPeriod1" checked class="rounded text-indigo-600 focus:ring-indigo-500 w-4 h-4">
-              <span>🚫 No 1st period for ANM</span>
-            </label>
-          </div>
-
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-3 pt-2 border-t border-indigo-100 w-full">
-            <div class="p-2.5 bg-white rounded-lg border border-slate-200 space-y-1.5">
-              <div class="flex items-center justify-between">
-                <label class="block text-xs font-bold text-slate-800" for="condMaxContinuousSelect">
-                  ⏱️ Limit Continuous Teaching Periods
-                </label>
-                <select id="condMaxContinuousSelect" class="text-xs font-bold bg-indigo-50 text-indigo-900 border border-indigo-200 rounded px-2 py-0.5 focus:ring-2 focus:ring-indigo-500">
-                  <option value="1">Max 1 Period</option>
-                  <option value="2" selected>Max 2 Periods (Recommended)</option>
-                  <option value="3">Max 3 Periods</option>
-                  <option value="4">Max 4 Periods</option>
-                  <option value="99">No Limit (Off)</option>
-                </select>
-              </div>
-              <p class="text-[10px] text-slate-500">Max consecutive periods scheduled without a break.</p>
-            </div>
-
-            <div class="p-2.5 bg-emerald-50 rounded-lg border border-emerald-200 space-y-1.5">
-              <div class="flex items-center justify-between">
-                <label class="text-xs font-bold text-emerald-950 flex items-center gap-1.5 cursor-pointer">
-                  <input type="checkbox" id="condNoMajorLastPeriod" checked class="rounded text-emerald-600 focus:ring-emerald-500 w-4 h-4">
-                  <span>🛑 Strictly No Major/Core in P7 (100% Strict)</span>
-                </label>
-                <span id="p7ConstraintStatusBadge" class="text-[10px] bg-emerald-200 text-emerald-900 font-extrabold px-2 py-0.5 rounded">Enabled</span>
-              </div>
-              <p class="text-[10px] text-emerald-800">Core subjects strictly excluded from Period 7.</p>
-            </div>
-          </div>
-        </div>
-
-        <!-- AI SCHEDULE HEALTH AUDITOR (Admin Only) -->
-        <div id="tab5-aiAuditorCard" class="admin-only bg-indigo-50/40 p-4 rounded-xl border border-indigo-100 space-y-3 no-print w-full">
-          <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 border-b border-indigo-100 pb-2">
-            <div>
-              <h4 class="font-bold text-indigo-950 flex items-center gap-2 text-sm">
-                <span>📊</span> AI Slot Optimization & Health Auditor
-              </h4>
-              <p class="text-xs text-indigo-900/70">Analyzes timetable health and automatically resolves open slots.</p>
-            </div>
-            <div class="flex items-center gap-2">
-              <button type="button" onclick="autoFixAllUnplacedCardsWithAI()" class="px-3.5 py-1.5 bg-purple-600 hover:bg-purple-700 active:scale-95 text-white font-bold text-xs rounded-md shadow-sm transition flex items-center gap-1">
-                <span>Auto-Fix All Empty Slots with AI</span> 🪄
-              </button>
-              <button type="button" onclick="runAIScheduleAudit()" class="px-3.5 py-1.5 bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white font-bold text-xs rounded-md shadow-sm transition flex items-center gap-1">
-                <span>Run AI Schedule Audit</span> 🧠
-              </button>
-            </div>
-          </div>
-          <div id="aiAuditResults" class="hidden p-3 bg-white rounded-lg border border-indigo-100 text-xs space-y-2 text-slate-700 shadow-sm"></div>
-        </div>
-
-        <!-- STANDARD TAB 5 HEADER -->
-        <header id="tab5MainHeader" class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 border-b pb-3 w-full">
+        <div class="p-3.5 bg-slate-50 rounded-xl border border-slate-200 space-y-2 flex flex-col justify-between">
           <div>
-            <div class="flex items-center gap-2">
-              <h2 class="text-base sm:text-lg font-bold text-slate-950 flex items-center gap-2">
-                <span class="text-indigo-600">🗓️</span> Generated Timetable View
-              </h2>
-              <span id="timetableLockBadge" class="hidden px-2.5 py-0.5 bg-amber-100 text-amber-900 border border-amber-300 font-extrabold text-[11px] rounded-full flex items-center gap-1">
-                <span>🔒 Locked</span>
-              </span>
-            </div>
-            <p class="text-xs text-slate-500" id="timetableSubtitle">Live weekly schedules.</p>
+            <h4 class="font-bold text-slate-800 text-xs flex items-center gap-1.5">
+              <span>📋</span> Load Standard Baseline
+            </h4>
+            <p class="text-[11px] text-slate-500">Populates the institutional 315-period balanced distribution across all 15 teachers.</p>
           </div>
-          <div class="section-controls flex flex-wrap gap-2 w-full sm:w-auto justify-between sm:justify-end no-print">
-            <button type="button" id="adminLockToggleBtn" onclick="toggleTimetableLock()" class="admin-only bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-300 active:scale-95 px-3 py-1.5 rounded-md text-xs font-bold transition shadow-sm flex items-center gap-1">
-              <span id="lockBtnIcon">🔒</span> <span id="lockBtnText">Lock Timetable</span>
-            </button>
-            <button type="button" id="generateTimetableBtn" onclick="buildAndRenderTimetables()" class="admin-only bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white px-3.5 py-1.5 rounded-md text-xs font-semibold transition shadow-sm">
-              Generate Timetable ⚡
-            </button>
-            <button type="button" onclick="openAIAssistantModal()" class="bg-purple-600 hover:bg-purple-700 active:scale-95 text-white px-3.5 py-1.5 rounded-md text-xs font-semibold transition shadow-sm flex items-center gap-1">
-              <span>Substitute Finder</span> 🔍
-            </button>
-            <button type="button" onclick="printTimetables('student')" class="bg-indigo-50 text-indigo-700 hover:bg-indigo-100 border border-indigo-200 active:scale-95 px-3.5 py-1.5 rounded-md text-xs font-semibold transition">
-              Print Divisions 🖨️
-            </button>
-            <button type="button" onclick="printTimetables('teacher')" class="bg-teal-50 text-teal-700 hover:bg-teal-100 border border-teal-200 active:scale-95 px-3.5 py-1.5 rounded-md text-xs font-semibold transition">
-              Print Teachers 🖨️
-            </button>
-          </div>
-        </header>
-
-        <!-- STANDARD SUB-TAB NAVIGATION -->
-        <div id="standardSubTabNav" class="tab-container flex border-b border-slate-200 mb-4 no-print w-full">
-          <button id="tabClassBtn" onclick="switchTimetableTab('class')" class="px-4 py-2 border-b-2 border-indigo-600 text-indigo-600 font-semibold text-xs sm:text-sm active:scale-95 transition">Class View (Division wise)</button>
-          <button id="tabTeacherBtn" onclick="switchTimetableTab('teacher')" class="px-4 py-2 border-b-2 border-transparent text-slate-500 hover:text-slate-700 font-semibold text-xs sm:text-sm active:scale-95 transition ml-2">Teacher View</button>
+          <button type="button" onclick="loadBaselineData()" class="w-full mt-2 px-3 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-lg text-xs transition active:scale-95 shadow-sm">
+            Load Baseline Dataset 📋
+          </button>
         </div>
 
-        <!-- DEDICATED CLEAN TIMETABLE FOCUS CONTROLS BAR (FULL WIDTH) -->
-        <div id="timetableFocusControlsBar" class="hidden flex flex-col sm:flex-row justify-between items-center gap-3 border-b border-slate-200 pb-3 mb-3 no-print bg-slate-50/90 p-3 rounded-xl w-full">
-          <div class="flex items-center gap-2">
-            <button id="focusTabClassBtn" onclick="switchTimetableTab('class')" class="px-4 py-2 rounded-lg font-bold text-xs sm:text-sm shadow-sm transition active:scale-95 bg-indigo-600 text-white">
-              Class View (Division wise)
-            </button>
-            <button id="focusTabTeacherBtn" onclick="switchTimetableTab('teacher')" class="px-4 py-2 rounded-lg font-bold text-xs sm:text-sm shadow-sm transition active:scale-95 bg-white text-slate-700 border border-slate-300 hover:bg-slate-100">
-              Teacher View
-            </button>
+        <div class="p-3.5 bg-slate-50 rounded-xl border border-slate-200 space-y-2 flex flex-col justify-between">
+          <div>
+            <h4 class="font-bold text-slate-800 text-xs flex items-center gap-1.5">
+              <span>👥</span> Manage Credentials
+            </h4>
+            <p class="text-[11px] text-slate-500">Add, edit, or remove administrator and staff member access credentials.</p>
           </div>
-          
-          <div class="flex items-center gap-2">
-            <button type="button" onclick="loadDatabaseFromFirebase(true)" title="Force Refresh from Cloud" class="px-3 py-2 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 font-bold rounded-lg text-xs transition active:scale-95 shadow-sm flex items-center gap-1.5">
-              <span>Refresh Cloud</span> 🔄
-            </button>
-            <button type="button" onclick="exitTimetableFocusMode()" title="Exit Clean View" class="px-3.5 py-2 bg-slate-800 hover:bg-slate-900 text-white font-bold rounded-lg text-xs transition active:scale-95 shadow-sm flex items-center gap-1.5">
-              <span>Exit View</span> 🔙
-            </button>
-          </div>
-        </div>
-
-        <!-- TIMETABLE CONTAINERS (100% FLUID RESPONSIVE GRID) -->
-        <div id="classTimetableContainer" class="grid grid-cols-1 xl:grid-cols-2 gap-4 w-full">
-          <div class="col-span-full text-center py-8 text-slate-400 text-sm">
-            Loading timetable...
-          </div>
-        </div>
-
-        <div id="teacherTimetableContainer" class="grid grid-cols-1 xl:grid-cols-2 gap-4 hidden w-full">
-          <div class="col-span-full text-center py-8 text-slate-400 text-sm">
-            Loading timetable...
-          </div>
+          <button type="button" onclick="openUserManagementModal()" class="w-full mt-2 px-3 py-2 bg-purple-600 hover:bg-purple-700 text-white font-bold rounded-lg text-xs transition active:scale-95 shadow-sm">
+            Open User Manager 👥
+          </button>
         </div>
       </div>
     </div>
 
-  </div>
+    <!-- TAB 5: TIMETABLE GENERATION AND VIEWS (100% FLUID FULL WIDTH - ZERO NESTED EXTRA WRAPPERS) -->
+    <div id="tab5-content" data-tab-pane="5" class="tab-pane space-y-3 w-full">
+      
+      <!-- SCHEDULING CRITERIA (Admin Only) -->
+      <div id="tab5AdminCriteriaCard" class="admin-only bg-indigo-50/50 p-3.5 rounded-xl border border-indigo-100 space-y-3 no-print w-full">
+        <div class="flex justify-between items-center border-b border-indigo-100 pb-2">
+          <h3 class="text-sm font-bold text-indigo-950 flex items-center gap-1.5">
+            <span>⚙️</span> Advanced Scheduling Criteria & Constraints
+          </h3>
+          <button type="button" onclick="clearCustomRules()" class="text-xs bg-indigo-100 text-indigo-900 hover:bg-indigo-200 px-2.5 py-1 rounded-md font-semibold transition flex items-center gap-1 shadow-sm active:scale-95">
+            <span>Reset Rules</span> 🔄
+          </button>
+        </div>
+        
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2 text-xs w-full">
+          <label class="flex items-center gap-2 cursor-pointer p-2 bg-white rounded-lg border border-slate-200 hover:bg-slate-50 transition font-semibold text-indigo-950">
+            <input type="checkbox" id="condNoRepeatSubjectDay" checked class="rounded text-indigo-600 focus:ring-indigo-500 w-4 h-4">
+            <span>🚫 No repeat subject same class/day</span>
+          </label>
+          <label class="flex items-center gap-2 cursor-pointer p-2 bg-white rounded-lg border border-slate-200 hover:bg-slate-50 transition font-semibold text-indigo-950">
+            <input type="checkbox" id="condMin2FreePeriodsPerDay" checked class="rounded text-indigo-600 focus:ring-indigo-500 w-4 h-4">
+            <span>☕ Min 2 Free Periods/Day (Max 5)</span>
+          </label>
+          <label class="flex items-center gap-2 cursor-pointer p-2 bg-white rounded-lg border border-slate-200 hover:bg-slate-50 transition font-semibold text-indigo-950">
+            <input type="checkbox" id="condSingleITAcrossSchool" checked class="rounded text-indigo-600 focus:ring-indigo-500 w-4 h-4">
+            <span>💻 Single IT Lab Ground</span>
+          </label>
+          <label class="flex items-center gap-2 cursor-pointer p-2 bg-white rounded-lg border border-slate-200 hover:bg-slate-50 transition font-semibold text-indigo-950">
+            <input type="checkbox" id="condSinglePEAcrossSchool" checked class="rounded text-indigo-600 focus:ring-indigo-500 w-4 h-4">
+            <span>⚽ Single PE Ground</span>
+          </label>
+          <label class="flex items-center gap-2 cursor-pointer p-2 bg-white rounded-lg border border-slate-200 hover:bg-slate-50 transition font-semibold text-indigo-950">
+            <input type="checkbox" id="cond5BP1Rotation" checked class="rounded text-indigo-600 focus:ring-indigo-500 w-4 h-4">
+            <span>🎯 5B P1 Rotation (RR/SA)</span>
+          </label>
+          <label class="flex items-center gap-2 cursor-pointer p-2 bg-white rounded-lg border border-slate-200 hover:bg-slate-50 transition font-semibold text-indigo-950">
+            <input type="checkbox" id="cond6DP1Rotation" checked class="rounded text-indigo-600 focus:ring-indigo-500 w-4 h-4">
+            <span>🎯 6D P1 Rotation (BUS/TAK)</span>
+          </label>
+          <label class="flex items-center gap-2 cursor-pointer p-2 bg-white rounded-lg border border-slate-200 hover:bg-slate-50 transition font-semibold text-indigo-950">
+            <input type="checkbox" id="condSVLIBPeriod7Only" checked class="rounded text-indigo-600 focus:ring-indigo-500 w-4 h-4">
+            <span>📚 SV/LIB in Period 7 Only</span>
+          </label>
+          <label class="flex items-center gap-2 cursor-pointer p-2 bg-white rounded-lg border border-slate-200 hover:bg-slate-50 transition font-semibold text-indigo-950">
+            <input type="checkbox" id="condClassTeacherP1" checked class="rounded text-indigo-600 focus:ring-indigo-500 w-4 h-4">
+            <span>👑 Class Teacher in P1 compulsory</span>
+          </label>
+          <label class="flex items-center gap-2 cursor-pointer p-2 bg-white rounded-lg border border-slate-200 hover:bg-slate-50 transition font-semibold text-indigo-950">
+            <input type="checkbox" id="condSameStdLangSync" checked class="rounded text-indigo-600 focus:ring-indigo-500 w-4 h-4">
+            <span>🔄 Language Sync Matrix (5D,6D,7D: MI & ARB simultaneous)</span>
+          </label>
+          <label class="flex items-center gap-2 cursor-pointer p-2 bg-white rounded-lg border border-slate-200 hover:bg-slate-50 transition font-semibold text-indigo-950">
+            <input type="checkbox" id="condPE_P2_P7" checked class="rounded text-indigo-600 focus:ring-indigo-500 w-4 h-4">
+            <span>⚽ Keep PE in P2-P7 only</span>
+          </label>
+          <label class="flex items-center gap-2 cursor-pointer p-2 bg-white rounded-lg border border-slate-200 hover:bg-slate-50 transition font-semibold text-indigo-950">
+            <input type="checkbox" id="condIT_P2_P7" checked class="rounded text-indigo-600 focus:ring-indigo-500 w-4 h-4">
+            <span>💻 IT in P2-P7 only</span>
+          </label>
+          <label class="flex items-center gap-2 cursor-pointer p-2 bg-white rounded-lg border border-slate-200 hover:bg-slate-50 transition font-semibold text-indigo-950">
+            <input type="checkbox" id="condNoANMPeriod1" checked class="rounded text-indigo-600 focus:ring-indigo-500 w-4 h-4">
+            <span>🚫 No 1st period for ANM</span>
+          </label>
+        </div>
 
-  <!-- MODAL: INTERACTIVE PERIOD SLOT EDITOR (SUPPORTS SINGLE & DUAL/PARALLEL ELECTIVES) -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-2.5 pt-1.5 border-t border-indigo-100 w-full">
+          <div class="p-2.5 bg-white rounded-lg border border-slate-200 space-y-1">
+            <div class="flex items-center justify-between">
+              <label class="block text-xs font-bold text-slate-800" for="condMaxContinuousSelect">
+                ⏱️ Limit Continuous Teaching Periods
+              </label>
+              <select id="condMaxContinuousSelect" class="text-xs font-bold bg-indigo-50 text-indigo-900 border border-indigo-200 rounded px-2 py-0.5 focus:ring-2 focus:ring-indigo-500">
+                <option value="1">Max 1 Period</option>
+                <option value="2" selected>Max 2 Periods (Recommended)</option>
+                <option value="3">Max 3 Periods</option>
+                <option value="4">Max 4 Periods</option>
+                <option value="99">No Limit (Off)</option>
+              </select>
+            </div>
+            <p class="text-[10px] text-slate-500">Max consecutive periods scheduled without a break.</p>
+          </div>
+
+          <div class="p-2.5 bg-emerald-50 rounded-lg border border-emerald-200 space-y-1">
+            <div class="flex items-center justify-between">
+              <label class="text-xs font-bold text-emerald-950 flex items-center gap-1.5 cursor-pointer">
+                <input type="checkbox" id="condNoMajorLastPeriod" checked class="rounded text-emerald-600 focus:ring-emerald-500 w-4 h-4">
+                <span>🛑 Strictly No Major/Core in P7 (100% Strict)</span>
+              </label>
+              <span id="p7ConstraintStatusBadge" class="text-[10px] bg-emerald-200 text-emerald-900 font-extrabold px-2 py-0.5 rounded">Enabled</span>
+            </div>
+            <p class="text-[10px] text-emerald-800">Core subjects strictly excluded from Period 7.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- AI SCHEDULE HEALTH AUDITOR (Admin Only) -->
+      <div id="tab5-aiAuditorCard" class="admin-only bg-indigo-50/40 p-3.5 rounded-xl border border-indigo-100 space-y-2.5 no-print w-full">
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 border-b border-indigo-100 pb-2">
+          <div>
+            <h4 class="font-bold text-indigo-950 flex items-center gap-2 text-sm">
+              <span>📊</span> AI Slot Optimization & Health Auditor
+            </h4>
+            <p class="text-xs text-indigo-900/70">Analyzes timetable health and automatically resolves open slots.</p>
+          </div>
+          <div class="flex items-center gap-2">
+            <button type="button" onclick="autoFixAllUnplacedCardsWithAI()" class="px-3 py-1.5 bg-purple-600 hover:bg-purple-700 active:scale-95 text-white font-bold text-xs rounded-md shadow-sm transition flex items-center gap-1">
+              <span>Auto-Fix All Empty Slots with AI</span> 🪄
+            </button>
+            <button type="button" onclick="runAIScheduleAudit()" class="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white font-bold text-xs rounded-md shadow-sm transition flex items-center gap-1">
+              <span>Run AI Schedule Audit</span> 🧠
+            </button>
+          </div>
+        </div>
+        <div id="aiAuditResults" class="hidden p-3 bg-white rounded-lg border border-indigo-100 text-xs space-y-1.5 text-slate-700 shadow-sm"></div>
+      </div>
+
+      <!-- STANDARD TAB 5 HEADER -->
+      <header id="tab5MainHeader" class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 border-b pb-2.5 w-full bg-white p-3.5 rounded-xl border border-slate-200 shadow-sm">
+        <div>
+          <div class="flex items-center gap-2">
+            <h2 class="text-base font-bold text-slate-950 flex items-center gap-2">
+              <span class="text-indigo-600">🗓️</span> Generated Timetable View
+            </h2>
+            <span id="timetableLockBadge" class="hidden px-2.5 py-0.5 bg-amber-100 text-amber-900 border border-amber-300 font-extrabold text-[11px] rounded-full flex items-center gap-1">
+              <span>🔒 Locked</span>
+            </span>
+          </div>
+          <p class="text-xs text-slate-500" id="timetableSubtitle">Live weekly schedules.</p>
+        </div>
+        <div class="section-controls flex flex-wrap gap-2 w-full sm:w-auto justify-between sm:justify-end no-print">
+          <button type="button" id="adminLockToggleBtn" onclick="toggleTimetableLock()" class="admin-only bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-300 active:scale-95 px-3 py-1.5 rounded-md text-xs font-bold transition shadow-sm flex items-center gap-1">
+            <span id="lockBtnIcon">🔒</span> <span id="lockBtnText">Lock Timetable</span>
+          </button>
+          <button type="button" id="generateTimetableBtn" onclick="buildAndRenderTimetables()" class="admin-only bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white px-3.5 py-1.5 rounded-md text-xs font-semibold transition shadow-sm">
+            Generate Timetable ⚡
+          </button>
+          <button type="button" onclick="openAIAssistantModal()" class="bg-purple-600 hover:bg-purple-700 active:scale-95 text-white px-3.5 py-1.5 rounded-md text-xs font-semibold transition shadow-sm flex items-center gap-1">
+            <span>Substitute Finder</span> 🔍
+          </button>
+          <button type="button" onclick="printTimetables('student')" class="bg-indigo-50 text-indigo-700 hover:bg-indigo-100 border border-indigo-200 active:scale-95 px-3 py-1.5 rounded-md text-xs font-semibold transition">
+            Print Divisions 🖨️
+          </button>
+          <button type="button" onclick="printTimetables('teacher')" class="bg-teal-50 text-teal-700 hover:bg-teal-100 border border-teal-200 active:scale-95 px-3 py-1.5 rounded-md text-xs font-semibold transition">
+            Print Teachers 🖨️
+          </button>
+        </div>
+      </header>
+
+      <!-- STANDARD SUB-TAB NAVIGATION -->
+      <div id="standardSubTabNav" class="tab-container flex border-b border-slate-200 pb-1 no-print w-full">
+        <button id="tabClassBtn" onclick="switchTimetableTab('class')" class="px-4 py-2 border-b-2 border-indigo-600 text-indigo-600 font-semibold text-xs sm:text-sm active:scale-95 transition">Class View (Division wise)</button>
+        <button id="tabTeacherBtn" onclick="switchTimetableTab('teacher')" class="px-4 py-2 border-b-2 border-transparent text-slate-500 hover:text-slate-700 font-semibold text-xs sm:text-sm active:scale-95 transition ml-2">Teacher View</button>
+      </div>
+
+      <!-- DEDICATED CLEAN TIMETABLE FOCUS CONTROLS BAR (100% FULL WIDTH) -->
+      <div id="timetableFocusControlsBar" class="hidden flex flex-col sm:flex-row justify-between items-center gap-3 border-b border-slate-200 pb-3 mb-2 no-print bg-slate-50/95 p-3 rounded-xl w-full">
+        <div class="flex items-center gap-2">
+          <button id="focusTabClassBtn" onclick="switchTimetableTab('class')" class="px-4 py-2 rounded-lg font-bold text-xs sm:text-sm shadow-sm transition active:scale-95 bg-indigo-600 text-white">
+            Class View (Division wise)
+          </button>
+          <button id="focusTabTeacherBtn" onclick="switchTimetableTab('teacher')" class="px-4 py-2 rounded-lg font-bold text-xs sm:text-sm shadow-sm transition active:scale-95 bg-white text-slate-700 border border-slate-300 hover:bg-slate-100">
+            Teacher View
+          </button>
+        </div>
+        
+        <div class="flex items-center gap-2">
+          <button type="button" onclick="loadDatabaseFromFirebase(true)" title="Force Refresh from Cloud" class="px-3 py-2 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 font-bold rounded-lg text-xs transition active:scale-95 shadow-sm flex items-center gap-1.5">
+            <span>Refresh Cloud</span> 🔄
+          </button>
+          <button type="button" onclick="exitTimetableFocusMode()" title="Exit Clean View" class="px-3.5 py-2 bg-slate-800 hover:bg-slate-900 text-white font-bold rounded-lg text-xs transition active:scale-95 shadow-sm flex items-center gap-1.5">
+            <span>Exit View</span> 🔙
+          </button>
+        </div>
+      </div>
+
+      <!-- TIMETABLE CONTAINERS (100% FLUID RESPONSIVE GRID) -->
+      <div id="classTimetableContainer" class="grid grid-cols-1 xl:grid-cols-2 gap-3.5 w-full">
+        <div class="col-span-full text-center py-8 text-slate-400 text-sm">
+          Loading timetable...
+        </div>
+      </div>
+
+      <div id="teacherTimetableContainer" class="grid grid-cols-1 xl:grid-cols-2 gap-3.5 hidden w-full">
+        <div class="col-span-full text-center py-8 text-slate-400 text-sm">
+          Loading timetable...
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- MODAL: INTERACTIVE PERIOD SLOT EDITOR -->
   <div id="slotEditModal" class="modal-overlay fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[2100] flex items-center justify-center p-3 hidden no-print">
-    <div class="bg-white rounded-2xl shadow-2xl border border-slate-200 max-w-lg w-full p-5 space-y-4">
+    <div class="bg-white rounded-2xl shadow-2xl border border-slate-200 max-w-lg w-full p-5 space-y-3.5">
       <div class="flex items-center justify-between border-b pb-2.5">
         <h3 class="text-base font-bold text-indigo-950 flex items-center gap-2" id="slotEditModalTitle">
           <span>✏️</span> Edit Timetable Period
@@ -705,7 +706,7 @@
       <div class="space-y-3 text-xs sm:text-sm">
         <div class="bg-indigo-50/60 p-2.5 rounded-lg border border-indigo-100 flex justify-between items-center text-xs font-semibold text-indigo-900">
           <span id="slotEditDayLabel">Monday</span>
-          <span id="slotEditPeriodLabel">Period 1 (09:20 - 10:00)</span>
+          <span id="slotEditPeriodLabel">Period 1 (09:30 - 10:10)</span>
         </div>
 
         <!-- LIVE CONFLICT / ALLOTMENT CONCERN BANNER -->
@@ -836,7 +837,7 @@
 
   <!-- MODAL: LOGIN / AUTH OVERLAY -->
   <div id="loginOverlay" class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-[2000] flex items-center justify-center p-4 hidden no-print">
-    <div class="bg-white rounded-2xl shadow-2xl border border-slate-200 max-w-md w-full p-6 sm:p-8 space-y-6">
+    <div class="bg-white rounded-2xl shadow-2xl border border-slate-200 max-w-md w-full p-6 sm:p-8 space-y-5">
       <div class="text-center space-y-1">
         <div class="w-12 h-12 bg-indigo-600 text-white rounded-xl flex items-center justify-center mx-auto text-2xl font-black shadow-lg">
           🔐
@@ -848,12 +849,12 @@
       <form id="loginForm" onsubmit="handleLoginSubmit(event)" class="space-y-4">
         <div>
           <label class="block text-xs font-bold text-slate-700 mb-1" for="loginUsername">Username</label>
-          <input type="text" id="loginUsername" required placeholder="admin or user" class="w-full px-3 py-2.5 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 font-semibold text-slate-800">
+          <input type="text" id="loginUsername" required placeholder="admin or user" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 font-semibold text-slate-800">
         </div>
 
         <div>
           <label class="block text-xs font-bold text-slate-700 mb-1" for="loginPassword">Password</label>
-          <input type="password" id="loginPassword" required placeholder="••••••••" class="w-full px-3 py-2.5 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 font-semibold text-slate-800">
+          <input type="password" id="loginPassword" required placeholder="••••••••" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 font-semibold text-slate-800">
         </div>
 
         <div class="flex items-center justify-between text-xs">
@@ -863,7 +864,7 @@
           </label>
         </div>
 
-        <div id="loginErrorMsg" class="hidden text-xs text-red-600 font-bold bg-red-50 p-2.5 rounded-lg border border-red-200"></div>
+        <div id="loginErrorMsg" class="hidden text-xs text-red-600 font-bold bg-red-50 p-2 rounded-lg border border-red-200"></div>
 
         <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white font-bold py-2.5 rounded-lg shadow-md transition text-sm">
           Log In 🚀
@@ -888,7 +889,7 @@
         <button type="button" onclick="closeUserManagementModal()" class="text-slate-400 hover:text-slate-600 font-bold text-xl p-1 active:scale-95 transition">✕</button>
       </div>
 
-      <div class="p-6 overflow-y-auto space-y-5 flex-1 text-xs sm:text-sm">
+      <div class="p-6 overflow-y-auto space-y-4 flex-1 text-xs sm:text-sm">
         <form id="userCrudForm" onsubmit="handleUserSaveSubmit(event)" class="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-3">
           <input type="hidden" id="crudUserId" value="">
           <h4 class="font-bold text-slate-800 text-xs sm:text-sm flex items-center gap-1.5" id="userFormTitle">
@@ -975,7 +976,7 @@
             <h4 class="text-sm font-bold text-slate-700">Allotted Classes & Subjects</h4>
             <button type="button" onclick="addModalAllocationRow()" title="Add allocation row" class="bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white w-9 h-9 rounded-full flex items-center justify-center shadow-md transition font-bold text-xl">+</button>
           </div>
-          <div id="modalAllocationsContainer" class="space-y-2.5"></div>
+          <div id="modalAllocationsContainer" class="space-y-2"></div>
         </div>
       </div>
 
@@ -1022,10 +1023,10 @@
           <div>
             <label class="block text-[10px] font-bold text-slate-600 uppercase mb-1">Period</label>
             <select id="subPeriod" onchange="findAISubstitutes()" class="w-full px-2.5 py-1.5 border border-slate-300 rounded-md bg-white text-xs font-semibold">
-              <option value="0">P1 (09:20-10:00)</option>
-              <option value="1">P2 (10:00-10:40)</option>
-              <option value="2">P3 (10:50-11:30)</option>
-              <option value="3">P4 (11:30-12:10)</option>
+              <option value="0">P1 (09:30-10:10)</option>
+              <option value="1">P2 (10:10-10:50)</option>
+              <option value="2">P3 (11:00-11:40)</option>
+              <option value="3">P4 (11:40-12:20)</option>
               <option value="4">P5 (01:10-01:50)</option>
               <option value="5">P6 (01:50-02:30)</option>
               <option value="6">P7 (02:40-03:20)</option>
@@ -1141,8 +1142,9 @@
       "PE": 1, "AE": 1, "WE": 1, "IT": 1, "SV/LIB": 1
     };
     
+    // UPDATED REVISED PERIOD TIMINGS
     const PERIOD_TIMES = [
-      "09:20-10:00", "10:00-10:40", "10:50-11:30", "11:30-12:10", "01:10-01:50", "01:50-02:30", "02:40-03:20"
+      "09:30-10:10", "10:10-10:50", "11:00-11:40", "11:40-12:20", "01:10-01:50", "01:50-02:30", "02:40-03:20"
     ];
     const DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri"];
 
@@ -1539,8 +1541,7 @@
 
       if (roleBadge) {
         roleBadge.textContent = isAdmin ? "Admin" : "User";
-        roleBadge.className = isAdmin 
-          ? "bg-amber-500 text-slate-950 px-2 py-0.5 rounded text-[10px] font-extrabold uppercase"
+        roleBadge.className = isAdmin           ? "bg-amber-500 text-slate-950 px-2 py-0.5 rounded text-[10px] font-extrabold uppercase"
           : "bg-indigo-700 text-white px-2 py-0.5 rounded text-[10px] font-extrabold uppercase";
       }
 
@@ -3596,7 +3597,7 @@
           : `${filledCount}/35 (${35 - filledCount} Empty ⚠️)`;
 
         let cardHtml = `
-          <div class="class-timetable-card bg-slate-50 p-3 sm:p-4 rounded-lg border border-slate-200 shadow-sm space-y-2.5 w-full">
+          <div class="class-timetable-card bg-slate-50 p-3 sm:p-4 rounded-lg border border-slate-200 shadow-sm space-y-2 w-full">
             <div class="flex justify-between items-center border-b pb-2">
               <div class="flex items-center gap-2">
                 <h3 class="text-sm font-bold text-indigo-950">Division Class: ${c}</h3>
@@ -3717,7 +3718,7 @@
         const badgeText = `${allottedPeriods} / ${targetPeriods} Periods`;
 
         let cardHtml = `
-          <div class="teacher-timetable-card bg-slate-50 p-3 sm:p-4 rounded-lg border border-slate-200 shadow-sm space-y-2.5 w-full">
+          <div class="teacher-timetable-card bg-slate-50 p-3 sm:p-4 rounded-lg border border-slate-200 shadow-sm space-y-2 w-full">
             <div class="flex justify-between items-center border-b pb-2">
               <div class="flex items-center gap-2">
                 <h3 class="text-sm font-bold text-slate-900">Teacher: ${t}</h3>
@@ -3947,3 +3948,4 @@
   </script>
 </body>
 </html>
+
