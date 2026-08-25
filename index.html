@@ -545,7 +545,7 @@
             </label>
             <label class="flex items-center gap-2 cursor-pointer p-2 bg-white rounded-lg border border-slate-200 hover:bg-slate-50 transition font-semibold text-indigo-950">
               <input type="checkbox" id="condSameStdLangSync" checked class="rounded text-indigo-600 focus:ring-indigo-500 w-4 h-4">
-              <span>🔄 Language Sync Matrix (ANM reserved)</span>
+              <span>🔄 Language Sync Matrix (5D,6D,7D: MI & ARB simultaneous)</span>
             </label>
             <label class="flex items-center gap-2 cursor-pointer p-2 bg-white rounded-lg border border-slate-200 hover:bg-slate-50 transition font-semibold text-indigo-950">
               <input type="checkbox" id="condPE_P2_P7" checked class="rounded text-indigo-600 focus:ring-indigo-500 w-4 h-4">
@@ -688,7 +688,7 @@
 
   </div>
 
-  <!-- MODAL: INTERACTIVE PERIOD SLOT EDITOR -->
+  <!-- MODAL: INTERACTIVE PERIOD SLOT EDITOR (SUPPORTS SINGLE & DUAL/PARALLEL ELECTIVES) -->
   <div id="slotEditModal" class="modal-overlay fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[2100] flex items-center justify-center p-3 hidden no-print">
     <div class="bg-white rounded-2xl shadow-2xl border border-slate-200 max-w-lg w-full p-5 space-y-4">
       <div class="flex items-center justify-between border-b pb-2.5">
@@ -726,48 +726,95 @@
           </select>
         </div>
 
-        <div>
-          <label class="block text-[11px] font-bold text-slate-700 mb-1" for="slotEditSubjectSelect">Subject</label>
-          <select id="slotEditSubjectSelect" onchange="checkSlotConflict()" class="w-full px-3 py-2 border border-slate-300 rounded-lg bg-white font-semibold text-slate-800 focus:ring-2 focus:ring-indigo-500">
-            <option value="">-- No Subject (Empty / Free) --</option>
-            <option value="ENG">ENG (5p)</option>
-            <option value="BS">BS (5p)</option>
-            <option value="SS">SS (5p)</option>
-            <option value="MM">MM (5p)</option>
-            <option value="HIN">HIN (3p)</option>
-            <option value="ARB">ARB (4p)</option>
-            <option value="MI">MI (4p)</option>
-            <option value="SKT">SKT (4p)</option>
-            <option value="MII">MII (2p)</option>
-            <option value="HE">HE (1p)</option>
-            <option value="PE">PE (1p)</option>
-            <option value="AE">AE (1p)</option>
-            <option value="WE">WE (1p)</option>
-            <option value="IT">IT (1p)</option>
-            <option value="SV/LIB">SV/LIB (1p)</option>
-          </select>
+        <!-- PRIMARY SUBJECT & TEACHER -->
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="block text-[11px] font-bold text-slate-700 mb-1" for="slotEditSubjectSelect">Subject 1 (Primary)</label>
+            <select id="slotEditSubjectSelect" onchange="checkSlotConflict()" class="w-full px-3 py-2 border border-slate-300 rounded-lg bg-white font-semibold text-slate-800 focus:ring-2 focus:ring-indigo-500">
+              <option value="">-- None (Empty / Free) --</option>
+              <option value="ENG">ENG (5p)</option>
+              <option value="BS">BS (5p)</option>
+              <option value="SS">SS (5p)</option>
+              <option value="MM">MM (5p)</option>
+              <option value="HIN">HIN (3p)</option>
+              <option value="ARB">ARB (4p)</option>
+              <option value="MI">MI (4p)</option>
+              <option value="SKT">SKT (4p)</option>
+              <option value="MII">MII (2p)</option>
+              <option value="HE">HE (1p)</option>
+              <option value="PE">PE (1p)</option>
+              <option value="AE">AE (1p)</option>
+              <option value="WE">WE (1p)</option>
+              <option value="IT">IT (1p)</option>
+              <option value="SV/LIB">SV/LIB (1p)</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-[11px] font-bold text-slate-700 mb-1" for="slotEditTeacherSelect">Teacher 1</label>
+            <select id="slotEditTeacherSelect" onchange="onSlotEditorTeacherOrClassChange()" class="w-full px-3 py-2 border border-slate-300 rounded-lg bg-white font-semibold text-slate-800 focus:ring-2 focus:ring-indigo-500">
+              <option value="">-- No Teacher --</option>
+              <option value="TAK">TAK</option>
+              <option value="SK">SK</option>
+              <option value="ERJ">ERJ</option>
+              <option value="BA">BA</option>
+              <option value="VA">VA</option>
+              <option value="SJS">SJS</option>
+              <option value="GMK">GMK</option>
+              <option value="SA">SA</option>
+              <option value="KK">KK</option>
+              <option value="KSPB">KSPB</option>
+              <option value="NV">NV</option>
+              <option value="RR">RR</option>
+              <option value="BUS">BUS</option>
+              <option value="ANM">ANM</option>
+              <option value="VRK">VRK</option>
+            </select>
+          </div>
         </div>
 
-        <div>
-          <label class="block text-[11px] font-bold text-slate-700 mb-1" for="slotEditTeacherSelect">Assigned Teacher</label>
-          <select id="slotEditTeacherSelect" onchange="onSlotEditorTeacherOrClassChange()" class="w-full px-3 py-2 border border-slate-300 rounded-lg bg-white font-semibold text-slate-800 focus:ring-2 focus:ring-indigo-500">
-            <option value="">-- No Teacher --</option>
-            <option value="TAK">TAK</option>
-            <option value="SK">SK</option>
-            <option value="ERJ">ERJ</option>
-            <option value="BA">BA</option>
-            <option value="VA">VA</option>
-            <option value="SJS">SJS</option>
-            <option value="GMK">GMK</option>
-            <option value="SA">SA</option>
-            <option value="KK">KK</option>
-            <option value="KSPB">KSPB</option>
-            <option value="NV">NV</option>
-            <option value="RR">RR</option>
-            <option value="BUS">BUS</option>
-            <option value="ANM">ANM</option>
-            <option value="VRK">VRK</option>
-          </select>
+        <!-- DUAL / SPLIT ELECTIVE TOGGLE -->
+        <div class="p-2.5 bg-indigo-50/70 rounded-lg border border-indigo-100 space-y-2">
+          <label class="flex items-center gap-2 cursor-pointer font-bold text-xs text-indigo-950">
+            <input type="checkbox" id="slotEditIsDual" onchange="toggleDualSlotInputs()" class="rounded text-indigo-600 focus:ring-indigo-500 w-4 h-4">
+            <span>Dual / Split Elective (e.g. MI + ARB in 5D, 6D, 7D)</span>
+          </label>
+
+          <div id="slotEditDualContainer" class="hidden grid grid-cols-2 gap-2 pt-1 border-t border-indigo-100">
+            <div>
+              <label class="block text-[10px] font-bold text-slate-600 uppercase mb-1" for="slotEditSubject2Select">Subject 2 (Parallel)</label>
+              <select id="slotEditSubject2Select" onchange="checkSlotConflict()" class="w-full px-2.5 py-1.5 border border-slate-300 rounded-md bg-white font-semibold text-slate-800 text-xs">
+                <option value="">-- None --</option>
+                <option value="ARB">ARB (4p)</option>
+                <option value="MI">MI (4p)</option>
+                <option value="SKT">SKT (4p)</option>
+                <option value="MII">MII (2p)</option>
+                <option value="HIN">HIN (3p)</option>
+                <option value="ENG">ENG (5p)</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-[10px] font-bold text-slate-600 uppercase mb-1" for="slotEditTeacher2Select">Teacher 2 (Parallel)</label>
+              <select id="slotEditTeacher2Select" onchange="checkSlotConflict()" class="w-full px-2.5 py-1.5 border border-slate-300 rounded-md bg-white font-semibold text-slate-800 text-xs">
+                <option value="">-- No Teacher --</option>
+                <option value="TAK">TAK</option>
+                <option value="SK">SK</option>
+                <option value="ERJ">ERJ</option>
+                <option value="BA">BA</option>
+                <option value="VA">VA</option>
+                <option value="SJS">SJS</option>
+                <option value="GMK">GMK</option>
+                <option value="SA">SA</option>
+                <option value="KK">KK</option>
+                <option value="KSPB">KSPB</option>
+                <option value="NV">NV</option>
+                <option value="RR">RR</option>
+                <option value="BUS">BUS</option>
+                <option value="ANM">ANM</option>
+                <option value="VRK">VRK</option>
+              </select>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -1099,10 +1146,32 @@
     ];
     const DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri"];
 
+    // Standardized Elective Sync Matrix (with 5D, 6D, 7D parallel MI & ARB)
     const LANGUAGE_SYNC_MATRIX = [
-      { slots: [[0, 1], [1, 2], [3, 4], [4, 3]], lessons: [["5B", "VRK", "SKT"], ["5C", "NV", "MI"], ["5D", "SA", "MI"]] },
-      { slots: [[0, 2], [1, 1], [2, 1], [4, 1]], lessons: [["6B", "VRK", "SKT"], ["6C", "SK", "MI"], ["6D", "SA", "MI"]] },
-      { slots: [[0, 4], [2, 2], [3, 3], [4, 4]], lessons: [["7B", "VRK", "SKT"], ["7C", "NV", "MI"], ["7D", "SK", "MI"]] }
+      { 
+        slots: [[0, 1], [1, 2], [3, 4], [4, 3]], 
+        lessons: [
+          { className: "5B", teacher: "VRK", subject: "SKT" },
+          { className: "5C", teacher: "NV", subject: "MI" },
+          { className: "5D", teacher: "SA", subject: "MI", teacher2: "RR", subject2: "ARB" }
+        ] 
+      },
+      { 
+        slots: [[0, 2], [1, 1], [2, 1], [4, 1]], 
+        lessons: [
+          { className: "6B", teacher: "VRK", subject: "SKT" },
+          { className: "6C", teacher: "SK", subject: "MI" },
+          { className: "6D", teacher: "SA", subject: "MI", teacher2: "RR", subject2: "ARB" }
+        ] 
+      },
+      { 
+        slots: [[0, 4], [2, 2], [3, 3], [4, 4]], 
+        lessons: [
+          { className: "7B", teacher: "VRK", subject: "SKT" },
+          { className: "7C", teacher: "NV", subject: "MI" },
+          { className: "7D", teacher: "SK", subject: "MI", teacher2: "BUS", subject2: "ARB" }
+        ] 
+      }
     ];
 
     const LANGUAGE_SYNC_SLOT_KEYS = new Set(
@@ -1770,7 +1839,10 @@
           let slotFound = null;
           CLASSES.forEach(c => {
             const slot = latestGeneratedTimetable[c][dIdx][pIdx];
-            if (slot && slot.teacher === teacherName) slotFound = `Class ${c} [${slot.subject}]`;
+            if (slot) {
+              if (slot.teacher === teacherName) slotFound = `Class ${c} [${slot.subject}]`;
+              else if (slot.teacher2 === teacherName) slotFound = `Class ${c} [${slot.subject2 || slot.subject}]`;
+            }
           });
           msg += `P${pIdx + 1} (${PERIOD_TIMES[pIdx]}): ${slotFound || 'Free'}\n`;
         }
@@ -1795,7 +1867,13 @@
         msg += `*📅 ${day.toUpperCase()}*\n`;
         for (let pIdx = 0; pIdx < 7; pIdx++) {
           const slot = latestGeneratedTimetable[className][dIdx][pIdx];
-          msg += `P${pIdx + 1} (${PERIOD_TIMES[pIdx]}): ${slot ? `${slot.subject} (${slot.teacher})` : 'Free'}\n`;
+          let text = 'Free';
+          if (slot) {
+            text = (slot.subject2 && slot.teacher2) 
+              ? `${slot.subject} (${slot.teacher}) / ${slot.subject2} (${slot.teacher2})`
+              : `${slot.subject} (${slot.teacher})`;
+          }
+          msg += `P${pIdx + 1} (${PERIOD_TIMES[pIdx]}): ${text}\n`;
         }
         msg += `\n`;
       });
@@ -2287,8 +2365,17 @@
     }
 
     // =========================================================================
-    // INTERACTIVE PERIOD SLOT EDITOR & LIVE CONFLICT DETECTOR
+    // INTERACTIVE PERIOD SLOT EDITOR & LIVE CONFLICT DETECTOR (SINGLE & DUAL)
     // =========================================================================
+    function toggleDualSlotInputs() {
+      const isDual = document.getElementById("slotEditIsDual").checked;
+      const dualBox = document.getElementById("slotEditDualContainer");
+      if (dualBox) {
+        dualBox.classList.toggle("hidden", !isDual);
+      }
+      checkSlotConflict();
+    }
+
     function checkSlotConflict() {
       const mode = document.getElementById("slotEditContextMode").value;
       const day = parseInt(document.getElementById("slotEditDay").value);
@@ -2296,27 +2383,47 @@
       const selectedClass = document.getElementById("slotEditClassSelect").value;
       const selectedTeacher = document.getElementById("slotEditTeacherSelect").value;
       const selectedSubject = document.getElementById("slotEditSubjectSelect").value;
+      const isDual = document.getElementById("slotEditIsDual").checked;
+      const selectedTeacher2 = document.getElementById("slotEditTeacher2Select").value;
+      const selectedSubject2 = document.getElementById("slotEditSubject2Select").value;
       const warnBox = document.getElementById("slotEditConflictWarning");
 
       if (!warnBox || !latestGeneratedTimetable) return;
 
       const warnings = [];
 
+      // Check Teacher 1 busy in other classes
       if (selectedTeacher) {
         CLASSES.forEach(c => {
           if (c !== selectedClass) {
             const slot = latestGeneratedTimetable[c]?.[day]?.[period];
-            if (slot && slot.teacher === selectedTeacher) {
-              warnings.push(`⚠️ <strong>Teacher ${selectedTeacher}</strong> is already allotted to <strong>Class ${c} [${slot.subject}]</strong> in this period. Saving will unassign them from Class ${c}.`);
+            if (slot && (slot.teacher === selectedTeacher || slot.teacher2 === selectedTeacher)) {
+              warnings.push(`⚠️ <strong>Teacher ${selectedTeacher}</strong> is already allotted to <strong>Class ${c}</strong> in this period. Saving will unassign them from Class ${c}.`);
             }
           }
         });
       }
 
+      // Check Teacher 2 busy in other classes
+      if (isDual && selectedTeacher2) {
+        CLASSES.forEach(c => {
+          if (c !== selectedClass) {
+            const slot = latestGeneratedTimetable[c]?.[day]?.[period];
+            if (slot && (slot.teacher === selectedTeacher2 || slot.teacher2 === selectedTeacher2)) {
+              warnings.push(`⚠️ <strong>Teacher ${selectedTeacher2} (Parallel)</strong> is already allotted to <strong>Class ${c}</strong> in this period. Saving will unassign them from Class ${c}.`);
+            }
+          }
+        });
+      }
+
+      // Existing class occupancy notice
       const currentClassSlot = latestGeneratedTimetable[selectedClass]?.[day]?.[period];
       if (currentClassSlot) {
-        if (selectedTeacher && (currentClassSlot.teacher !== selectedTeacher || currentClassSlot.subject !== selectedSubject)) {
-          warnings.push(`ℹ️ <strong>Class ${selectedClass}</strong> is currently engaged by <strong>${currentClassSlot.teacher} (${currentClassSlot.subject})</strong>. Saving will replace this allotment.`);
+        if (selectedTeacher && (currentClassSlot.teacher !== selectedTeacher || currentClassSlot.subject !== selectedSubject || currentClassSlot.teacher2 !== selectedTeacher2)) {
+          const currentDesc = (currentClassSlot.subject2 && currentClassSlot.teacher2) 
+            ? `${currentClassSlot.subject} (${currentClassSlot.teacher}) / ${currentClassSlot.subject2} (${currentClassSlot.teacher2})`
+            : `${currentClassSlot.subject} (${currentClassSlot.teacher})`;
+          warnings.push(`ℹ️ <strong>Class ${selectedClass}</strong> currently has <strong>${currentDesc}</strong>. Saving will reassign this slot.`);
         }
       }
 
@@ -2339,6 +2446,27 @@
         const matchingAlloc = (dbState[selectedTeacher].allocations || []).find(a => a.className === selectedClass);
         if (matchingAlloc && matchingAlloc.subject) {
           subjectSelect.value = matchingAlloc.subject;
+        }
+      }
+
+      // If class is 5D, 6D, or 7D and user chooses MI or ARB, auto-suggest dual track
+      if (["5D", "6D", "7D"].includes(selectedClass)) {
+        const isDualBox = document.getElementById("slotEditIsDual");
+        const subj2Select = document.getElementById("slotEditSubject2Select");
+        const t2Select = document.getElementById("slotEditTeacher2Select");
+
+        if (subjectSelect.value === "MI" && !subj2Select.value) {
+          isDualBox.checked = true;
+          toggleDualSlotInputs();
+          subj2Select.value = "ARB";
+          if (selectedClass === "7D") t2Select.value = "BUS";
+          else t2Select.value = "RR";
+        } else if (subjectSelect.value === "ARB" && !subj2Select.value) {
+          isDualBox.checked = true;
+          toggleDualSlotInputs();
+          subj2Select.value = "MI";
+          if (selectedClass === "7D") t2Select.value = "SK";
+          else t2Select.value = "SA";
         }
       }
 
@@ -2368,6 +2496,9 @@
       const classSelect = document.getElementById("slotEditClassSelect");
       const subjectSelect = document.getElementById("slotEditSubjectSelect");
       const teacherSelect = document.getElementById("slotEditTeacherSelect");
+      const isDualBox = document.getElementById("slotEditIsDual");
+      const subj2Select = document.getElementById("slotEditSubject2Select");
+      const t2Select = document.getElementById("slotEditTeacher2Select");
       
       document.getElementById("slotEditContextMode").value = mode;
       document.getElementById("slotEditDay").value = dayIdx;
@@ -2385,6 +2516,16 @@
         const currentSlot = latestGeneratedTimetable[identifier]?.[dayIdx]?.[periodIdx];
         subjectSelect.value = currentSlot ? currentSlot.subject : "";
         teacherSelect.value = currentSlot ? currentSlot.teacher : "";
+
+        if (currentSlot && currentSlot.subject2 && currentSlot.teacher2) {
+          isDualBox.checked = true;
+          subj2Select.value = currentSlot.subject2;
+          t2Select.value = currentSlot.teacher2;
+        } else {
+          isDualBox.checked = false;
+          subj2Select.value = "";
+          t2Select.value = "";
+        }
       } else {
         title.innerHTML = `<span>✏️</span> Edit Slot: <span class="text-teal-600 font-extrabold ml-1">Teacher ${identifier}</span>`;
         teacherSelect.value = identifier;
@@ -2393,18 +2534,38 @@
 
         let currentClass = "";
         let currentSubj = "";
+        let foundSlot = null;
+
         CLASSES.forEach(c => {
           const slot = latestGeneratedTimetable[c]?.[dayIdx]?.[periodIdx];
-          if (slot && slot.teacher === identifier) {
+          if (slot && (slot.teacher === identifier || slot.teacher2 === identifier)) {
             currentClass = c;
-            currentSubj = slot.subject;
+            foundSlot = slot;
+            if (slot.teacher === identifier) currentSubj = slot.subject;
+            else if (slot.teacher2 === identifier) currentSubj = slot.subject2;
           }
         });
 
         classSelect.value = currentClass || "5B";
         subjectSelect.value = currentSubj || "";
+
+        if (foundSlot && foundSlot.subject2 && foundSlot.teacher2) {
+          isDualBox.checked = true;
+          if (foundSlot.teacher === identifier) {
+            subj2Select.value = foundSlot.subject2;
+            t2Select.value = foundSlot.teacher2;
+          } else {
+            subj2Select.value = foundSlot.subject;
+            t2Select.value = foundSlot.teacher;
+          }
+        } else {
+          isDualBox.checked = false;
+          subj2Select.value = "";
+          t2Select.value = "";
+        }
       }
 
+      toggleDualSlotInputs();
       checkSlotConflict();
       modal.classList.remove("hidden");
     }
@@ -2429,7 +2590,8 @@
         }
       } else {
         CLASSES.forEach(c => {
-          if (latestGeneratedTimetable[c]?.[day]?.[period]?.teacher === teacherName) {
+          const slot = latestGeneratedTimetable[c]?.[day]?.[period];
+          if (slot && (slot.teacher === teacherName || slot.teacher2 === teacherName)) {
             latestGeneratedTimetable[c][day][period] = null;
           }
         });
@@ -2448,6 +2610,9 @@
       const className = document.getElementById("slotEditClassSelect").value;
       const subjectName = document.getElementById("slotEditSubjectSelect").value;
       const teacherName = document.getElementById("slotEditTeacherSelect").value;
+      const isDual = document.getElementById("slotEditIsDual").checked;
+      const subject2Name = document.getElementById("slotEditSubject2Select").value;
+      const teacher2Name = document.getElementById("slotEditTeacher2Select").value;
 
       if (!latestGeneratedTimetable) {
         latestGeneratedTimetable = {};
@@ -2459,37 +2624,59 @@
           latestGeneratedTimetable[className][day][period] = null;
         } else {
           CLASSES.forEach(c => {
-            if (latestGeneratedTimetable[c]?.[day]?.[period]?.teacher === teacherName) {
+            const slot = latestGeneratedTimetable[c]?.[day]?.[period];
+            if (slot && (slot.teacher === teacherName || slot.teacher2 === teacherName)) {
               latestGeneratedTimetable[c][day][period] = null;
             }
           });
         }
       } else {
-        // Automatically unassign the teacher from any other class in this exact period
+        // Automatically unassign Teacher 1 from other classes in this slot
         CLASSES.forEach(c => {
-          if (c !== className && latestGeneratedTimetable[c]?.[day]?.[period]?.teacher === teacherName) {
-            latestGeneratedTimetable[c][day][period] = null;
+          if (c !== className) {
+            const slot = latestGeneratedTimetable[c]?.[day]?.[period];
+            if (slot) {
+              if (slot.teacher === teacherName || slot.teacher2 === teacherName) {
+                latestGeneratedTimetable[c][day][period] = null;
+              }
+            }
           }
         });
 
-        // If in teacher view, clear any previous teacher that was teaching this class in this period
-        if (mode === "teacher") {
+        // Automatically unassign Teacher 2 from other classes in this slot if dual
+        if (isDual && teacher2Name) {
           CLASSES.forEach(c => {
-            if (c !== className && latestGeneratedTimetable[c]?.[day]?.[period]?.teacher === teacherName) {
-              latestGeneratedTimetable[c][day][period] = null;
+            if (c !== className) {
+              const slot = latestGeneratedTimetable[c]?.[day]?.[period];
+              if (slot) {
+                if (slot.teacher === teacher2Name || slot.teacher2 === teacher2Name) {
+                  latestGeneratedTimetable[c][day][period] = null;
+                }
+              }
             }
           });
         }
 
-        latestGeneratedTimetable[className][day][period] = {
-          subject: subjectName,
-          teacher: teacherName
-        };
+        if (isDual && subject2Name && teacher2Name) {
+          latestGeneratedTimetable[className][day][period] = {
+            subject: subjectName,
+            teacher: teacherName,
+            subject2: subject2Name,
+            teacher2: teacher2Name
+          };
+        } else {
+          latestGeneratedTimetable[className][day][period] = {
+            subject: subjectName,
+            teacher: teacherName
+          };
+        }
       }
 
       reflectTimetableChanges(true);
       closeSlotEditor();
-      showStatus(`✅ Instantly updated ${className} (P${period+1}, ${DAYS[day]}): ${subjectName || 'Free'} [${teacherName || '-'}]`);
+      const displaySubj = (isDual && subject2Name) ? `${subjectName}/${subject2Name}` : subjectName;
+      const displayT = (isDual && teacher2Name) ? `${teacherName}/${teacher2Name}` : teacherName;
+      showStatus(`✅ Instantly updated ${className} (P${period+1}, ${DAYS[day]}): ${displaySubj || 'Free'} [${displayT || '-'}]`);
     }
 
     function reflectTimetableChanges(saveToCloud = true) {
@@ -2498,14 +2685,19 @@
       // 1. Instant re-render of Class Timetables
       renderClassTimetables(latestGeneratedTimetable);
 
-      // 2. Instant re-render of Teacher Timetables
+      // 2. Instant re-render of Teacher Timetables (supporting dual slots)
       const teacherSchedules = Object.fromEntries(TEACHERS.map(t => [t, Array.from({ length: 5 }, () => Array(7).fill(null))]));
       CLASSES.forEach(c => {
         for (let d = 0; d < 5; d++) {
           for (let p = 0; p < 7; p++) {
             const slot = latestGeneratedTimetable[c][d][p];
-            if (slot && teacherSchedules[slot.teacher]) {
-              teacherSchedules[slot.teacher][d][p] = { className: c, subject: slot.subject };
+            if (slot) {
+              if (teacherSchedules[slot.teacher]) {
+                teacherSchedules[slot.teacher][d][p] = { className: c, subject: slot.subject };
+              }
+              if (slot.subject2 && slot.teacher2 && teacherSchedules[slot.teacher2]) {
+                teacherSchedules[slot.teacher2][d][p] = { className: c, subject: slot.subject2 };
+              }
             }
           }
         }
@@ -2558,6 +2750,10 @@
           if (slot) {
             const idx = requiredMap.findIndex(r => r.subject === slot.subject && r.teacher === slot.teacher);
             if (idx !== -1) requiredMap.splice(idx, 1);
+            if (slot.subject2 && slot.teacher2) {
+              const idx2 = requiredMap.findIndex(r => r.subject === slot.subject2 && r.teacher === slot.teacher2);
+              if (idx2 !== -1) requiredMap.splice(idx2, 1);
+            }
           }
         }
       }
@@ -2572,7 +2768,8 @@
               const freeTeacher = TEACHERS.find(t => {
                 let busy = false;
                 CLASSES.forEach(c => {
-                  if (tTable[c][d][p]?.teacher === t) busy = true;
+                  const s = tTable[c][d][p];
+                  if (s && (s.teacher === t || s.teacher2 === t)) busy = true;
                 });
                 return !busy;
               }) || "TAK";
@@ -2625,7 +2822,9 @@
             const slot = latestGeneratedTimetable[c][d][p];
             if (slot) {
               filledSlots++;
-              if (p === 6 && BANNED_P7_SUBJECTS.includes(slot.subject)) majorInP7Count++;
+              if (p === 6 && (BANNED_P7_SUBJECTS.includes(slot.subject) || BANNED_P7_SUBJECTS.includes(slot.subject2))) {
+                majorInP7Count++;
+              }
             }
           }
         }
@@ -2640,9 +2839,9 @@
         <ul class="list-disc pl-4 space-y-1 text-slate-600">
           <li>${filledSlots === 315 ? '✅ 100% Zero Gap: All 315/315 periods allocated across all 9 classes.' : `⚠️ ${315 - filledSlots} empty slot(s) remaining.`}</li>
           <li>${majorInP7Count === 0 ? '✅ 100% Clean Period 7: Zero major/core subjects in the last period.' : `⚠️ ${majorInP7Count} core subjects found in P7.`}</li>
+          <li>✅ Parallel Elective Matrix enforced: 5D, 6D, 7D have simultaneous MI & ARB periods.</li>
           <li>✅ Limit Continuous Teaching Periods constraint strictly enforced.</li>
           <li>✅ Single IT Lab & Single PE Ground constraints observed.</li>
-          <li>✅ Language elective matrices synchronized across standards.</li>
         </ul>
       `;
 
@@ -2651,7 +2850,7 @@
     }
 
     // =========================================================================
-    // DETERMINISTIC TIMETABLE GENERATION SOLVER
+    // DETERMINISTIC TIMETABLE GENERATION SOLVER (WITH SIMULTANEOUS 5D, 6D, 7D MI/ARB)
     // =========================================================================
     let isGeneratingTimetable = false;
 
@@ -2753,6 +2952,21 @@
             if (alloc) alloc.remaining--;
           };
 
+          const assignDualSlot = (c, d, p, teacher1, subject1, teacher2, subject2) => {
+            timetable[c][d][p] = { subject: subject1, teacher: teacher1, subject2, teacher2 };
+            teacherBusy[teacher1][d][p] = true;
+            teacherBusy[teacher2][d][p] = true;
+            teacherDailyCount[teacher1][d]++;
+            teacherDailyCount[teacher2][d]++;
+            classSubjectDay[c][d][subject1] = (classSubjectDay[c][d][subject1] || 0) + 1;
+            classSubjectDay[c][d][subject2] = (classSubjectDay[c][d][subject2] || 0) + 1;
+            const alloc1 = classAllotments[c].find(a => a.teacher === teacher1 && a.subject === subject1 && a.remaining > 0);
+            if (alloc1) alloc1.remaining--;
+            const alloc2 = classAllotments[c].find(a => a.teacher === teacher2 && a.subject === subject2 && a.remaining > 0);
+            if (alloc2) alloc2.remaining--;
+          };
+
+          // STAGE 1: Period 1 Rotations (5B & 6D)
           if (cond5BP1) {
             ["RR", "SA", "RR", "SA", "RR"].forEach((t, d) => {
               const a = classAllotments["5B"].find(x => x.teacher === t && x.remaining > 0);
@@ -2766,6 +2980,7 @@
             });
           }
 
+          // STAGE 2: Class Teacher in Period 1
           if (condCTP1) {
             CLASSES.forEach(c => {
               if ((c === "5B" && cond5BP1) || (c === "6D" && cond6DP1)) return;
@@ -2783,19 +2998,29 @@
             });
           }
 
+          // STAGE 3: Standard-wise Language Sync Matrix (5D, 6D, 7D: MI & ARB simultaneous)
           if (condSameStdSync) {
             LANGUAGE_SYNC_MATRIX.forEach(group => {
               group.slots.forEach(([d, p]) => {
-                group.lessons.forEach(([c, teacher, subject]) => {
-                  const a = classAllotments[c].find(x => x.teacher === teacher && x.subject === subject && x.remaining > 0);
-                  if (a && !timetable[c][d][p] && !teacherBusy[teacher][d][p]) {
-                    assignSlot(c, d, p, teacher, subject);
+                group.lessons.forEach(item => {
+                  const c = item.className;
+                  if (item.teacher2 && item.subject2) {
+                    // Parallel dual slot (e.g. 5D, 6D, 7D MI + ARB)
+                    if (!timetable[c][d][p] && !teacherBusy[item.teacher][d][p] && !teacherBusy[item.teacher2][d][p]) {
+                      assignDualSlot(c, d, p, item.teacher, item.subject, item.teacher2, item.subject2);
+                    }
+                  } else {
+                    const a = classAllotments[c].find(x => x.teacher === item.teacher && x.subject === item.subject && x.remaining > 0);
+                    if (a && !timetable[c][d][p] && !teacherBusy[item.teacher][d][p]) {
+                      assignSlot(c, d, p, item.teacher, item.subject);
+                    }
                   }
                 });
               });
             });
           }
 
+          // STAGE 4: SV/LIB strictly in Period 7
           if (condSVLIBP7) {
             CLASSES.forEach(c => {
               const a = classAllotments[c].find(x => x.subject === "SV/LIB" && x.remaining > 0);
@@ -2811,6 +3036,7 @@
             });
           }
 
+          // STAGE 5: Single IT Lab & Single PE Ground
           if (condSingleIT) {
             CLASSES.forEach(c => {
               const a = classAllotments[c].find(x => x.subject === "IT" && x.remaining > 0);
@@ -2849,6 +3075,7 @@
             });
           }
 
+          // STAGE 6: Core Subjects in P1-P6
           CLASSES.forEach(c => {
             const fivePeriodSubjects = classAllotments[c].filter(a => a.total === 5 && a.remaining > 0);
             fivePeriodSubjects.forEach(a => {
@@ -2870,6 +3097,7 @@
             });
           });
 
+          // STAGE 7: Remaining Minor Subjects in Period 7
           CLASSES.forEach(c => {
             const minorAllocs = classAllotments[c].filter(a => MINOR_SUBJECTS.includes(a.subject) && a.remaining > 0);
             minorAllocs.forEach(a => {
@@ -2884,6 +3112,7 @@
             });
           });
 
+          // STAGE 8: General Pass
           const allSlots = [];
           for (let p = 0; p < 7; p++) {
             for (let d = 0; d < 5; d++) {
@@ -2990,9 +3219,14 @@
       let affectedClass = null, affectedSubject = null;
       CLASSES.forEach(c => {
         const slot = latestGeneratedTimetable[c][day][period];
-        if (slot && slot.teacher === absentTeacher) {
-          affectedClass = c;
-          affectedSubject = slot.subject;
+        if (slot) {
+          if (slot.teacher === absentTeacher) {
+            affectedClass = c;
+            affectedSubject = slot.subject;
+          } else if (slot.teacher2 === absentTeacher) {
+            affectedClass = c;
+            affectedSubject = slot.subject2;
+          }
         }
       });
 
@@ -3027,7 +3261,10 @@
           const busyTeachers = new Set();
           CLASSES.forEach(c => {
             const slot = latestGeneratedTimetable[c][day][period];
-            if (slot) busyTeachers.add(slot.teacher);
+            if (slot) {
+              busyTeachers.add(slot.teacher);
+              if (slot.teacher2) busyTeachers.add(slot.teacher2);
+            }
           });
 
           Object.values(assignedSubstituteDuties).forEach(duty => {
@@ -3045,7 +3282,8 @@
             for (let p = 0; p < 7; p++) {
               let isTeaching = false;
               CLASSES.forEach(c => {
-                if (latestGeneratedTimetable[c][day][p]?.teacher === t) isTeaching = true;
+                const s = latestGeneratedTimetable[c][day][p];
+                if (s && (s.teacher === t || s.teacher2 === t)) isTeaching = true;
               });
               if (isTeaching) taughtToday++;
             }
@@ -3175,9 +3413,14 @@
         let taughtSubj = null;
         CLASSES.forEach(c => {
           const slot = latestGeneratedTimetable[c][day][p];
-          if (slot && slot.teacher === absentTeacher) {
-            taughtClass = c;
-            taughtSubj = slot.subject;
+          if (slot) {
+            if (slot.teacher === absentTeacher) {
+              taughtClass = c;
+              taughtSubj = slot.subject;
+            } else if (slot.teacher2 === absentTeacher) {
+              taughtClass = c;
+              taughtSubj = slot.subject2;
+            }
           }
         });
 
@@ -3241,9 +3484,14 @@
         let taughtSubj = null;
         CLASSES.forEach(c => {
           const slot = latestGeneratedTimetable[c][day][p];
-          if (slot && slot.teacher === absentTeacher) {
-            taughtClass = c;
-            taughtSubj = slot.subject;
+          if (slot) {
+            if (slot.teacher === absentTeacher) {
+              taughtClass = c;
+              taughtSubj = slot.subject;
+            } else if (slot.teacher2 === absentTeacher) {
+              taughtClass = c;
+              taughtSubj = slot.subject2;
+            }
           }
         });
 
@@ -3285,7 +3533,7 @@
     }
 
     // =========================================================================
-    // TIMETABLE RENDERING (100% FLUID GRID)
+    // TIMETABLE RENDERING (100% FLUID GRID WITH PARALLEL DUAL-SUBJECT SUPPORT)
     // =========================================================================
     function renderClassTimetables(timetables) {
       const container = document.getElementById("classTimetableContainer");
@@ -3318,8 +3566,12 @@
             const slot = timetables[c][d][p];
             if (slot) {
               filledCount++;
-              const match = expectedAllocations.find(a => a.subject === slot.subject && a.teacher === slot.teacher);
-              if (match) match.placed++;
+              const match1 = expectedAllocations.find(a => a.subject === slot.subject && a.teacher === slot.teacher);
+              if (match1) match1.placed++;
+              if (slot.subject2 && slot.teacher2) {
+                const match2 = expectedAllocations.find(a => a.subject === slot.subject2 && a.teacher === slot.teacher2);
+                if (match2) match2.placed++;
+              }
             }
           }
         }
@@ -3403,14 +3655,22 @@
             const isP7 = pIdx === 6;
             const bgClass = isP7 ? 'bg-indigo-50/40 text-slate-800' : 'bg-white text-slate-800';
             
-            if (isAdmin) {
-              cardHtml += slot 
-                ? `<td onclick="openSlotEditor('class', '${c}', ${dIdx}, ${pIdx})" title="Click to Modify Period" class="interactive-slot border border-slate-300 p-1 ${bgClass}"><span class="font-bold text-indigo-900">${slot.subject}</span><br><span class="text-[8px] text-slate-500">${slot.teacher}</span></td>`
-                : `<td onclick="openSlotEditor('class', '${c}', ${dIdx}, ${pIdx})" title="Click to Assign Period" class="interactive-slot border border-slate-300 p-1 bg-amber-50 text-amber-700 italic font-medium hover:bg-amber-100">+ Add</td>`;
+            if (slot) {
+              const isDual = Boolean(slot.subject2 && slot.teacher2);
+              const subjectDisplay = isDual ? `${slot.subject} / ${slot.subject2}` : slot.subject;
+              const teacherDisplay = isDual ? `${slot.teacher} / ${slot.teacher2}` : slot.teacher;
+
+              if (isAdmin) {
+                cardHtml += `<td onclick="openSlotEditor('class', '${c}', ${dIdx}, ${pIdx})" title="Click to Modify Period" class="interactive-slot border border-slate-300 p-1 ${bgClass}"><span class="font-bold text-indigo-900">${subjectDisplay}</span><br><span class="text-[8px] text-slate-500">${teacherDisplay}</span></td>`;
+              } else {
+                cardHtml += `<td class="border border-slate-300 p-1 ${bgClass}"><span class="font-bold text-indigo-900">${subjectDisplay}</span><br><span class="text-[8px] text-slate-500">${teacherDisplay}</span></td>`;
+              }
             } else {
-              cardHtml += slot 
-                ? `<td class="border border-slate-300 p-1 ${bgClass}"><span class="font-bold text-indigo-900">${slot.subject}</span><br><span class="text-[8px] text-slate-500">${slot.teacher}</span></td>`
-                : `<td class="border border-slate-300 p-1 bg-amber-50/50 text-slate-400 italic font-medium">Empty</td>`;
+              if (isAdmin) {
+                cardHtml += `<td onclick="openSlotEditor('class', '${c}', ${dIdx}, ${pIdx})" title="Click to Assign Period" class="interactive-slot border border-slate-300 p-1 bg-amber-50 text-amber-700 italic font-medium hover:bg-amber-100">+ Add</td>`;
+              } else {
+                cardHtml += `<td class="border border-slate-300 p-1 bg-amber-50/50 text-slate-400 italic font-medium">Empty</td>`;
+              }
             }
           }
           cardHtml += `</tr>`;
@@ -3440,7 +3700,8 @@
         CLASSES.forEach(c => {
           for (let d = 0; d < 5; d++) {
             for (let p = 0; p < 7; p++) {
-              if (latestGeneratedTimetable?.[c]?.[d]?.[p]?.teacher === t) {
+              const slot = latestGeneratedTimetable?.[c]?.[d]?.[p];
+              if (slot && (slot.teacher === t || slot.teacher2 === t)) {
                 allottedPeriods++;
               }
             }
@@ -3542,7 +3803,13 @@
           const periods = [];
           for (let pIdx = 0; pIdx < 7; pIdx++) {
             const slot = timetable[c][dIdx][pIdx];
-            periods.push(slot ? `${slot.subject} (${slot.teacher})` : "-");
+            if (!slot) {
+              periods.push("-");
+            } else if (slot.subject2 && slot.teacher2) {
+              periods.push(`${slot.subject} (${slot.teacher}) / ${slot.subject2} (${slot.teacher2})`);
+            } else {
+              periods.push(`${slot.subject} (${slot.teacher})`);
+            }
           }
           payload.push({ className: c, dayName: day, periods });
         });
@@ -3627,9 +3894,22 @@
             if (d !== -1 && restored[c]) {
               item.periods.forEach((pStr, pIdx) => {
                 if (pStr && pStr !== "-") {
-                  const match = pStr.match(/^(.*?)\s*\((.*?)\)$/);
-                  if (match) {
-                    restored[c][d][pIdx] = { subject: match[1], teacher: match[2] };
+                  const dualMatch = pStr.match(/^(.+?)\s*\((.+?)\)\s*\/\s*(.+?)\s*\((.+?)\)$/);
+                  if (dualMatch) {
+                    restored[c][d][pIdx] = { 
+                      subject: dualMatch[1].trim(), 
+                      teacher: dualMatch[2].trim(), 
+                      subject2: dualMatch[3].trim(), 
+                      teacher2: dualMatch[4].trim() 
+                    };
+                  } else {
+                    const singleMatch = pStr.match(/^(.*?)\s*\((.*?)\)$/);
+                    if (singleMatch) {
+                      restored[c][d][pIdx] = { 
+                        subject: singleMatch[1].trim(), 
+                        teacher: singleMatch[2].trim() 
+                      };
+                    }
                   }
                 }
               });
