@@ -1,8 +1,32 @@
+Here is the complete, redesigned single-file HTML code with an ultra-compact,
+high-density responsive layout optimized for all device sizes (mobile phones,
+tablets, laptops, and wide desktop screens).
+
+Key Compact Restructuring Enhancements:
+
+1.  High-Density Compact Design:
+      - Redundant vertical whitespace, oversized cards, and bulky paddings have
+        been condensed.
+      - All input controls, dropdowns, and buttons now feature a streamlined
+        compact form factor (h-7.5 / h-8 with crisp padding and micro-badges).
+2.  Adaptive Responsive Grids:
+      - Timetable cards adapt to 1 column on mobile, 2 columns on
+        tablets/laptops, and 3 columns on ultra-wide screens (grid-cols-1
+        lg:grid-cols-2 2xl:grid-cols-3 gap-2.5).
+      - Timetable table cells are compact, clean, and fit on screen with clear
+        dual-slot typography (MI/ARB, SA/RR).
+3.  Streamlined Navigation & Controls:
+      - Compact app dock with balanced micro-icons and clean labels.
+      - Criteria checkboxes styled into compact, space-saving cards.
+      - Retains the 09:30 AM – 03:20 PM updated period timings, 5D/6D/7D MI &
+        ARB simultaneous elective tracking, instant multi-view updates, and
+        absentee substitute coverage.
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Teacher Subject Distribution System</title>
   
   <!-- Suppress harmless developer notices -->
@@ -25,11 +49,27 @@
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
 
   <style>
+    /* Native Scrollbar Styling */
+    ::-webkit-scrollbar {
+      width: 4px;
+      height: 4px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #f1f5f9;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #94a3b8;
+    }
+
     /* NATIVE PRINT/PDF A4 LANDSCAPE FORMATTING */
     @media print {
       @page {
         size: A4 landscape;
-        margin: 6mm;
+        margin: 5mm;
       }
       
       body {
@@ -107,7 +147,7 @@
         box-shadow: none !important;
         background: white !important;
         padding: 0 !important;
-        margin: 0 0 8mm 0 !important;
+        margin: 0 0 6mm 0 !important;
       }
 
       body.print-teacher #tab1-content,
@@ -135,7 +175,7 @@
         box-shadow: none !important;
         background: white !important;
         padding: 0 !important;
-        margin: 0 0 8mm 0 !important;
+        margin: 0 0 6mm 0 !important;
       }
 
       .overflow-x-auto {
@@ -146,7 +186,7 @@
       table {
         table-layout: auto !important;
         width: 100% !important;
-        font-size: 8pt !important;
+        font-size: 7.5pt !important;
         border-collapse: collapse !important;
       }
 
@@ -167,123 +207,122 @@
 
       td, th {
         border: 1px solid #64748b !important;
-        padding: 4px 3px !important;
+        padding: 3px 2px !important;
       }
     }
 
     .interactive-slot {
       cursor: pointer;
-      transition: all 0.15s ease;
+      transition: all 0.12s ease;
     }
     .interactive-slot:hover {
-      box-shadow: inset 0 0 0 2px #6366f1;
-      transform: scale(1.02);
+      box-shadow: inset 0 0 0 1.5px #6366f1;
+      transform: scale(1.01);
       z-index: 5;
     }
   </style>
 </head>
-<body class="bg-slate-50 min-h-screen text-slate-800 font-sans pb-8 w-full print-default overflow-x-hidden">
+<body class="bg-slate-100/70 min-h-screen text-slate-800 font-sans pb-6 w-full print-default overflow-x-hidden text-xs">
 
   <!-- TOP PROGRESS BAR -->
   <div id="topProgressBar" class="fixed top-0 left-0 h-1 bg-gradient-to-r from-indigo-500 via-purple-500 to-emerald-500 z-[1000] transition-all duration-300 ease-out w-0 opacity-0 pointer-events-none"></div>
 
-  <!-- AUTHENTICATION STATUS HEADER (100% FULL WIDTH, ICONS ONLY) -->
-  <div id="authHeaderBar" class="bg-indigo-950 text-slate-200 text-xs px-3 py-1.5 flex justify-between items-center no-print w-full border-b border-indigo-900">
-    <div class="flex items-center gap-2">
-      <span id="roleBadge" title="User Role" class="bg-indigo-700 text-white px-2 py-0.5 rounded text-[11px] font-bold">👤 Staff</span>
-      <span id="authUserName" title="Logged in Account" class="font-bold flex items-center gap-1 text-slate-300">👤 Staff</span>
-      <span id="lockStatusHeaderBadge" class="hidden text-xs" title="Locked">🔒</span>
+  <!-- AUTHENTICATION STATUS HEADER (COMPACT HIGH-DENSITY DOCK) -->
+  <div id="authHeaderBar" class="bg-indigo-950 text-slate-200 px-3 py-1.5 flex justify-between items-center no-print w-full border-b border-indigo-900 sticky top-0 z-40 backdrop-blur-md">
+    <div class="flex items-center gap-1.5">
+      <span id="roleBadge" class="bg-indigo-700 text-white px-1.5 py-0.5 rounded text-[10px] font-extrabold uppercase tracking-wide">User</span>
+      <span id="authUserName" class="font-bold text-[11px] text-slate-300">Staff</span>
+      <span id="lockStatusHeaderBadge" class="hidden text-xs text-amber-400" title="Timetable Locked">🔒</span>
     </div>
-    <div class="flex items-center gap-2">
-      <button type="button" onclick="openAIAssistantModal()" title="Substitute Finder" class="p-1.5 bg-purple-800 hover:bg-purple-700 text-white rounded-lg text-sm transition active:scale-95">
-        ✨
+    <div class="flex items-center gap-1.5">
+      <button type="button" onclick="openAIAssistantModal()" title="Substitute Finder" class="p-1 bg-purple-800 hover:bg-purple-700 text-white rounded text-xs transition active:scale-95 flex items-center gap-1">
+        <span>✨</span> <span class="hidden sm:inline text-[10px] font-semibold">Substitutes</span>
       </button>
-      <button type="button" id="adminUserMgmtBtn" onclick="openUserManagementModal()" title="Manage Users" class="admin-only hidden p-1.5 bg-indigo-800 hover:bg-indigo-700 text-white rounded-lg text-sm transition active:scale-95">
-        👥
+      <button type="button" id="adminUserMgmtBtn" onclick="openUserManagementModal()" title="Manage Users" class="admin-only hidden p-1 bg-indigo-800 hover:bg-indigo-700 text-white rounded text-xs transition active:scale-95 flex items-center gap-1">
+        <span>👥</span> <span class="hidden sm:inline text-[10px] font-semibold">Users</span>
       </button>
-      <button type="button" onclick="logoutCurrentUser()" title="Logout" class="p-1.5 bg-red-600/80 hover:bg-red-600 text-white rounded-lg text-sm transition active:scale-95">
+      <button type="button" onclick="logoutCurrentUser()" title="Logout" class="p-1 bg-red-600/80 hover:bg-red-600 text-white rounded text-xs transition active:scale-95">
         🚪
       </button>
     </div>
   </div>
 
-  <!-- MAIN VIEWPORT (FLAT 100% WIDTH - ZERO CONTAINER NESTING) -->
-  <main class="w-full px-2 sm:px-4 py-2 space-y-2.5">
+  <!-- MAIN APP CONTAINER (100% FLUID FULL WIDTH) -->
+  <main class="w-full px-2 sm:px-3 lg:px-4 py-2 space-y-2">
     
     <!-- Title Header -->
-    <header id="mainAppHeader" class="text-center py-1 w-full">
-      <h1 class="text-xl sm:text-2xl font-black text-indigo-950">Teacher Subject Distribution System</h1>
-      <p class="text-[11px] text-slate-500">Live allocation visualizer & schedule planner (Firebase Powered 🔥 + Localized AI Slot Resolver ✨)</p>
+    <header id="mainAppHeader" class="text-center py-0.5 w-full">
+      <h1 class="text-lg sm:text-xl font-black text-indigo-950 tracking-tight">Teacher Subject Distribution System</h1>
+      <p class="text-[10px] text-slate-500">Live Allocation Planner & Timetable Engine (Firebase 🔥 + AI Auto-Resolver ✨)</p>
     </header>
 
-    <!-- NAVIGATION BAR (MOBILE-STYLE ICONS WITH LABELS UNDERNEATH) -->
-    <nav id="mainNavBarContainer" aria-label="Main Navigation" class="admin-only tab-navigation flex items-center justify-around sm:justify-center gap-1 sm:gap-4 py-1.5 px-2 border-y border-slate-200 bg-white w-full no-print">
-      <button type="button" data-main-tab="1" id="tab1-btn" onclick="switchMainTab(1)" title="Details & Form" class="flex flex-col items-center justify-center py-1 px-3 rounded-lg transition bg-indigo-600 text-white shadow-xs font-bold">
-        <span class="text-xl sm:text-2xl">📝</span>
-        <span class="text-[10px] sm:text-xs mt-0.5">Details</span>
+    <!-- NAVIGATION BAR (COMPACT MOBILE-STYLE DOCK) -->
+    <nav id="mainNavBarContainer" aria-label="Main Navigation" class="admin-only tab-navigation flex items-center justify-around sm:justify-center gap-1 sm:gap-2 py-1 px-2 border border-slate-200 bg-white rounded-lg shadow-2xs w-full no-print">
+      <button type="button" data-main-tab="1" id="tab1-btn" onclick="switchMainTab(1)" title="Details & Form" class="flex flex-col items-center justify-center py-1 px-2.5 rounded-md transition bg-indigo-600 text-white shadow-xs font-bold min-w-[54px]">
+        <span class="text-base sm:text-lg">📝</span>
+        <span class="text-[9px] mt-0.5">Details</span>
       </button>
-      <button type="button" data-main-tab="2" id="tab2-btn" onclick="switchMainTab(2)" title="Teachers Summary" class="flex flex-col items-center justify-center py-1 px-3 rounded-lg transition text-slate-600 hover:text-indigo-600 font-semibold">
-        <span class="text-xl sm:text-2xl">📊</span>
-        <span class="text-[10px] sm:text-xs mt-0.5">Teachers</span>
+      <button type="button" data-main-tab="2" id="tab2-btn" onclick="switchMainTab(2)" title="Teachers Summary" class="flex flex-col items-center justify-center py-1 px-2.5 rounded-md transition text-slate-600 hover:text-indigo-600 font-semibold min-w-[54px]">
+        <span class="text-base sm:text-lg">📊</span>
+        <span class="text-[9px] mt-0.5">Teachers</span>
       </button>
-      <button type="button" data-main-tab="3" id="tab3-btn" onclick="switchMainTab(3)" title="Students Allocation" class="flex flex-col items-center justify-center py-1 px-3 rounded-lg transition text-slate-600 hover:text-indigo-600 font-semibold">
-        <span class="text-xl sm:text-2xl">🎓</span>
-        <span class="text-[10px] sm:text-xs mt-0.5">Students</span>
+      <button type="button" data-main-tab="3" id="tab3-btn" onclick="switchMainTab(3)" title="Students Allocation" class="flex flex-col items-center justify-center py-1 px-2.5 rounded-md transition text-slate-600 hover:text-indigo-600 font-semibold min-w-[54px]">
+        <span class="text-base sm:text-lg">🎓</span>
+        <span class="text-[9px] mt-0.5">Students</span>
       </button>
-      <button type="button" data-main-tab="4" id="tab4-btn" onclick="switchMainTab(4)" title="Database Sync" class="flex flex-col items-center justify-center py-1 px-3 rounded-lg transition text-slate-600 hover:text-indigo-600 font-semibold">
-        <span class="text-xl sm:text-2xl">⚙️</span>
-        <span class="text-[10px] sm:text-xs mt-0.5">Database</span>
+      <button type="button" data-main-tab="4" id="tab4-btn" onclick="switchMainTab(4)" title="Database Sync" class="flex flex-col items-center justify-center py-1 px-2.5 rounded-md transition text-slate-600 hover:text-indigo-600 font-semibold min-w-[54px]">
+        <span class="text-base sm:text-lg">⚙️</span>
+        <span class="text-[9px] mt-0.5">Database</span>
       </button>
-      <button type="button" data-main-tab="5" id="tab5-btn" onclick="switchMainTab(5)" title="Timetable" class="flex flex-col items-center justify-center py-1 px-3 rounded-lg transition text-slate-600 hover:text-indigo-600 font-semibold">
-        <span class="text-xl sm:text-2xl">🗓️</span>
-        <span class="text-[10px] sm:text-xs mt-0.5">Timetable</span>
+      <button type="button" data-main-tab="5" id="tab5-btn" onclick="switchMainTab(5)" title="Timetable View" class="flex flex-col items-center justify-center py-1 px-2.5 rounded-md transition text-slate-600 hover:text-indigo-600 font-semibold min-w-[54px]">
+        <span class="text-base sm:text-lg">🗓️</span>
+        <span class="text-[9px] mt-0.5">Timetable</span>
       </button>
       
-      <div id="navDivider" class="h-8 w-[1px] bg-slate-200 mx-1"></div>
+      <div id="navDivider" class="h-6 w-[1px] bg-slate-200 mx-0.5"></div>
 
-      <button type="button" onclick="loadDatabaseFromFirebase(true)" title="Refresh Cloud" class="flex flex-col items-center justify-center py-1 px-3 rounded-lg transition text-slate-600 hover:text-indigo-600 font-semibold">
-        <span class="text-xl sm:text-2xl">🔥</span>
-        <span class="text-[10px] sm:text-xs mt-0.5">Refresh</span>
+      <button type="button" onclick="loadDatabaseFromFirebase(true)" title="Force Refresh" class="flex flex-col items-center justify-center py-1 px-2 rounded-md transition text-slate-600 hover:text-indigo-600 font-semibold">
+        <span class="text-base sm:text-lg">🔥</span>
+        <span class="text-[9px] mt-0.5">Refresh</span>
       </button>
-      <button type="button" id="fullscreenToggleBtn" onclick="toggleFullscreenView()" title="Toggle Screen" class="flex flex-col items-center justify-center py-1 px-3 rounded-lg transition text-slate-600 hover:text-indigo-600 font-semibold">
-        <span id="fullscreenIconSpan" class="text-xl sm:text-2xl">🖥️</span>
-        <span class="text-[10px] sm:text-xs mt-0.5">Screen</span>
+      <button type="button" id="fullscreenToggleBtn" onclick="toggleFullscreenView()" title="Toggle Screen" class="flex flex-col items-center justify-center py-1 px-2 rounded-md transition text-slate-600 hover:text-indigo-600 font-semibold">
+        <span id="fullscreenIconSpan" class="text-base sm:text-lg">🖥️</span>
+        <span class="text-[9px] mt-0.5">Screen</span>
       </button>
     </nav>
 
-    <!-- TAB 1: ALLOTMENT FORM (100% FULL WIDTH, FLAT) -->
-    <div id="tab1-content" data-tab-pane="1" class="tab-pane space-y-2.5 admin-only w-full">
-      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 py-2 border-b border-slate-200 w-full">
-        <div>
-          <h2 class="text-sm font-bold text-slate-900 flex items-center gap-1.5">
-            <span>📝</span> Teacher Distribution Configurator (35 periods/class)
-          </h2>
+    <!-- TAB 1: ALLOTMENT FORM (COMPACT 100% WIDTH) -->
+    <div id="tab1-content" data-tab-pane="1" class="tab-pane space-y-2 admin-only w-full">
+      <div class="flex flex-wrap justify-between items-center gap-1.5 py-1.5 px-2 bg-white rounded-lg border border-slate-200 shadow-2xs w-full">
+        <div class="flex items-center gap-1.5">
+          <span class="font-bold text-xs text-slate-900">📝 Distribution Setup</span>
+          <span class="text-[10px] text-slate-400 font-medium">(Target: 35 periods/division, 315 total)</span>
         </div>
-        <div class="flex items-center gap-2 w-full sm:w-auto justify-end">
-          <button type="button" onclick="loadBaselineData()" title="Load Standard Baseline Dataset" class="p-2 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-base rounded-lg border border-indigo-200 transition active:scale-95">
-            📋
+        <div class="flex items-center gap-1">
+          <button type="button" onclick="loadBaselineData()" title="Load Standard Baseline (315p)" class="p-1.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 rounded border border-indigo-200 transition active:scale-95 text-xs">
+            📋 Load Baseline
           </button>
-          <button type="button" onclick="resetFormForSelectedTeacher()" title="Clear Selected Teacher" class="p-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-base rounded-lg border border-slate-300 transition active:scale-95">
-            🧹
+          <button type="button" onclick="resetFormForSelectedTeacher()" title="Clear Selected Teacher" class="p-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded border border-slate-300 transition active:scale-95 text-xs">
+            🧹 Clear
           </button>
-          <button type="button" onclick="resetEntireSchoolForm()" title="Reset All School Allocations" class="p-2 bg-red-50 hover:bg-red-100 text-red-700 text-base rounded-lg border border-red-200 transition active:scale-95">
-            ⚠️
+          <button type="button" onclick="resetEntireSchoolForm()" title="Reset All School Allocations" class="p-1.5 bg-red-50 hover:bg-red-100 text-red-700 rounded border border-red-200 transition active:scale-95 text-xs">
+            ⚠️ Reset All
           </button>
         </div>
       </div>
 
-      <form id="distributionForm" class="space-y-3 w-full">
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-3 items-start w-full">
-          <div class="lg:col-span-4 p-3 bg-white border border-slate-200 rounded-lg space-y-2.5 w-full">
-            <div class="flex items-center justify-between border-b pb-1.5">
-              <span class="font-bold text-xs text-slate-800">1. Teacher & Charge</span>
-              <span id="teacherLoadBadge" class="hidden text-[10px] font-bold px-2 py-0.5 rounded-full bg-indigo-100 text-indigo-800">0 Periods</span>
+      <form id="distributionForm" class="space-y-2 w-full">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-2 items-start w-full">
+          <div class="lg:col-span-4 p-2.5 bg-white border border-slate-200 rounded-lg space-y-2 w-full shadow-2xs">
+            <div class="flex items-center justify-between border-b pb-1">
+              <span class="font-bold text-[11px] text-slate-800 uppercase tracking-wider">1. Teacher & Class Charge</span>
+              <span id="teacherLoadBadge" class="hidden text-[10px] font-extrabold px-1.5 py-0.2 rounded bg-indigo-100 text-indigo-800">0 Periods</span>
             </div>
 
-            <div class="space-y-2">
+            <div class="grid grid-cols-2 lg:grid-cols-1 gap-2">
               <div>
-                <label class="block text-[11px] font-bold text-slate-700 mb-0.5" for="teacher">Select Teacher</label>
-                <select id="teacher" required class="w-full px-2.5 py-1.5 border border-slate-300 rounded-md bg-white text-xs focus:ring-2 focus:ring-indigo-500 font-semibold text-slate-800">
+                <label class="block text-[10px] font-bold text-slate-600 mb-0.5" for="teacher">Teacher</label>
+                <select id="teacher" required class="w-full px-2 py-1 border border-slate-300 rounded bg-white text-xs font-semibold text-slate-800 h-8 focus:ring-1 focus:ring-indigo-500">
                   <option value="">-- Select Teacher --</option>
                   <option value="TAK">TAK</option>
                   <option value="SK">SK</option>
@@ -304,8 +343,8 @@
               </div>
 
               <div>
-                <label class="block text-[11px] font-bold text-slate-700 mb-0.5" for="classInCharge">Class In-Charge</label>
-                <select id="classInCharge" class="w-full px-2.5 py-1.5 border border-slate-300 rounded-md bg-white text-xs focus:ring-2 focus:ring-indigo-500 font-semibold text-slate-800">
+                <label class="block text-[10px] font-bold text-slate-600 mb-0.5" for="classInCharge">Class In-Charge</label>
+                <select id="classInCharge" class="w-full px-2 py-1 border border-slate-300 rounded bg-white text-xs font-semibold text-slate-800 h-8 focus:ring-1 focus:ring-indigo-500">
                   <option value="None">None</option>
                   <option value="5B">5B</option>
                   <option value="5C">5C</option>
@@ -321,76 +360,73 @@
             </div>
 
             <div id="teacherSummaryBox" class="bg-slate-50 p-2 rounded border border-slate-200 hidden space-y-0.5">
-              <p class="text-[10px] font-bold text-slate-700" id="summaryBoxTitle">Allocated Load Summary:</p>
-              <p class="text-[11px] text-slate-600 leading-snug" id="summaryBoxList">None</p>
+              <p class="text-[10px] font-bold text-slate-700" id="summaryBoxTitle">Assigned Load:</p>
+              <p class="text-[10px] text-slate-600 leading-tight" id="summaryBoxList">None</p>
             </div>
           </div>
 
-          <div class="lg:col-span-8 p-3 bg-white border border-slate-200 rounded-lg space-y-2 w-full">
-            <div class="flex items-center justify-between border-b pb-1.5">
-              <div>
-                <h3 class="text-xs font-bold text-slate-800">2. Subject Allocations</h3>
-              </div>
-              <button type="button" id="addAllocationBtn" title="Add Subject Allocation" class="p-1.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-md text-sm transition active:scale-95">
-                ➕
+          <div class="lg:col-span-8 p-2.5 bg-white border border-slate-200 rounded-lg space-y-1.5 w-full shadow-2xs">
+            <div class="flex items-center justify-between border-b pb-1">
+              <span class="font-bold text-[11px] text-slate-800 uppercase tracking-wider">2. Subject & Class Allotments</span>
+              <button type="button" id="addAllocationBtn" title="Add Subject Allocation" class="px-2 py-1 bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white rounded text-[11px] font-bold flex items-center gap-1 shadow-2xs transition">
+                <span>➕ Add Subject</span>
               </button>
             </div>
 
-            <div class="hidden sm:grid sm:grid-cols-12 gap-2 px-2 py-1 bg-slate-100 rounded text-[10px] font-bold text-slate-600 uppercase">
+            <div class="hidden sm:grid sm:grid-cols-12 gap-1.5 px-2 py-1 bg-slate-100 rounded text-[9px] font-extrabold text-slate-600 uppercase">
               <div class="sm:col-span-4">Class</div>
               <div class="sm:col-span-5">Subject</div>
               <div class="sm:col-span-2 text-center">Periods</div>
               <div class="sm:col-span-1 text-center">✕</div>
             </div>
 
-            <div id="allocationsContainer" class="space-y-1.5 max-h-[380px] overflow-y-auto pr-1"></div>
+            <div id="allocationsContainer" class="space-y-1 max-h-[300px] overflow-y-auto pr-0.5"></div>
 
-            <div id="emptyState" class="text-center py-6 text-slate-400 text-xs border border-dashed border-slate-200 rounded">
-              No allotments. Select teacher & click ➕
+            <div id="emptyState" class="text-center py-5 text-slate-400 text-xs border border-dashed border-slate-200 rounded">
+              Select teacher and click ➕ Add Subject.
             </div>
           </div>
         </div>
 
-        <div class="space-y-2 w-full">
-          <div id="statusMessage" class="text-xs font-semibold px-3 py-2 rounded-md hidden border flex items-center justify-between shadow-xs"></div>
+        <div class="space-y-1.5 w-full">
+          <div id="statusMessage" class="text-[11px] font-semibold px-3 py-1.5 rounded hidden border flex items-center justify-between shadow-2xs"></div>
 
-          <div class="flex items-center gap-2 w-full">
-            <button type="button" onclick="saveSelectedTeacherOnly()" title="Save Selected Teacher Only" class="flex-1 p-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-lg rounded-lg transition active:scale-95">
-              💾
+          <div class="grid grid-cols-2 gap-2 w-full">
+            <button type="button" onclick="saveSelectedTeacherOnly()" class="p-2 bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white font-bold rounded-lg text-xs shadow-2xs transition">
+              💾 Save Teacher
             </button>
-            <button type="submit" id="submitBtn" title="Save Full School Distribution" class="flex-1 p-2.5 bg-emerald-600 hover:bg-emerald-700 text-white text-lg rounded-lg transition active:scale-95">
-              🚀
+            <button type="submit" id="submitBtn" class="p-2 bg-emerald-600 hover:bg-emerald-700 active:scale-95 text-white font-bold rounded-lg text-xs shadow-2xs transition">
+              🚀 Save Full School
             </button>
           </div>
         </div>
       </form>
     </div>
 
-    <!-- TAB 2: LIVE TEACHERS SUMMARY TABLE (100% FULL WIDTH, FLAT) -->
-    <div id="tab2-content" data-tab-pane="2" class="tab-pane hidden admin-only w-full space-y-2">
-      <div class="flex justify-between items-center border-b pb-1">
-        <h2 class="text-sm font-bold text-slate-900 flex items-center gap-1.5">
-          <span class="text-indigo-600">📊</span> Live Teachers Summary Table
-        </h2>
+    <!-- TAB 2: LIVE TEACHERS SUMMARY TABLE (COMPACT 100% WIDTH) -->
+    <div id="tab2-content" data-tab-pane="2" class="tab-pane hidden admin-only w-full space-y-1.5">
+      <div class="flex justify-between items-center border-b pb-1 px-1">
+        <span class="font-bold text-xs text-slate-900">📊 Live Teachers Summary Table</span>
+        <span class="text-[10px] text-slate-500">Click name to edit</span>
       </div>
       
-      <div class="overflow-x-auto border border-slate-200 rounded-lg w-full">
-        <table class="w-full text-[11px] text-left divide-y divide-slate-200" id="teacherSummaryTable">
-          <thead class="bg-slate-100 text-slate-700 uppercase font-semibold">
+      <div class="overflow-x-auto border border-slate-200 rounded-lg w-full bg-white shadow-2xs">
+        <table class="w-full text-[10px] sm:text-[11px] text-left divide-y divide-slate-200" id="teacherSummaryTable">
+          <thead class="bg-slate-100 text-slate-700 uppercase font-bold text-[9px] sm:text-[10px]">
             <tr>
-              <th class="px-2.5 py-1.5 border-r border-slate-200 sticky left-0 bg-slate-100 z-10 w-28">Teacher</th>
-              <th class="px-1.5 py-1.5 text-center border-r border-slate-200 w-16">Charge</th>
-              <th class="px-1 py-1.5 text-center border-r border-slate-200">5B</th>
-              <th class="px-1 py-1.5 text-center border-r border-slate-200">5C</th>
-              <th class="px-1 py-1.5 text-center border-r border-slate-200">5D</th>
-              <th class="px-1 py-1.5 text-center border-r border-slate-200">6B</th>
-              <th class="px-1 py-1.5 text-center border-r border-slate-200">6C</th>
-              <th class="px-1 py-1.5 text-center border-r border-slate-200">6D</th>
-              <th class="px-1 py-1.5 text-center border-r border-slate-200">7B</th>
-              <th class="px-1 py-1.5 text-center border-r border-slate-200">7C</th>
-              <th class="px-1 py-1.5 text-center border-r border-slate-200">7D</th>
-              <th class="px-2 py-1.5 text-center bg-indigo-50 text-indigo-900 font-bold w-14">Total</th>
-              <th class="px-1.5 py-1.5 text-center bg-slate-50 text-slate-700 font-semibold w-12 share-col">Share</th>
+              <th class="px-2 py-1 border-r border-slate-200 sticky left-0 bg-slate-100 z-10 w-28">Teacher</th>
+              <th class="px-1 py-1 text-center border-r border-slate-200 w-14">Charge</th>
+              <th class="px-1 py-1 text-center border-r border-slate-200">5B</th>
+              <th class="px-1 py-1 text-center border-r border-slate-200">5C</th>
+              <th class="px-1 py-1 text-center border-r border-slate-200">5D</th>
+              <th class="px-1 py-1 text-center border-r border-slate-200">6B</th>
+              <th class="px-1 py-1 text-center border-r border-slate-200">6C</th>
+              <th class="px-1 py-1 text-center border-r border-slate-200">6D</th>
+              <th class="px-1 py-1 text-center border-r border-slate-200">7B</th>
+              <th class="px-1 py-1 text-center border-r border-slate-200">7C</th>
+              <th class="px-1 py-1 text-center border-r border-slate-200">7D</th>
+              <th class="px-1.5 py-1 text-center bg-indigo-50 text-indigo-900 font-extrabold w-12">Total</th>
+              <th class="px-1 py-1 text-center bg-slate-50 text-slate-700 font-semibold w-10 share-col">Share</th>
             </tr>
           </thead>
           <tbody class="divide-y divide-slate-100 bg-white" id="teacherTableBody"></tbody>
@@ -398,183 +434,153 @@
       </div>
     </div>
 
-    <!-- TAB 3: LIVE STUDENTS PERIOD ALLOCATION TABLE (100% FULL WIDTH, FLAT) -->
-    <div id="tab3-content" data-tab-pane="3" class="tab-pane hidden admin-only w-full space-y-2">
-      <div class="flex justify-between items-center border-b pb-1">
-        <h2 class="text-sm font-bold text-slate-900 flex items-center gap-1.5">
-          <span class="text-teal-600">🎓</span> Live Students Period Allocation Table (35p Target)
-        </h2>
+    <!-- TAB 3: LIVE STUDENTS PERIOD ALLOCATION TABLE (COMPACT 100% WIDTH) -->
+    <div id="tab3-content" data-tab-pane="3" class="tab-pane hidden admin-only w-full space-y-1.5">
+      <div class="flex justify-between items-center border-b pb-1 px-1">
+        <span class="font-bold text-xs text-slate-900">🎓 Live Students Period Allocation (35p Target)</span>
       </div>
       
-      <div class="overflow-x-auto border border-slate-200 rounded-lg w-full">
-        <table class="w-full text-[11px] text-left divide-y divide-slate-200" id="studentSummaryTable">
-          <thead class="bg-slate-100 text-slate-700 uppercase font-semibold">
+      <div class="overflow-x-auto border border-slate-200 rounded-lg w-full bg-white shadow-2xs">
+        <table class="w-full text-[10px] sm:text-[11px] text-left divide-y divide-slate-200" id="studentSummaryTable">
+          <thead class="bg-slate-100 text-slate-700 uppercase font-bold text-[9px] sm:text-[10px]">
             <tr>
-              <th class="px-2.5 py-1.5 border-r border-slate-200 sticky left-0 bg-slate-100 z-10 w-24">Subject</th>
-              <th class="px-1 py-1.5 text-center border-r border-slate-200">5B</th>
-              <th class="px-1 py-1.5 text-center border-r border-slate-200">5C</th>
-              <th class="px-1 py-1.5 text-center border-r border-slate-200">5D</th>
-              <th class="px-1 py-1.5 text-center border-r border-slate-200">6B</th>
-              <th class="px-1 py-1.5 text-center border-r border-slate-200">6C</th>
-              <th class="px-1 py-1.5 text-center border-r border-slate-200">6D</th>
-              <th class="px-1 py-1.5 text-center border-r border-slate-200">7B</th>
-              <th class="px-1 py-1.5 text-center border-r border-slate-200">7C</th>
-              <th class="px-1 py-1.5 text-center border-r border-slate-200">7D</th>
-              <th class="px-2 py-1.5 text-center bg-teal-50 text-teal-900 font-bold w-16">Total</th>
+              <th class="px-2 py-1 border-r border-slate-200 sticky left-0 bg-slate-100 z-10 w-24">Subject</th>
+              <th class="px-1 py-1 text-center border-r border-slate-200">5B</th>
+              <th class="px-1 py-1 text-center border-r border-slate-200">5C</th>
+              <th class="px-1 py-1 text-center border-r border-slate-200">5D</th>
+              <th class="px-1 py-1 text-center border-r border-slate-200">6B</th>
+              <th class="px-1 py-1 text-center border-r border-slate-200">6C</th>
+              <th class="px-1 py-1 text-center border-r border-slate-200">6D</th>
+              <th class="px-1 py-1 text-center border-r border-slate-200">7B</th>
+              <th class="px-1 py-1 text-center border-r border-slate-200">7C</th>
+              <th class="px-1 py-1 text-center border-r border-slate-200">7D</th>
+              <th class="px-1.5 py-1 text-center bg-teal-50 text-teal-900 font-extrabold w-14">Total</th>
             </tr>
           </thead>
           <tbody class="divide-y divide-slate-100 bg-white" id="studentTableBody"></tbody>
-          <tfoot class="bg-slate-200 text-slate-900 font-bold" id="studentTableFooter"></tfoot>
+          <tfoot class="bg-slate-200 text-slate-900 font-extrabold" id="studentTableFooter"></tfoot>
         </table>
       </div>
     </div>
 
-    <!-- TAB 4: DATABASE SYNCHRONIZATION & ACTIONS (100% FULL WIDTH, FLAT) -->
-    <div id="tab4-content" data-tab-pane="4" class="tab-pane hidden admin-only w-full space-y-3">
-      <div class="flex justify-between items-center border-b pb-2 w-full">
+    <!-- TAB 4: DATABASE SYNCHRONIZATION & ACTIONS (COMPACT 100% WIDTH) -->
+    <div id="tab4-content" data-tab-pane="4" class="tab-pane hidden admin-only w-full space-y-2.5">
+      <div class="flex justify-between items-center border-b pb-1 px-1 w-full">
         <div>
-          <h3 class="text-sm font-bold text-slate-900 flex items-center gap-1.5">
-            <span>⚙️</span> Firebase Cloud Sync & Quick Tools
-          </h3>
-          <p id="syncTimestamp" class="text-[10px] text-slate-500 italic">Last Synced: Never</p>
+          <span class="font-bold text-xs text-slate-900">⚙️ Firebase Cloud Sync</span>
+          <span id="syncTimestamp" class="text-[10px] text-slate-500 italic ml-1">Last: Never</span>
         </div>
-        <div class="flex items-center gap-2">
-          <button type="button" id="manualSyncBtn" title="Sync Cloud" class="p-2 bg-indigo-50 text-indigo-700 hover:bg-indigo-100 border border-indigo-200 rounded-lg text-base transition active:scale-95">
-            🔥
+        <div class="flex items-center gap-1">
+          <button type="button" id="manualSyncBtn" title="Sync Cloud" class="p-1.5 bg-indigo-50 text-indigo-700 hover:bg-indigo-100 border border-indigo-200 rounded text-xs transition active:scale-95">
+            🔥 Sync
           </button>
-          <button type="button" id="printBtn" title="Print Summary" class="p-2 bg-slate-800 text-white hover:bg-slate-900 rounded-lg text-base transition active:scale-95">
-            🖨️
+          <button type="button" id="printBtn" title="Print Summary" class="p-1.5 bg-slate-800 text-white hover:bg-slate-900 rounded text-xs transition active:scale-95">
+            🖨️ Print
           </button>
         </div>
       </div>
 
-      <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 w-full">
-        <div class="bg-indigo-50/60 p-2.5 rounded-lg border border-indigo-100 text-center">
-          <div class="text-xl font-black text-indigo-950" id="statTotalTeachers">15</div>
-          <div class="text-[10px] font-bold text-indigo-700 uppercase">Teachers</div>
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-1.5 w-full">
+        <div class="bg-indigo-50/60 p-2 rounded-lg border border-indigo-100 text-center">
+          <div class="text-lg font-black text-indigo-950" id="statTotalTeachers">15</div>
+          <div class="text-[9px] font-bold text-indigo-700 uppercase">Teachers</div>
         </div>
-        <div class="bg-teal-50/60 p-2.5 rounded-lg border border-teal-100 text-center">
-          <div class="text-xl font-black text-teal-950" id="statTotalClasses">9</div>
-          Here is the continuation and completion of the single-file HTML code with the
-updated period timings, full 100% flat width layout, icon-only action buttons,
-and mobile-style labeled navigation.
-
-          <div class="text-[10px] font-bold text-teal-700 uppercase">Divisions</div>
+        <div class="bg-teal-50/60 p-2 rounded-lg border border-teal-100 text-center">
+          <div class="text-lg font-black text-teal-950" id="statTotalClasses">9</div>
+          <div class="text-[9px] font-bold text-teal-700 uppercase">Divisions</div>
         </div>
-        <div class="bg-emerald-50/60 p-2.5 rounded-lg border border-emerald-100 text-center">
-          <div class="text-xl font-black text-emerald-950" id="statTotalPeriods">315 / 315</div>
-          <div class="text-[10px] font-bold text-emerald-700 uppercase">Weekly Slots</div>
+        <div class="bg-emerald-50/60 p-2 rounded-lg border border-emerald-100 text-center">
+          <div class="text-lg font-black text-emerald-950" id="statTotalPeriods">315 / 315</div>
+          <div class="text-[9px] font-bold text-emerald-700 uppercase">Slots</div>
         </div>
-        <div class="bg-purple-50/60 p-2.5 rounded-lg border border-purple-100 text-center">
-          <div class="text-xl font-black text-purple-950" id="statActiveUsers">2</div>
-          <div class="text-[10px] font-bold text-purple-700 uppercase">System Users</div>
+        <div class="bg-purple-50/60 p-2 rounded-lg border border-purple-100 text-center">
+          <div class="text-lg font-black text-purple-950" id="statActiveUsers">2</div>
+          <div class="text-[9px] font-bold text-purple-700 uppercase">Users</div>
         </div>
       </div>
 
-      <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 pt-1 w-full">
-        <div class="p-3 bg-slate-50 rounded-lg border border-slate-200 flex items-center justify-between gap-2">
-          <div>
-            <h4 class="font-bold text-slate-800 text-xs">🚀 Push Allocations</h4>
-            <p class="text-[10px] text-slate-500">Atomic batch commit to Firestore.</p>
-          </div>
-          <button type="button" onclick="postFullStateToFirebase(false)" title="Push to Firestore" class="p-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-lg transition active:scale-95 shadow-sm">
-            🚀
-          </button>
-        </div>
-
-        <div class="p-3 bg-slate-50 rounded-lg border border-slate-200 flex items-center justify-between gap-2">
-          <div>
-            <h4 class="font-bold text-slate-800 text-xs">📋 Load Baseline</h4>
-            <p class="text-[10px] text-slate-500">Load balanced 315-period dataset.</p>
-          </div>
-          <button type="button" onclick="loadBaselineData()" title="Load Baseline Dataset" class="p-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-lg transition active:scale-95 shadow-sm">
-            📋
-          </button>
-        </div>
-
-        <div class="p-3 bg-slate-50 rounded-lg border border-slate-200 flex items-center justify-between gap-2">
-          <div>
-            <h4 class="font-bold text-slate-800 text-xs">👥 Manage Users</h4>
-            <p class="text-[10px] text-slate-500">Configure admin and staff credentials.</p>
-          </div>
-          <button type="button" onclick="openUserManagementModal()" title="Open User Manager" class="p-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg text-lg transition active:scale-95 shadow-sm">
-            👥
-          </button>
-        </div>
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-1.5 w-full">
+        <button type="button" onclick="postFullStateToFirebase(false)" class="p-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-lg text-xs transition active:scale-95 shadow-2xs text-center">
+          🚀 Push to Firestore
+        </button>
+        <button type="button" onclick="loadBaselineData()" class="p-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-lg text-xs transition active:scale-95 shadow-2xs text-center">
+          📋 Load Standard Baseline
+        </button>
+        <button type="button" onclick="openUserManagementModal()" class="p-2.5 bg-purple-600 hover:bg-purple-700 text-white font-bold rounded-lg text-xs transition active:scale-95 shadow-2xs text-center">
+          👥 Manage Credentials
+        </button>
       </div>
     </div>
 
-    <!-- TAB 5: TIMETABLE GENERATION AND VIEWS (100% FLUID FULL WIDTH) -->
-    <div id="tab5-content" data-tab-pane="5" class="tab-pane space-y-2.5 w-full">
+    <!-- TAB 5: TIMETABLE GENERATION AND VIEWS (100% COMPACT ADAPTIVE GRID) -->
+    <div id="tab5-content" data-tab-pane="5" class="tab-pane space-y-2 w-full">
       
-      <!-- SCHEDULING CRITERIA (Admin Only) -->
-      <div id="tab5AdminCriteriaCard" class="admin-only bg-indigo-50/50 p-3 rounded-lg border border-indigo-100 space-y-2.5 no-print w-full">
-        <div class="flex justify-between items-center border-b border-indigo-100 pb-1.5">
-          <h3 class="text-xs font-bold text-indigo-950 flex items-center gap-1">
-            <span>⚙️</span> Advanced Scheduling Criteria & Constraints
-          </h3>
-          <button type="button" onclick="clearCustomRules()" title="Reset Rules" class="p-1.5 bg-indigo-100 text-indigo-900 hover:bg-indigo-200 rounded-md text-xs font-bold transition active:scale-95">
-            🔄
+      <!-- SCHEDULING CRITERIA (Admin Only, Compact Chips) -->
+      <div id="tab5AdminCriteriaCard" class="admin-only bg-indigo-50/60 p-2.5 rounded-lg border border-indigo-100 space-y-1.5 no-print w-full">
+        <div class="flex justify-between items-center border-b border-indigo-100 pb-1">
+          <span class="text-[11px] font-bold text-indigo-950">⚙️ Constraints & Criteria</span>
+          <button type="button" onclick="clearCustomRules()" title="Reset Rules" class="text-[10px] bg-indigo-100 text-indigo-900 px-1.5 py-0.5 rounded font-bold transition active:scale-95">
+            🔄 Reset
           </button>
         </div>
         
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2 text-[11px] w-full">
-          <label class="flex items-center gap-1.5 cursor-pointer p-1.5 bg-white rounded border border-slate-200 hover:bg-slate-50 transition font-semibold text-indigo-950">
-            <input type="checkbox" id="condNoRepeatSubjectDay" checked class="rounded text-indigo-600 focus:ring-indigo-500 w-3.5 h-3.5">
-            <span>🚫 No repeat subject same class/day</span>
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-6 gap-1 text-[10px] w-full">
+          <label class="flex items-center gap-1 cursor-pointer p-1 bg-white rounded border border-slate-200 hover:bg-slate-50 font-medium">
+            <input type="checkbox" id="condNoRepeatSubjectDay" checked class="rounded text-indigo-600 w-3 h-3">
+            <span class="truncate">🚫 No repeat/day</span>
           </label>
-          <label class="flex items-center gap-1.5 cursor-pointer p-1.5 bg-white rounded border border-slate-200 hover:bg-slate-50 transition font-semibold text-indigo-950">
-            <input type="checkbox" id="condMin2FreePeriodsPerDay" checked class="rounded text-indigo-600 focus:ring-indigo-500 w-3.5 h-3.5">
-            <span>☕ Min 2 Free Periods/Day (Max 5)</span>
+          <label class="flex items-center gap-1 cursor-pointer p-1 bg-white rounded border border-slate-200 hover:bg-slate-50 font-medium">
+            <input type="checkbox" id="condMin2FreePeriodsPerDay" checked class="rounded text-indigo-600 w-3 h-3">
+            <span class="truncate">☕ Min 2 Free/Day</span>
           </label>
-          <label class="flex items-center gap-1.5 cursor-pointer p-1.5 bg-white rounded border border-slate-200 hover:bg-slate-50 transition font-semibold text-indigo-950">
-            <input type="checkbox" id="condSingleITAcrossSchool" checked class="rounded text-indigo-600 focus:ring-indigo-500 w-3.5 h-3.5">
-            <span>💻 Single IT Lab Ground</span>
+          <label class="flex items-center gap-1 cursor-pointer p-1 bg-white rounded border border-slate-200 hover:bg-slate-50 font-medium">
+            <input type="checkbox" id="condSingleITAcrossSchool" checked class="rounded text-indigo-600 w-3 h-3">
+            <span class="truncate">💻 Single IT Lab</span>
           </label>
-          <label class="flex items-center gap-1.5 cursor-pointer p-1.5 bg-white rounded border border-slate-200 hover:bg-slate-50 transition font-semibold text-indigo-950">
-            <input type="checkbox" id="condSinglePEAcrossSchool" checked class="rounded text-indigo-600 focus:ring-indigo-500 w-3.5 h-3.5">
-            <span>⚽ Single PE Ground</span>
+          <label class="flex items-center gap-1 cursor-pointer p-1 bg-white rounded border border-slate-200 hover:bg-slate-50 font-medium">
+            <input type="checkbox" id="condSinglePEAcrossSchool" checked class="rounded text-indigo-600 w-3 h-3">
+            <span class="truncate">⚽ Single PE Ground</span>
           </label>
-          <label class="flex items-center gap-1.5 cursor-pointer p-1.5 bg-white rounded border border-slate-200 hover:bg-slate-50 transition font-semibold text-indigo-950">
-            <input type="checkbox" id="cond5BP1Rotation" checked class="rounded text-indigo-600 focus:ring-indigo-500 w-3.5 h-3.5">
-            <span>🎯 5B P1 Rotation (RR/SA)</span>
+          <label class="flex items-center gap-1 cursor-pointer p-1 bg-white rounded border border-slate-200 hover:bg-slate-50 font-medium">
+            <input type="checkbox" id="cond5BP1Rotation" checked class="rounded text-indigo-600 w-3 h-3">
+            <span class="truncate">🎯 5B P1 Rotation</span>
           </label>
-          <label class="flex items-center gap-1.5 cursor-pointer p-1.5 bg-white rounded border border-slate-200 hover:bg-slate-50 transition font-semibold text-indigo-950">
-            <input type="checkbox" id="cond6DP1Rotation" checked class="rounded text-indigo-600 focus:ring-indigo-500 w-3.5 h-3.5">
-            <span>🎯 6D P1 Rotation (BUS/TAK)</span>
+          <label class="flex items-center gap-1 cursor-pointer p-1 bg-white rounded border border-slate-200 hover:bg-slate-50 font-medium">
+            <input type="checkbox" id="cond6DP1Rotation" checked class="rounded text-indigo-600 w-3 h-3">
+            <span class="truncate">🎯 6D P1 Rotation</span>
           </label>
-          <label class="flex items-center gap-1.5 cursor-pointer p-1.5 bg-white rounded border border-slate-200 hover:bg-slate-50 transition font-semibold text-indigo-950">
-            <input type="checkbox" id="condSVLIBPeriod7Only" checked class="rounded text-indigo-600 focus:ring-indigo-500 w-3.5 h-3.5">
-            <span>📚 SV/LIB in Period 7 Only</span>
+          <label class="flex items-center gap-1 cursor-pointer p-1 bg-white rounded border border-slate-200 hover:bg-slate-50 font-medium">
+            <input type="checkbox" id="condSVLIBPeriod7Only" checked class="rounded text-indigo-600 w-3 h-3">
+            <span class="truncate">📚 SV/LIB in P7</span>
           </label>
-          <label class="flex items-center gap-1.5 cursor-pointer p-1.5 bg-white rounded border border-slate-200 hover:bg-slate-50 transition font-semibold text-indigo-950">
-            <input type="checkbox" id="condClassTeacherP1" checked class="rounded text-indigo-600 focus:ring-indigo-500 w-3.5 h-3.5">
-            <span>👑 Class Teacher in P1 compulsory</span>
+          <label class="flex items-center gap-1 cursor-pointer p-1 bg-white rounded border border-slate-200 hover:bg-slate-50 font-medium">
+            <input type="checkbox" id="condClassTeacherP1" checked class="rounded text-indigo-600 w-3 h-3">
+            <span class="truncate">👑 Class Teacher P1</span>
           </label>
-          <label class="flex items-center gap-1.5 cursor-pointer p-1.5 bg-white rounded border border-slate-200 hover:bg-slate-50 transition font-semibold text-indigo-950">
-            <input type="checkbox" id="condSameStdLangSync" checked class="rounded text-indigo-600 focus:ring-indigo-500 w-3.5 h-3.5">
-            <span>🔄 Language Sync (5D,6D,7D: MI & ARB simultaneous)</span>
+          <label class="flex items-center gap-1 cursor-pointer p-1 bg-white rounded border border-slate-200 hover:bg-slate-50 font-medium">
+            <input type="checkbox" id="condSameStdLangSync" checked class="rounded text-indigo-600 w-3 h-3">
+            <span class="truncate">🔄 MI+ARB Parallel</span>
           </label>
-          <label class="flex items-center gap-1.5 cursor-pointer p-1.5 bg-white rounded border border-slate-200 hover:bg-slate-50 transition font-semibold text-indigo-950">
-            <input type="checkbox" id="condPE_P2_P7" checked class="rounded text-indigo-600 focus:ring-indigo-500 w-3.5 h-3.5">
-            <span>⚽ Keep PE in P2-P7 only</span>
+          <label class="flex items-center gap-1 cursor-pointer p-1 bg-white rounded border border-slate-200 hover:bg-slate-50 font-medium">
+            <input type="checkbox" id="condPE_P2_P7" checked class="rounded text-indigo-600 w-3 h-3">
+            <span class="truncate">⚽ PE in P2-P7</span>
           </label>
-          <label class="flex items-center gap-1.5 cursor-pointer p-1.5 bg-white rounded border border-slate-200 hover:bg-slate-50 transition font-semibold text-indigo-950">
-            <input type="checkbox" id="condIT_P2_P7" checked class="rounded text-indigo-600 focus:ring-indigo-500 w-3.5 h-3.5">
-            <span>💻 IT in P2-P7 only</span>
+          <label class="flex items-center gap-1 cursor-pointer p-1 bg-white rounded border border-slate-200 hover:bg-slate-50 font-medium">
+            <input type="checkbox" id="condIT_P2_P7" checked class="rounded text-indigo-600 w-3 h-3">
+            <span class="truncate">💻 IT in P2-P7</span>
           </label>
-          <label class="flex items-center gap-1.5 cursor-pointer p-1.5 bg-white rounded border border-slate-200 hover:bg-slate-50 transition font-semibold text-indigo-950">
-            <input type="checkbox" id="condNoANMPeriod1" checked class="rounded text-indigo-600 focus:ring-indigo-500 w-3.5 h-3.5">
-            <span>🚫 No 1st period for ANM</span>
+          <label class="flex items-center gap-1 cursor-pointer p-1 bg-white rounded border border-slate-200 hover:bg-slate-50 font-medium">
+            <input type="checkbox" id="condNoANMPeriod1" checked class="rounded text-indigo-600 w-3 h-3">
+            <span class="truncate">🚫 No ANM in P1</span>
           </label>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-2 pt-1 border-t border-indigo-100 w-full">
-          <div class="p-2 bg-white rounded border border-slate-200 flex items-center justify-between">
-            <label class="text-[11px] font-bold text-slate-800" for="condMaxContinuousSelect">
-              ⏱️ Limit Continuous Teaching Periods
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-1.5 pt-1 border-t border-indigo-100 w-full text-[10px]">
+          <div class="p-1 bg-white rounded border border-slate-200 flex items-center justify-between">
+            <label class="font-bold text-slate-700" for="condMaxContinuousSelect">
+              ⏱️ Max Continuous Periods
             </label>
-            <select id="condMaxContinuousSelect" class="text-[11px] font-bold bg-indigo-50 text-indigo-900 border border-indigo-200 rounded px-2 py-0.5 focus:ring-2 focus:ring-indigo-500">
+            <select id="condMaxContinuousSelect" class="font-bold bg-indigo-50 text-indigo-900 border border-indigo-200 rounded px-1.5 py-0.5 text-[10px]">
               <option value="1">Max 1</option>
               <option value="2" selected>Max 2 (Rec)</option>
               <option value="3">Max 3</option>
@@ -583,100 +589,95 @@ and mobile-style labeled navigation.
             </select>
           </div>
 
-          <div class="p-2 bg-emerald-50 rounded border border-emerald-200 flex items-center justify-between">
-            <label class="text-[11px] font-bold text-emerald-950 flex items-center gap-1.5 cursor-pointer">
-              <input type="checkbox" id="condNoMajorLastPeriod" checked class="rounded text-emerald-600 focus:ring-emerald-500 w-3.5 h-3.5">
-              <span>🛑 No Major/Core in P7 (Strict)</span>
+          <div class="p-1 bg-emerald-50 rounded border border-emerald-200 flex items-center justify-between">
+            <label class="font-bold text-emerald-950 flex items-center gap-1 cursor-pointer">
+              <input type="checkbox" id="condNoMajorLastPeriod" checked class="rounded text-emerald-600 w-3 h-3">
+              <span>🛑 Strictly No Core/Major in P7</span>
             </label>
-            <span id="p7ConstraintStatusBadge" class="text-[9px] bg-emerald-200 text-emerald-900 font-extrabold px-1.5 py-0.5 rounded">Enabled</span>
+            <span id="p7ConstraintStatusBadge" class="text-[9px] bg-emerald-200 text-emerald-900 font-extrabold px-1 rounded">Enabled</span>
           </div>
         </div>
       </div>
 
-      <!-- AI SCHEDULE HEALTH AUDITOR (Admin Only) -->
-      <div id="tab5-aiAuditorCard" class="admin-only bg-indigo-50/40 p-3 rounded-lg border border-indigo-100 space-y-2 no-print w-full">
-        <div class="flex justify-between items-center border-b border-indigo-100 pb-1.5">
-          <div>
-            <h4 class="font-bold text-indigo-950 text-xs flex items-center gap-1.5">
-              <span>📊</span> AI Slot Optimization & Health Auditor
-            </h4>
-          </div>
-          <div class="flex items-center gap-1.5">
-            <button type="button" onclick="autoFixAllUnplacedCardsWithAI()" title="Auto-Fix All Empty Slots with AI" class="p-1.5 bg-purple-600 hover:bg-purple-700 text-white rounded-md text-sm transition active:scale-95">
-              🪄
+      <!-- AI SCHEDULE HEALTH AUDITOR (Admin Only, Compact) -->
+      <div id="tab5-aiAuditorCard" class="admin-only bg-indigo-50/40 p-2.5 rounded-lg border border-indigo-100 space-y-1.5 no-print w-full">
+        <div class="flex justify-between items-center border-b border-indigo-100 pb-1">
+          <span class="font-bold text-indigo-950 text-[11px]">📊 AI Health & Auto-Repair</span>
+          <div class="flex items-center gap-1">
+            <button type="button" onclick="autoFixAllUnplacedCardsWithAI()" title="Auto-Fix All Empty Slots" class="px-2 py-0.5 bg-purple-600 hover:bg-purple-700 text-white rounded text-[10px] font-bold transition active:scale-95">
+              🪄 Auto-Fix AI
             </button>
-            <button type="button" onclick="runAIScheduleAudit()" title="Run AI Schedule Audit" class="p-1.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-md text-sm transition active:scale-95">
-              🧠
+            <button type="button" onclick="runAIScheduleAudit()" title="Run AI Health Audit" class="px-2 py-0.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded text-[10px] font-bold transition active:scale-95">
+              🧠 Run Audit
             </button>
           </div>
         </div>
-        <div id="aiAuditResults" class="hidden p-2.5 bg-white rounded border border-indigo-100 text-[11px] space-y-1 text-slate-700"></div>
+        <div id="aiAuditResults" class="hidden p-2 bg-white rounded border border-indigo-100 text-[10px] space-y-1 text-slate-700"></div>
       </div>
 
-      <!-- STANDARD TAB 5 HEADER -->
-      <header id="tab5MainHeader" class="flex justify-between items-center gap-2 border-b pb-2 w-full bg-white p-2.5 rounded-lg border border-slate-200">
+      <!-- COMPACT HEADER BAR FOR TIMETABLE -->
+      <header id="tab5MainHeader" class="flex flex-wrap justify-between items-center gap-1.5 border-b pb-1.5 w-full bg-white p-2 rounded-lg border border-slate-200 shadow-2xs">
         <div>
           <div class="flex items-center gap-1.5">
-            <h2 class="text-sm font-bold text-slate-950">🗓️ Generated Timetable</h2>
+            <span class="font-black text-xs text-slate-900">🗓️ Generated Timetable</span>
             <span id="timetableLockBadge" class="hidden text-xs" title="Locked">🔒</span>
           </div>
-          <p class="text-[10px] text-slate-500" id="timetableSubtitle">Live weekly schedules.</p>
         </div>
-        <div class="section-controls flex items-center gap-1.5 no-print">
-          <button type="button" id="adminLockToggleBtn" onclick="toggleTimetableLock()" title="Lock / Unlock Timetable" class="admin-only p-2 bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-300 rounded-lg text-sm transition active:scale-95">
+        <div class="section-controls flex items-center gap-1 no-print">
+          <button type="button" id="adminLockToggleBtn" onclick="toggleTimetableLock()" title="Lock/Unlock Timetable" class="admin-only p-1 bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-300 rounded text-xs transition active:scale-95">
             <span id="lockBtnIcon">🔒</span>
           </button>
-          <button type="button" id="generateTimetableBtn" onclick="buildAndRenderTimetables()" title="Generate Timetable" class="admin-only p-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-sm transition active:scale-95">
-            ⚡
+          <button type="button" id="generateTimetableBtn" onclick="buildAndRenderTimetables()" class="admin-only px-2 py-1 bg-indigo-600 hover:bg-indigo-700 text-white rounded text-xs font-bold transition active:scale-95 shadow-2xs">
+            ⚡ Generate
           </button>
-          <button type="button" onclick="openAIAssistantModal()" title="Substitute Finder" class="p-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg text-sm transition active:scale-95">
-            🔍
+          <button type="button" onclick="openAIAssistantModal()" class="px-2 py-1 bg-purple-600 hover:bg-purple-700 text-white rounded text-xs font-bold transition active:scale-95 shadow-2xs">
+            🔍 Substitutes
           </button>
-          <button type="button" onclick="printTimetables('student')" title="Print Divisions" class="p-2 bg-indigo-50 text-indigo-700 hover:bg-indigo-100 border border-indigo-200 rounded-lg text-sm transition active:scale-95">
-            🖨️🎓
+          <button type="button" onclick="printTimetables('student')" title="Print Divisions" class="p-1 bg-indigo-50 text-indigo-700 hover:bg-indigo-100 border border-indigo-200 rounded text-xs transition active:scale-95">
+            🖨️ Classes
           </button>
-          <button type="button" onclick="printTimetables('teacher')" title="Print Teachers" class="p-2 bg-teal-50 text-teal-700 hover:bg-teal-100 border border-teal-200 rounded-lg text-sm transition active:scale-95">
-            🖨️👤
+          <button type="button" onclick="printTimetables('teacher')" title="Print Teachers" class="p-1 bg-teal-50 text-teal-700 hover:bg-teal-100 border border-teal-200 rounded text-xs transition active:scale-95">
+            🖨️ Teachers
           </button>
         </div>
       </header>
 
-      <!-- STANDARD SUB-TAB NAVIGATION -->
-      <div id="standardSubTabNav" class="tab-container flex border-b border-slate-200 pb-1 no-print w-full">
-        <button id="tabClassBtn" onclick="switchTimetableTab('class')" class="px-3.5 py-1.5 border-b-2 border-indigo-600 text-indigo-600 font-bold text-xs sm:text-sm active:scale-95 transition">Class View (Division wise)</button>
-        <button id="tabTeacherBtn" onclick="switchTimetableTab('teacher')" class="px-3.5 py-1.5 border-b-2 border-transparent text-slate-500 hover:text-slate-700 font-bold text-xs sm:text-sm active:scale-95 transition ml-2">Teacher View</button>
+      <!-- SUB-TAB VIEW SELECTOR (COMPACT) -->
+      <div id="standardSubTabNav" class="tab-container flex border-b border-slate-200 pb-0.5 no-print w-full">
+        <button id="tabClassBtn" onclick="switchTimetableTab('class')" class="px-3 py-1 border-b-2 border-indigo-600 text-indigo-600 font-bold text-xs active:scale-95 transition">Class View (Division wise)</button>
+        <button id="tabTeacherBtn" onclick="switchTimetableTab('teacher')" class="px-3 py-1 border-b-2 border-transparent text-slate-500 hover:text-slate-700 font-bold text-xs active:scale-95 transition ml-1.5">Teacher View</button>
       </div>
 
-      <!-- DEDICATED CLEAN TIMETABLE FOCUS CONTROLS BAR -->
-      <div id="timetableFocusControlsBar" class="hidden flex justify-between items-center gap-2 border-b border-slate-200 pb-2 mb-1.5 no-print bg-slate-100/90 p-2 rounded-lg w-full">
-        <div class="flex items-center gap-1.5">
-          <button id="focusTabClassBtn" onclick="switchTimetableTab('class')" class="px-3 py-1.5 rounded-md font-bold text-xs shadow-xs transition active:scale-95 bg-indigo-600 text-white">
+      <!-- DEDICATED CLEAN TIMETABLE FOCUS BAR -->
+      <div id="timetableFocusControlsBar" class="hidden flex justify-between items-center gap-1.5 border-b border-slate-200 pb-1.5 mb-1 no-print bg-slate-100/90 p-1.5 rounded-lg w-full">
+        <div class="flex items-center gap-1">
+          <button id="focusTabClassBtn" onclick="switchTimetableTab('class')" class="px-2.5 py-1 rounded font-bold text-[11px] transition active:scale-95 bg-indigo-600 text-white">
             Class View
           </button>
-          <button id="focusTabTeacherBtn" onclick="switchTimetableTab('teacher')" class="px-3 py-1.5 rounded-md font-bold text-xs shadow-xs transition active:scale-95 bg-white text-slate-700 border border-slate-300 hover:bg-slate-50">
+          <button id="focusTabTeacherBtn" onclick="switchTimetableTab('teacher')" class="px-2.5 py-1 rounded font-bold text-[11px] transition active:scale-95 bg-white text-slate-700 border border-slate-300 hover:bg-slate-50">
             Teacher View
           </button>
         </div>
         
-        <div class="flex items-center gap-1.5">
-          <button type="button" onclick="loadDatabaseFromFirebase(true)" title="Refresh Cloud" class="p-1.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 rounded-md text-sm transition active:scale-95">
+        <div class="flex items-center gap-1">
+          <button type="button" onclick="loadDatabaseFromFirebase(true)" title="Refresh Cloud" class="p-1 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 rounded text-xs transition active:scale-95">
             🔄
           </button>
-          <button type="button" onclick="exitTimetableFocusMode()" title="Exit Clean View" class="p-1.5 bg-slate-800 hover:bg-slate-900 text-white rounded-md text-sm transition active:scale-95">
-            🔙
+          <button type="button" onclick="exitTimetableFocusMode()" title="Exit Clean View" class="px-2 py-1 bg-slate-800 hover:bg-slate-900 text-white rounded text-xs font-bold transition active:scale-95">
+            🔙 Exit
           </button>
         </div>
       </div>
 
-      <!-- TIMETABLE CONTAINERS (100% FLUID RESPONSIVE GRID) -->
-      <div id="classTimetableContainer" class="grid grid-cols-1 xl:grid-cols-2 gap-3 w-full">
-        <div class="col-span-full text-center py-8 text-slate-400 text-xs">
+      <!-- TIMETABLE CONTAINERS (FLUID COMPACT RESPONSIVE GRID) -->
+      <div id="classTimetableContainer" class="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 gap-2 w-full">
+        <div class="col-span-full text-center py-6 text-slate-400 text-xs">
           Loading timetable...
         </div>
       </div>
 
-      <div id="teacherTimetableContainer" class="grid grid-cols-1 xl:grid-cols-2 gap-3 hidden w-full">
-        <div class="col-span-full text-center py-8 text-slate-400 text-xs">
+      <div id="teacherTimetableContainer" class="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 gap-2 hidden w-full">
+        <div class="col-span-full text-center py-6 text-slate-400 text-xs">
           Loading timetable...
         </div>
       </div>
@@ -685,32 +686,31 @@ and mobile-style labeled navigation.
 
   </main>
 
-  <!-- MODAL: INTERACTIVE PERIOD SLOT EDITOR (WITH LIVE CONFLICT DETECTOR) -->
-  <div id="slotEditModal" class="modal-overlay fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[2100] flex items-center justify-center p-3 hidden no-print">
-    <div class="bg-white rounded-2xl shadow-2xl border border-slate-200 max-w-lg w-full p-4 space-y-3">
-      <div class="flex items-center justify-between border-b pb-2">
-        <h3 class="text-sm font-bold text-indigo-950 flex items-center gap-1.5" id="slotEditModalTitle">
+  <!-- MODAL: INTERACTIVE PERIOD SLOT EDITOR (COMPACT) -->
+  <div id="slotEditModal" class="modal-overlay fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-[2100] flex items-center justify-center p-2 hidden no-print">
+    <div class="bg-white rounded-xl shadow-2xl border border-slate-200 max-w-md w-full p-3.5 space-y-2.5">
+      <div class="flex items-center justify-between border-b pb-1.5">
+        <h3 class="text-xs font-bold text-indigo-950 flex items-center gap-1" id="slotEditModalTitle">
           <span>✏️</span> Edit Timetable Period
         </h3>
-        <button type="button" onclick="closeSlotEditor()" class="text-slate-400 hover:text-slate-600 font-bold text-lg p-1 active:scale-95 transition">✕</button>
+        <button type="button" onclick="closeSlotEditor()" class="text-slate-400 hover:text-slate-600 font-bold text-base p-0.5 active:scale-95 transition">✕</button>
       </div>
 
       <input type="hidden" id="slotEditContextMode" value="class">
       <input type="hidden" id="slotEditDay" value="0">
       <input type="hidden" id="slotEditPeriod" value="0">
 
-      <div class="space-y-2.5 text-xs">
-        <div class="bg-indigo-50/60 p-2 rounded border border-indigo-100 flex justify-between items-center font-semibold text-indigo-900">
+      <div class="space-y-2 text-xs">
+        <div class="bg-indigo-50/70 p-1.5 rounded border border-indigo-100 flex justify-between items-center text-[10px] font-bold text-indigo-900">
           <span id="slotEditDayLabel">Monday</span>
           <span id="slotEditPeriodLabel">Period 1 (09:30 - 10:10)</span>
         </div>
 
-        <!-- LIVE CONFLICT / ALLOTMENT CONCERN BANNER -->
-        <div id="slotEditConflictWarning" class="hidden text-[11px] font-semibold p-2 rounded border bg-amber-50 text-amber-900 border-amber-300 space-y-0.5"></div>
+        <div id="slotEditConflictWarning" class="hidden text-[10px] font-semibold p-1.5 rounded border bg-amber-50 text-amber-900 border-amber-300"></div>
 
         <div>
-          <label class="block text-[10px] font-bold text-slate-700 mb-0.5" for="slotEditClassSelect">Division Class</label>
-          <select id="slotEditClassSelect" onchange="onSlotEditorTeacherOrClassChange()" class="w-full px-2.5 py-1.5 border border-slate-300 rounded-md bg-white font-semibold text-slate-800 focus:ring-2 focus:ring-indigo-500 text-xs">
+          <label class="block text-[10px] font-bold text-slate-600 mb-0.5" for="slotEditClassSelect">Division Class</label>
+          <select id="slotEditClassSelect" onchange="onSlotEditorTeacherOrClassChange()" class="w-full px-2 py-1 border border-slate-300 rounded bg-white font-semibold text-slate-800 text-xs h-8">
             <option value="5B">5B</option>
             <option value="5C">5C</option>
             <option value="5D">5D</option>
@@ -723,12 +723,11 @@ and mobile-style labeled navigation.
           </select>
         </div>
 
-        <!-- PRIMARY SUBJECT & TEACHER -->
-        <div class="grid grid-cols-2 gap-2">
+        <div class="grid grid-cols-2 gap-1.5">
           <div>
-            <label class="block text-[10px] font-bold text-slate-700 mb-0.5" for="slotEditSubjectSelect">Subject 1 (Primary)</label>
-            <select id="slotEditSubjectSelect" onchange="checkSlotConflict()" class="w-full px-2.5 py-1.5 border border-slate-300 rounded-md bg-white font-semibold text-slate-800 focus:ring-2 focus:ring-indigo-500 text-xs">
-              <option value="">-- None (Empty / Free) --</option>
+            <label class="block text-[10px] font-bold text-slate-600 mb-0.5" for="slotEditSubjectSelect">Subject 1</label>
+            <select id="slotEditSubjectSelect" onchange="checkSlotConflict()" class="w-full px-2 py-1 border border-slate-300 rounded bg-white font-semibold text-slate-800 text-xs h-8">
+              <option value="">-- None (Free) --</option>
               <option value="ENG">ENG (5p)</option>
               <option value="BS">BS (5p)</option>
               <option value="SS">SS (5p)</option>
@@ -748,8 +747,8 @@ and mobile-style labeled navigation.
           </div>
 
           <div>
-            <label class="block text-[10px] font-bold text-slate-700 mb-0.5" for="slotEditTeacherSelect">Teacher 1</label>
-            <select id="slotEditTeacherSelect" onchange="onSlotEditorTeacherOrClassChange()" class="w-full px-2.5 py-1.5 border border-slate-300 rounded-md bg-white font-semibold text-slate-800 focus:ring-2 focus:ring-indigo-500 text-xs">
+            <label class="block text-[10px] font-bold text-slate-600 mb-0.5" for="slotEditTeacherSelect">Teacher 1</label>
+            <select id="slotEditTeacherSelect" onchange="onSlotEditorTeacherOrClassChange()" class="w-full px-2 py-1 border border-slate-300 rounded bg-white font-semibold text-slate-800 text-xs h-8">
               <option value="">-- No Teacher --</option>
               <option value="TAK">TAK</option>
               <option value="SK">SK</option>
@@ -770,17 +769,16 @@ and mobile-style labeled navigation.
           </div>
         </div>
 
-        <!-- DUAL / SPLIT ELECTIVE TOGGLE -->
-        <div class="p-2 bg-indigo-50/70 rounded-md border border-indigo-100 space-y-1.5">
-          <label class="flex items-center gap-1.5 cursor-pointer font-bold text-[11px] text-indigo-950">
-            <input type="checkbox" id="slotEditIsDual" onchange="toggleDualSlotInputs()" class="rounded text-indigo-600 focus:ring-indigo-500 w-3.5 h-3.5">
+        <div class="p-1.5 bg-indigo-50/70 rounded border border-indigo-100 space-y-1">
+          <label class="flex items-center gap-1.5 cursor-pointer font-bold text-[10px] text-indigo-950">
+            <input type="checkbox" id="slotEditIsDual" onchange="toggleDualSlotInputs()" class="rounded text-indigo-600 w-3 h-3">
             <span>Dual Elective (e.g. MI + ARB in 5D, 6D, 7D)</span>
           </label>
 
-          <div id="slotEditDualContainer" class="hidden grid grid-cols-2 gap-2 pt-1 border-t border-indigo-100">
+          <div id="slotEditDualContainer" class="hidden grid grid-cols-2 gap-1.5 pt-0.5 border-t border-indigo-100">
             <div>
-              <label class="block text-[10px] font-bold text-slate-600 uppercase mb-0.5" for="slotEditSubject2Select">Subject 2</label>
-              <select id="slotEditSubject2Select" onchange="checkSlotConflict()" class="w-full px-2 py-1 border border-slate-300 rounded bg-white font-semibold text-slate-800 text-[11px]">
+              <label class="block text-[9px] font-bold text-slate-600 uppercase" for="slotEditSubject2Select">Subject 2</label>
+              <select id="slotEditSubject2Select" onchange="checkSlotConflict()" class="w-full px-1.5 py-0.5 border border-slate-300 rounded bg-white font-semibold text-slate-800 text-[10px] h-7">
                 <option value="">-- None --</option>
                 <option value="ARB">ARB (4p)</option>
                 <option value="MI">MI (4p)</option>
@@ -791,8 +789,8 @@ and mobile-style labeled navigation.
               </select>
             </div>
             <div>
-              <label class="block text-[10px] font-bold text-slate-600 uppercase mb-0.5" for="slotEditTeacher2Select">Teacher 2</label>
-              <select id="slotEditTeacher2Select" onchange="checkSlotConflict()" class="w-full px-2 py-1 border border-slate-300 rounded bg-white font-semibold text-slate-800 text-[11px]">
+              <label class="block text-[9px] font-bold text-slate-600 uppercase" for="slotEditTeacher2Select">Teacher 2</label>
+              <select id="slotEditTeacher2Select" onchange="checkSlotConflict()" class="w-full px-1.5 py-0.5 border border-slate-300 rounded bg-white font-semibold text-slate-800 text-[10px] h-7">
                 <option value="">-- No Teacher --</option>
                 <option value="TAK">TAK</option>
                 <option value="SK">SK</option>
@@ -815,16 +813,16 @@ and mobile-style labeled navigation.
         </div>
       </div>
 
-      <div class="flex items-center justify-between gap-2 pt-2 border-t border-slate-100">
-        <button type="button" onclick="clearSlotEditor()" title="Clear Slot" class="p-2 bg-red-50 hover:bg-red-100 text-red-700 rounded-lg text-base transition active:scale-95 border border-red-200">
-          🗑️
+      <div class="flex items-center justify-between gap-1.5 pt-1.5 border-t border-slate-100">
+        <button type="button" onclick="clearSlotEditor()" class="px-2.5 py-1 bg-red-50 hover:bg-red-100 text-red-700 font-bold rounded text-xs transition active:scale-95 border border-red-200">
+          Clear Slot 🗑️
         </button>
-        <div class="flex items-center gap-2">
-          <button type="button" onclick="closeSlotEditor()" title="Cancel" class="p-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-base transition active:scale-95">
-            ✕
+        <div class="flex items-center gap-1">
+          <button type="button" onclick="closeSlotEditor()" class="px-2.5 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded text-xs transition active:scale-95">
+            Cancel
           </button>
-          <button type="button" onclick="saveSlotEditor()" title="Save Slot" class="p-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-base transition active:scale-95 shadow-sm">
-            💾
+          <button type="button" onclick="saveSlotEditor()" class="px-3 py-1 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded text-xs transition active:scale-95 shadow-xs">
+            Save Slot 💾
           </button>
         </div>
       </div>
@@ -832,42 +830,42 @@ and mobile-style labeled navigation.
   </div>
 
   <!-- MODAL: LOGIN / AUTH OVERLAY -->
-  <div id="loginOverlay" class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-[2000] flex items-center justify-center p-4 hidden no-print">
-    <div class="bg-white rounded-2xl shadow-2xl border border-slate-200 max-w-md w-full p-5 space-y-4">
-      <div class="text-center space-y-1">
-        <div class="w-10 h-10 bg-indigo-600 text-white rounded-xl flex items-center justify-center mx-auto text-xl font-black shadow-md">
+  <div id="loginOverlay" class="fixed inset-0 bg-slate-900/80 backdrop-blur-xs z-[2000] flex items-center justify-center p-3 hidden no-print">
+    <div class="bg-white rounded-xl shadow-2xl border border-slate-200 max-w-sm w-full p-4 space-y-3">
+      <div class="text-center space-y-0.5">
+        <div class="w-8 h-8 bg-indigo-600 text-white rounded-lg flex items-center justify-center mx-auto text-base font-black shadow-xs">
           🔐
         </div>
-        <h2 class="text-lg font-black text-indigo-950">Timetable System Login</h2>
-        <p class="text-[11px] text-slate-500">Sign in to view timetables or manage teacher allocations.</p>
+        <h2 class="text-sm font-black text-indigo-950">Timetable Login</h2>
+        <p class="text-[10px] text-slate-500">Sign in to manage and view timetables.</p>
       </div>
 
-      <form id="loginForm" onsubmit="handleLoginSubmit(event)" class="space-y-3">
+      <form id="loginForm" onsubmit="handleLoginSubmit(event)" class="space-y-2.5">
         <div>
-          <label class="block text-[11px] font-bold text-slate-700 mb-0.5" for="loginUsername">Username</label>
-          <input type="text" id="loginUsername" required placeholder="admin or user" class="w-full px-2.5 py-1.5 border border-slate-300 rounded-md text-xs focus:ring-2 focus:ring-indigo-500 font-semibold text-slate-800">
+          <label class="block text-[10px] font-bold text-slate-600 mb-0.5" for="loginUsername">Username</label>
+          <input type="text" id="loginUsername" required placeholder="admin or user" class="w-full px-2 py-1 border border-slate-300 rounded text-xs focus:ring-1 focus:ring-indigo-500 font-semibold text-slate-800 h-8">
         </div>
 
         <div>
-          <label class="block text-[11px] font-bold text-slate-700 mb-0.5" for="loginPassword">Password</label>
-          <input type="password" id="loginPassword" required placeholder="••••••••" class="w-full px-2.5 py-1.5 border border-slate-300 rounded-md text-xs focus:ring-2 focus:ring-indigo-500 font-semibold text-slate-800">
+          <label class="block text-[10px] font-bold text-slate-600 mb-0.5" for="loginPassword">Password</label>
+          <input type="password" id="loginPassword" required placeholder="••••••••" class="w-full px-2 py-1 border border-slate-300 rounded text-xs focus:ring-1 focus:ring-indigo-500 font-semibold text-slate-800 h-8">
         </div>
 
-        <div class="flex items-center justify-between text-[11px]">
-          <label class="flex items-center gap-1.5 cursor-pointer font-semibold text-slate-700">
-            <input type="checkbox" id="loginRememberMe" checked class="rounded text-indigo-600 focus:ring-indigo-500 w-3.5 h-3.5">
+        <div class="flex items-center justify-between text-[10px]">
+          <label class="flex items-center gap-1 cursor-pointer font-semibold text-slate-700">
+            <input type="checkbox" id="loginRememberMe" checked class="rounded text-indigo-600 w-3 h-3">
             <span>Keep me logged in</span>
           </label>
         </div>
 
-        <div id="loginErrorMsg" class="hidden text-[11px] text-red-600 font-bold bg-red-50 p-2 rounded border border-red-200"></div>
+        <div id="loginErrorMsg" class="hidden text-[10px] text-red-600 font-bold bg-red-50 p-1.5 rounded border border-red-200"></div>
 
-        <button type="submit" title="Log In" class="w-full p-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-lg text-lg transition active:scale-95 shadow-sm">
-          🚀
+        <button type="submit" class="w-full py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-md text-xs transition active:scale-95 shadow-xs">
+          Log In 🚀
         </button>
       </form>
 
-      <div class="p-2.5 bg-slate-50 rounded border border-slate-200 text-[10px] text-slate-600 space-y-0.5">
+      <div class="p-2 bg-slate-50 rounded border border-slate-200 text-[9px] text-slate-600 space-y-0.5">
         <p class="font-bold text-slate-800">Demo Credentials:</p>
         <div class="flex justify-between"><span>👑 <strong>Admin:</strong> admin</span><span>pwd: admin123</span></div>
         <div class="flex justify-between"><span>👤 <strong>User:</strong> user</span><span>pwd: user123</span></div>
@@ -876,58 +874,58 @@ and mobile-style labeled navigation.
   </div>
 
   <!-- MODAL: USER MANAGEMENT -->
-  <div id="userManagementModal" class="modal-overlay fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center p-3 hidden no-print">
-    <div class="bg-white rounded-2xl shadow-2xl border border-slate-200 max-w-2xl w-full max-h-[90vh] flex flex-col">
-      <div class="px-5 py-3 border-b border-indigo-100 bg-indigo-50/50 flex items-center justify-between rounded-t-2xl">
-        <h3 class="text-sm font-bold text-indigo-950 flex items-center gap-1.5">
+  <div id="userManagementModal" class="modal-overlay fixed inset-0 bg-slate-900/50 backdrop-blur-xs z-50 flex items-center justify-center p-2 hidden no-print">
+    <div class="bg-white rounded-xl shadow-2xl border border-slate-200 max-w-xl w-full max-h-[85vh] flex flex-col">
+      <div class="px-4 py-2 border-b border-indigo-100 bg-indigo-50/50 flex items-center justify-between rounded-t-xl">
+        <h3 class="text-xs font-bold text-indigo-950 flex items-center gap-1">
           <span>👥</span> User Account Management
         </h3>
-        <button type="button" onclick="closeUserManagementModal()" class="text-slate-400 hover:text-slate-600 font-bold text-lg p-1 active:scale-95 transition">✕</button>
+        <button type="button" onclick="closeUserManagementModal()" class="text-slate-400 hover:text-slate-600 font-bold text-base p-0.5 active:scale-95 transition">✕</button>
       </div>
 
-      <div class="p-4 overflow-y-auto space-y-4 flex-1 text-xs">
-        <form id="userCrudForm" onsubmit="handleUserSaveSubmit(event)" class="p-3 bg-slate-50 rounded-lg border border-slate-200 space-y-2.5">
+      <div class="p-3 overflow-y-auto space-y-2.5 flex-1 text-xs">
+        <form id="userCrudForm" onsubmit="handleUserSaveSubmit(event)" class="p-2.5 bg-slate-50 rounded border border-slate-200 space-y-2">
           <input type="hidden" id="crudUserId" value="">
-          <h4 class="font-bold text-slate-800 text-xs flex items-center gap-1.5" id="userFormTitle">
+          <h4 class="font-bold text-slate-800 text-[11px] flex items-center gap-1" id="userFormTitle">
             <span>➕</span> Add New User
           </h4>
-          <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-1.5">
             <div>
-              <label class="block text-[10px] font-bold text-slate-600 uppercase mb-0.5">Username</label>
-              <input type="text" id="crudUsername" required placeholder="e.g. jdoe" class="w-full px-2 py-1.5 border border-slate-300 rounded bg-white text-xs">
+              <label class="block text-[9px] font-bold text-slate-600 uppercase mb-0.5">Username</label>
+              <input type="text" id="crudUsername" required placeholder="e.g. jdoe" class="w-full px-2 py-1 border border-slate-300 rounded bg-white text-xs h-7">
             </div>
             <div>
-              <label class="block text-[10px] font-bold text-slate-600 uppercase mb-0.5">Password</label>
-              <input type="text" id="crudPassword" required placeholder="e.g. pass123" class="w-full px-2 py-1.5 border border-slate-300 rounded bg-white text-xs">
+              <label class="block text-[9px] font-bold text-slate-600 uppercase mb-0.5">Password</label>
+              <input type="text" id="crudPassword" required placeholder="e.g. pass123" class="w-full px-2 py-1 border border-slate-300 rounded bg-white text-xs h-7">
             </div>
             <div>
-              <label class="block text-[10px] font-bold text-slate-600 uppercase mb-0.5">Role</label>
-              <select id="crudRole" class="w-full px-2 py-1.5 border border-slate-300 rounded bg-white text-xs font-semibold">
+              <label class="block text-[9px] font-bold text-slate-600 uppercase mb-0.5">Role</label>
+              <select id="crudRole" class="w-full px-2 py-1 border border-slate-300 rounded bg-white text-xs font-semibold h-7">
                 <option value="user">User (Staff / Read Only)</option>
                 <option value="admin">Admin (Full Control)</option>
               </select>
             </div>
           </div>
-          <div class="flex justify-end gap-2 pt-1">
-            <button type="button" id="cancelUserEditBtn" onclick="resetUserCrudForm()" class="hidden p-2 bg-slate-200 hover:bg-slate-300 text-slate-700 rounded-md text-sm">
-              ✕
+          <div class="flex justify-end gap-1.5 pt-0.5">
+            <button type="button" id="cancelUserEditBtn" onclick="resetUserCrudForm()" class="hidden px-2 py-1 bg-slate-200 hover:bg-slate-300 text-slate-700 rounded text-[10px] font-bold">
+              Cancel
             </button>
-            <button type="submit" title="Save User" class="p-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-md text-sm shadow-xs">
-              💾
+            <button type="submit" class="px-2.5 py-1 bg-indigo-600 hover:bg-indigo-700 text-white rounded text-[10px] font-bold shadow-2xs">
+              Save User 💾
             </button>
           </div>
         </form>
 
-        <div class="space-y-1.5">
-          <h4 class="font-bold text-slate-800 text-xs uppercase tracking-wider">Active System Users</h4>
-          <div class="border border-slate-200 rounded-lg overflow-hidden">
-            <table class="min-w-full text-xs text-left divide-y divide-slate-200">
-              <thead class="bg-slate-100 text-slate-700 font-bold uppercase text-[10px]">
+        <div class="space-y-1">
+          <h4 class="font-bold text-slate-800 text-[10px] uppercase tracking-wider">Active System Users</h4>
+          <div class="border border-slate-200 rounded overflow-hidden">
+            <table class="min-w-full text-[10px] text-left divide-y divide-slate-200">
+              <thead class="bg-slate-100 text-slate-700 font-bold uppercase text-[9px]">
                 <tr>
-                  <th class="px-2.5 py-1.5">Username</th>
-                  <th class="px-2.5 py-1.5">Password</th>
-                  <th class="px-2.5 py-1.5">Role</th>
-                  <th class="px-2.5 py-1.5 text-right">Actions</th>
+                  <th class="px-2 py-1">Username</th>
+                  <th class="px-2 py-1">Password</th>
+                  <th class="px-2 py-1">Role</th>
+                  <th class="px-2 py-1 text-right">Actions</th>
                 </tr>
               </thead>
               <tbody id="userListTbody" class="divide-y divide-slate-100 bg-white"></tbody>
@@ -936,26 +934,24 @@ and mobile-style labeled navigation.
         </div>
       </div>
 
-      <div class="px-5 py-2.5 border-t border-slate-100 bg-slate-50 flex justify-end">
-        <button type="button" onclick="closeUserManagementModal()" title="Done" class="p-2 bg-slate-800 text-white hover:bg-slate-900 rounded-md text-sm active:scale-95 transition">
-          ✓
-        </button>
+      <div class="px-4 py-1.5 border-t border-slate-100 bg-slate-50 flex justify-end">
+        <button type="button" onclick="closeUserManagementModal()" class="px-3 py-1 bg-slate-800 text-white hover:bg-slate-900 rounded text-xs font-bold active:scale-95 transition">Done</button>
       </div>
     </div>
   </div>
 
   <!-- MODAL: EDIT ALLOCATIONS -->
-  <div id="teacherModal" class="modal-overlay fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center p-3 hidden no-print">
-    <div class="bg-white rounded-lg shadow-xl border border-slate-200 max-w-2xl w-full max-h-[90vh] flex flex-col">
-      <div class="px-5 py-3 border-b border-slate-100 flex items-center justify-between">
-        <h3 class="text-sm font-bold text-indigo-950" id="modalTitle">Edit Teacher Allocations</h3>
-        <button type="button" onclick="closeTeacherModal()" class="text-slate-400 hover:text-slate-600 font-bold text-lg p-1 active:scale-95 transition">✕</button>
+  <div id="teacherModal" class="modal-overlay fixed inset-0 bg-slate-900/50 backdrop-blur-xs z-50 flex items-center justify-center p-2 hidden no-print">
+    <div class="bg-white rounded-xl shadow-xl border border-slate-200 max-w-xl w-full max-h-[85vh] flex flex-col">
+      <div class="px-4 py-2 border-b border-slate-100 flex items-center justify-between">
+        <h3 class="text-xs font-bold text-indigo-950" id="modalTitle">Edit Teacher Allocations</h3>
+        <button type="button" onclick="closeTeacherModal()" class="text-slate-400 hover:text-slate-600 font-bold text-base p-0.5 active:scale-95 transition">✕</button>
       </div>
       
-      <div class="p-4 overflow-y-auto space-y-3 flex-1">
+      <div class="p-3 overflow-y-auto space-y-2 flex-1 text-xs">
         <div>
-          <label class="block text-[11px] font-semibold text-slate-600 mb-0.5" for="modalClassInCharge">Class In-Charge</label>
-          <select id="modalClassInCharge" class="w-full px-2.5 py-1.5 border border-slate-300 rounded bg-white text-xs focus:ring-2 focus:ring-indigo-500">
+          <label class="block text-[10px] font-semibold text-slate-600 mb-0.5" for="modalClassInCharge">Class In-Charge</label>
+          <select id="modalClassInCharge" class="w-full px-2 py-1 border border-slate-300 rounded bg-white text-xs h-7.5">
             <option value="None">None</option>
             <option value="5B">5B</option>
             <option value="5C">5C</option>
@@ -970,47 +966,47 @@ and mobile-style labeled navigation.
         </div>
 
         <div>
-          <div class="flex items-center justify-between mb-2">
-            <h4 class="text-xs font-bold text-slate-700">Allotted Classes & Subjects</h4>
-            <button type="button" onclick="addModalAllocationRow()" title="Add allocation row" class="p-1.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-md text-sm transition active:scale-95">➕</button>
+          <div class="flex items-center justify-between mb-1">
+            <h4 class="text-[11px] font-bold text-slate-700">Allotted Classes & Subjects</h4>
+            <button type="button" onclick="addModalAllocationRow()" title="Add row" class="px-2 py-0.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded text-[10px] font-bold transition active:scale-95">➕ Add</button>
           </div>
-          <div id="modalAllocationsContainer" class="space-y-2"></div>
+          <div id="modalAllocationsContainer" class="space-y-1.5"></div>
         </div>
       </div>
 
-      <div class="px-5 py-2.5 border-t border-slate-100 bg-slate-50 flex items-center justify-between">
-        <div id="modalStatusMessage" class="text-xs font-semibold text-emerald-600 hidden">Saved ✓</div>
-        <button type="button" onclick="closeTeacherModal()" title="Done" class="p-2 bg-slate-800 text-white hover:bg-slate-900 rounded-md text-sm active:scale-95 transition">✓</button>
+      <div class="px-4 py-1.5 border-t border-slate-100 bg-slate-50 flex items-center justify-between">
+        <div id="modalStatusMessage" class="text-[10px] font-semibold text-emerald-600 hidden">Saved ✓</div>
+        <button type="button" onclick="closeTeacherModal()" class="px-3 py-1 bg-slate-800 text-white hover:bg-slate-900 rounded text-xs font-bold active:scale-95 transition">Done</button>
       </div>
     </div>
   </div>
 
   <!-- MODAL: SMART SUBSTITUTE FINDER & DAILY ALLOTMENT SUMMARY -->
-  <div id="aiAssistantModal" class="modal-overlay fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center p-3 hidden no-print">
-    <div class="bg-white rounded-2xl shadow-2xl border border-slate-200 max-w-2xl w-full max-h-[90vh] flex flex-col">
-      <div class="px-5 py-3 border-b border-purple-100 bg-gradient-to-r from-purple-50 to-indigo-50 flex items-center justify-between rounded-t-2xl">
-        <h3 class="text-sm font-bold text-purple-950 flex items-center gap-1.5">
-          <span>🔍</span> Smart Substitute Teacher Finder & Duty Summary
+  <div id="aiAssistantModal" class="modal-overlay fixed inset-0 bg-slate-900/50 backdrop-blur-xs z-50 flex items-center justify-center p-2 hidden no-print">
+    <div class="bg-white rounded-xl shadow-2xl border border-slate-200 max-w-xl w-full max-h-[85vh] flex flex-col">
+      <div class="px-4 py-2 border-b border-purple-100 bg-gradient-to-r from-purple-50 to-indigo-50 flex items-center justify-between rounded-t-xl">
+        <h3 class="text-xs font-bold text-purple-950 flex items-center gap-1">
+          <span>🔍</span> Smart Substitute Finder
         </h3>
-        <button type="button" onclick="closeAIAssistantModal()" class="text-slate-400 hover:text-slate-600 font-bold text-lg p-1 active:scale-95 transition">✕</button>
+        <button type="button" onclick="closeAIAssistantModal()" class="text-slate-400 hover:text-slate-600 font-bold text-base p-0.5 active:scale-95 transition">✕</button>
       </div>
 
-      <div class="p-4 overflow-y-auto space-y-3 flex-1 text-xs">
+      <div class="p-3 overflow-y-auto space-y-2 flex-1 text-xs">
         <div class="flex items-center justify-between">
-          <p class="text-[10px] text-slate-500">Pick absent teacher and period. Click WhatsApp icon to assign & notify.</p>
-          <button type="button" onclick="clearDaySubstituteDuties()" title="Reset Day Duties" class="p-1.5 bg-slate-200 hover:bg-slate-300 text-slate-700 rounded text-xs transition">
-            🔄
+          <p class="text-[10px] text-slate-500">Pick absent teacher & period to allocate substitute.</p>
+          <button type="button" onclick="clearDaySubstituteDuties()" class="text-[9px] bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold px-1.5 py-0.5 rounded transition">
+            🔄 Reset
           </button>
         </div>
         
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-1.5">
           <div>
-            <label class="block text-[10px] font-bold text-slate-600 uppercase mb-0.5">Absent Teacher</label>
-            <select id="subAbsentTeacher" onchange="findAISubstitutes()" class="w-full px-2 py-1.5 border border-slate-300 rounded bg-white text-xs font-semibold"></select>
+            <label class="block text-[9px] font-bold text-slate-600 uppercase mb-0.5">Absent Teacher</label>
+            <select id="subAbsentTeacher" onchange="findAISubstitutes()" class="w-full px-2 py-1 border border-slate-300 rounded bg-white text-xs font-semibold h-7.5"></select>
           </div>
           <div>
-            <label class="block text-[10px] font-bold text-slate-600 uppercase mb-0.5">Day</label>
-            <select id="subDay" onchange="findAISubstitutes()" class="w-full px-2 py-1.5 border border-slate-300 rounded bg-white text-xs font-semibold">
+            <label class="block text-[9px] font-bold text-slate-600 uppercase mb-0.5">Day</label>
+            <select id="subDay" onchange="findAISubstitutes()" class="w-full px-2 py-1 border border-slate-300 rounded bg-white text-xs font-semibold h-7.5">
               <option value="0">Monday</option>
               <option value="1">Tuesday</option>
               <option value="2">Wednesday</option>
@@ -1019,8 +1015,8 @@ and mobile-style labeled navigation.
             </select>
           </div>
           <div>
-            <label class="block text-[10px] font-bold text-slate-600 uppercase mb-0.5">Period</label>
-            <select id="subPeriod" onchange="findAISubstitutes()" class="w-full px-2 py-1.5 border border-slate-300 rounded bg-white text-xs font-semibold">
+            <label class="block text-[9px] font-bold text-slate-600 uppercase mb-0.5">Period</label>
+            <select id="subPeriod" onchange="findAISubstitutes()" class="w-full px-2 py-1 border border-slate-300 rounded bg-white text-xs font-semibold h-7.5">
               <option value="0">P1 (09:30-10:10)</option>
               <option value="1">P2 (10:10-10:50)</option>
               <option value="2">P3 (11:00-11:40)</option>
@@ -1032,26 +1028,21 @@ and mobile-style labeled navigation.
           </div>
         </div>
 
-        <div id="substituteResults" class="p-2.5 rounded-lg border bg-white border-purple-200 text-xs space-y-1.5"></div>
+        <div id="substituteResults" class="p-2 rounded-lg border bg-white border-purple-200 text-[11px] space-y-1"></div>
 
-        <div class="p-3 bg-slate-50 rounded-lg border border-slate-200 space-y-2">
-          <div class="flex justify-between items-center border-b border-slate-200 pb-1.5">
-            <div>
-              <h4 class="font-bold text-slate-900 text-xs flex items-center gap-1">
-                <span>📋</span> Daily Substitution Summary
-              </h4>
-              <p class="text-[10px] text-slate-500">Free periods require no substitution.</p>
-            </div>
-            <button type="button" onclick="shareOfficialGroupWhatsAppSummary()" title="Share to Official WhatsApp Group" class="p-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-sm transition active:scale-95 shadow-xs">
-              📢
+        <div class="p-2.5 bg-slate-50 rounded-lg border border-slate-200 space-y-1.5">
+          <div class="flex justify-between items-center border-b border-slate-200 pb-1">
+            <span class="font-bold text-slate-900 text-[11px]">📋 Daily Duty Summary</span>
+            <button type="button" onclick="shareOfficialGroupWhatsAppSummary()" class="px-2 py-0.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded text-[10px] font-bold transition active:scale-95 flex items-center gap-1 shadow-2xs">
+              <span>📢 Post to Group</span>
             </button>
           </div>
-          <div id="dayAllotmentSummaryList" class="space-y-1 text-xs text-slate-700"></div>
+          <div id="dayAllotmentSummaryList" class="space-y-1 text-[10px] text-slate-700"></div>
         </div>
       </div>
 
-      <div class="px-5 py-2.5 border-t border-slate-100 bg-slate-50 flex justify-end">
-        <button type="button" onclick="closeAIAssistantModal()" title="Close" class="p-2 bg-slate-800 text-white hover:bg-slate-900 rounded-md text-sm active:scale-95 transition">✕</button>
+      <div class="px-4 py-1.5 border-t border-slate-100 bg-slate-50 flex justify-end">
+        <button type="button" onclick="closeAIAssistantModal()" class="px-3 py-1 bg-slate-800 text-white hover:bg-slate-900 rounded text-xs font-bold active:scale-95 transition">Close</button>
       </div>
     </div>
   </div>
@@ -1139,7 +1130,7 @@ and mobile-style labeled navigation.
       "PE": 1, "AE": 1, "WE": 1, "IT": 1, "SV/LIB": 1
     };
     
-    // UPDATED TIMINGS
+    // UPDATED REVISED HIGH-DENSITY TIMINGS
     const PERIOD_TIMES = [
       "09:30-10:10", "10:10-10:50", "11:00-11:40", "11:40-12:20", "01:10-01:50", "01:50-02:30", "02:40-03:20"
     ];
@@ -1203,8 +1194,8 @@ and mobile-style labeled navigation.
       if (badge) {
         badge.textContent = this.checked ? "Enabled" : "Disabled";
         badge.className = this.checked 
-          ? "text-[9px] bg-emerald-200 text-emerald-900 font-extrabold px-1.5 py-0.5 rounded"
-          : "text-[9px] bg-slate-200 text-slate-700 font-bold px-1.5 py-0.5 rounded";
+          ? "text-[9px] bg-emerald-200 text-emerald-900 font-extrabold px-1 rounded"
+          : "text-[9px] bg-slate-200 text-slate-700 font-bold px-1 rounded";
       }
     });
 
@@ -1424,7 +1415,7 @@ and mobile-style labeled navigation.
 
       if (activeTeacher) loadTeacherForm(activeTeacher);
       updateTables();
-      showStatus("📋 Standard baseline dataset loaded! Save Full School Distribution to commit.");
+      showStatus("📋 Standard baseline dataset loaded!");
     }
 
     // =========================================================================
@@ -1468,7 +1459,7 @@ and mobile-style labeled navigation.
 
     function exitTimetableFocusMode() {
       setTimetableFocusMode(false);
-      showStatus("Returned to standard administrative dashboard.");
+      showStatus("Returned to standard view.");
     }
 
     // =========================================================================
@@ -1537,10 +1528,10 @@ and mobile-style labeled navigation.
       const subtitle = document.getElementById("timetableSubtitle");
 
       if (roleBadge) {
-        roleBadge.textContent = isAdmin ? "👑 Admin" : "👤 User";
+        roleBadge.textContent = isAdmin ? "Admin" : "User";
         roleBadge.className = isAdmin 
-          ? "bg-amber-500 text-slate-950 px-2 py-0.5 rounded text-[11px] font-extrabold uppercase"
-          : "bg-indigo-700 text-white px-2 py-0.5 rounded text-[11px] font-bold uppercase";
+          ? "bg-amber-500 text-slate-950 px-1.5 py-0.5 rounded text-[10px] font-black uppercase tracking-wide"
+          : "bg-indigo-700 text-white px-1.5 py-0.5 rounded text-[10px] font-bold uppercase";
       }
 
       if (authUserName) {
@@ -1553,8 +1544,8 @@ and mobile-style labeled navigation.
 
       if (subtitle) {
         subtitle.textContent = isAdmin 
-          ?""
-          : "";
+          ? "Live interactive schedules. Click any period to add or modify subjects & teachers."
+          : "Live weekly division and teacher schedules (Read-Only).";
       }
 
       document.querySelectorAll(".admin-only:not(.modal-overlay):not(.tab-pane)").forEach(el => {
@@ -1614,14 +1605,14 @@ and mobile-style labeled navigation.
         const isSelf = currentUser && currentUser.id === u.id;
         const row = `
           <tr class="hover:bg-slate-50 border-b border-slate-100">
-            <td class="px-2.5 py-1.5 font-bold text-slate-900">${u.username} ${isSelf ? '<span class="text-[9px] bg-emerald-100 text-emerald-800 px-1 py-0.5 rounded">You</span>' : ''}</td>
-            <td class="px-2.5 py-1.5 font-mono text-slate-500">${u.password}</td>
-            <td class="px-2.5 py-1.5">
-              <span class="px-1.5 py-0.5 rounded text-[10px] font-extrabold uppercase ${u.role === 'admin' ? 'bg-amber-100 text-amber-900 border border-amber-300' : 'bg-slate-100 text-slate-700'}">
+            <td class="px-2 py-1 font-bold text-slate-900">${u.username} ${isSelf ? '<span class="text-[8px] bg-emerald-100 text-emerald-800 px-1 rounded">You</span>' : ''}</td>
+            <td class="px-2 py-1 font-mono text-slate-500">${u.password}</td>
+            <td class="px-2 py-1">
+              <span class="px-1 py-0.2 rounded text-[9px] font-black uppercase ${u.role === 'admin' ? 'bg-amber-100 text-amber-900' : 'bg-slate-100 text-slate-700'}">
                 ${u.role}
               </span>
             </td>
-            <td class="px-2.5 py-1.5 text-right space-x-1">
+            <td class="px-2 py-1 text-right space-x-1">
               <button type="button" onclick="editUserAccount('${u.id}')" title="Edit" class="text-indigo-600 hover:text-indigo-800 font-bold text-xs">✏️</button>
               ${!isSelf ? `<button type="button" onclick="deleteUserAccount('${u.id}')" title="Delete" class="text-red-600 hover:text-red-800 font-bold text-xs">🗑️</button>` : ''}
             </td>
@@ -1712,7 +1703,7 @@ and mobile-style labeled navigation.
         }).catch(err => console.warn("Lock sync error:", err.message));
       }
 
-      showStatus(isTimetableLocked ? "🔒 Timetable locked by administrator." : "🔓 Timetable unlocked.");
+      showStatus(isTimetableLocked ? "🔒 Timetable locked." : "🔓 Timetable unlocked.");
     }
 
     function updateTimetableLockUI() {
@@ -1728,7 +1719,7 @@ and mobile-style labeled navigation.
         genBtn.disabled = isTimetableLocked;
         genBtn.classList.toggle("opacity-50", isTimetableLocked);
         genBtn.classList.toggle("cursor-not-allowed", isTimetableLocked);
-        genBtn.title = isTimetableLocked ? "Timetable is locked by Administrator" : "Generate Timetable ⚡";
+        genBtn.title = isTimetableLocked ? "Timetable locked by Admin" : "Generate Timetable ⚡";
       }
 
       if (lockBtnIcon) {
@@ -1763,8 +1754,8 @@ and mobile-style labeled navigation.
         }
         if (button) {
           button.className = isSelected
-            ? "flex flex-col items-center justify-center py-1 px-3 rounded-lg transition bg-indigo-600 text-white shadow-xs font-bold"
-            : "flex flex-col items-center justify-center py-1 px-3 rounded-lg transition text-slate-600 hover:text-indigo-600 font-semibold";
+            ? "flex flex-col items-center justify-center py-1 px-2.5 rounded-md transition bg-indigo-600 text-white shadow-xs font-bold min-w-[54px]"
+            : "flex flex-col items-center justify-center py-1 px-2.5 rounded-md transition text-slate-600 hover:text-indigo-600 font-semibold min-w-[54px]";
         }
       }
 
@@ -1786,7 +1777,7 @@ and mobile-style labeled navigation.
       const statusEl = document.getElementById("statusMessage");
       if (!statusEl) return;
       statusEl.textContent = message;
-      statusEl.className = "text-xs font-semibold px-3 py-2 rounded-md border transition-all duration-150 flex items-center justify-between shadow-xs";
+      statusEl.className = "text-[11px] font-semibold px-2.5 py-1.5 rounded border transition-all duration-150 flex items-center justify-between shadow-2xs";
       
       if (isError) {
         statusEl.classList.add("bg-red-50", "text-red-800", "border-red-200");
@@ -1796,7 +1787,7 @@ and mobile-style labeled navigation.
       statusEl.classList.remove("hidden");
       
       if (!isError) {
-        setTimeout(() => { statusEl.classList.add("hidden"); }, 4000);
+        setTimeout(() => { statusEl.classList.add("hidden"); }, 3500);
       }
     }
 
@@ -1946,7 +1937,7 @@ and mobile-style labeled navigation.
       const rowId = 'row-' + Date.now() + Math.random().toString(36).substring(2, 7);
       const div = document.createElement("div");
       div.id = rowId;
-      div.className = "allocation-row grid grid-cols-1 sm:grid-cols-12 gap-2 items-center bg-slate-50 p-2 rounded-lg border border-slate-200 relative w-full";
+      div.className = "allocation-row grid grid-cols-1 sm:grid-cols-12 gap-1.5 items-center bg-slate-50 p-1.5 rounded border border-slate-200 relative w-full";
 
       let classOptions = `<option value="">-- Class --</option>`;
       CLASSES.forEach(c => classOptions += `<option value="${c}" ${c === className ? 'selected' : ''}>${c}</option>`);
@@ -1958,20 +1949,20 @@ and mobile-style labeled navigation.
 
       div.innerHTML = `
         <div class="sm:col-span-4">
-          <select required class="class-select w-full px-2 py-1.5 border border-slate-300 rounded bg-white text-xs focus:ring-2 focus:ring-indigo-500 font-semibold h-8">
+          <select required class="class-select w-full px-2 py-1 border border-slate-300 rounded bg-white text-xs font-semibold h-7.5">
             ${classOptions}
           </select>
         </div>
         <div class="sm:col-span-5">
-          <select required class="subject-select w-full px-2 py-1.5 border border-slate-300 rounded bg-white text-xs focus:ring-2 focus:ring-indigo-500 font-semibold h-8">
+          <select required class="subject-select w-full px-2 py-1 border border-slate-300 rounded bg-white text-xs font-semibold h-7.5">
             ${subjectOptions}
           </select>
         </div>
         <div class="sm:col-span-2">
-          <input type="number" readonly class="periods-input w-full px-1 py-1.5 border border-slate-300 rounded bg-slate-100 text-slate-700 text-xs text-center font-bold h-8" placeholder="0" value="${initialPeriods}">
+          <input type="number" readonly class="periods-input w-full px-1 py-1 border border-slate-300 rounded bg-slate-100 text-slate-700 text-xs text-center font-bold h-7.5" placeholder="0" value="${initialPeriods}">
         </div>
         <div class="sm:col-span-1 flex justify-end sm:justify-center">
-          <button type="button" onclick="removeRow('${rowId}')" title="Remove" class="text-red-500 hover:text-red-700 bg-red-50 hover:bg-red-100 w-7 h-7 rounded-full flex items-center justify-center transition border border-red-200 active:scale-95 text-xs font-bold">
+          <button type="button" onclick="removeRow('${rowId}')" title="Remove" class="text-red-500 hover:text-red-700 bg-red-50 hover:bg-red-100 w-6 h-6 rounded-full flex items-center justify-center transition border border-red-200 active:scale-95 text-[10px] font-bold">
             ✕
           </button>
         </div>
@@ -2038,7 +2029,7 @@ and mobile-style labeled navigation.
         TEACHERS.forEach(t => dbState[t] = { classInCharge: "None", allocations: [] });
         if (activeTeacher) loadTeacherForm(activeTeacher);
         updateTables();
-        showStatus("Reset all allocations locally. Save to commit.");
+        showStatus("Reset all allocations locally.");
       }
     }
 
@@ -2078,7 +2069,7 @@ and mobile-style labeled navigation.
 
       saveCurrentFormToState();
       if (!isFirebaseConfigured || !db) {
-        showStatus(`⚠️ Saved allocations for [${activeTeacher}] locally.`, false);
+        showStatus(`Saved allocations for [${activeTeacher}] locally.`, false);
         return;
       }
 
@@ -2090,7 +2081,7 @@ and mobile-style labeled navigation.
         updatedAt: firebase.firestore.FieldValue.serverTimestamp()
       }).then(() => {
         completeTopLoader();
-        showStatus(`✅ Saved [${activeTeacher}] to Cloud Firestore!`);
+        showStatus(`✅ Saved [${activeTeacher}] to Firestore!`);
       }).catch(err => {
         completeTopLoader();
         showStatus(`❌ Save failed: ${err.message}`, true);
@@ -2109,7 +2100,7 @@ and mobile-style labeled navigation.
     });
 
     // =========================================================================
-    // SUMMARY TABLES RENDER (100% FLUID)
+    // SUMMARY TABLES RENDER (COMPACT 100% FLUID)
     // =========================================================================
     function updateTables() {
       const tBody = document.getElementById("teacherTableBody");
@@ -2139,11 +2130,11 @@ and mobile-style labeled navigation.
         
         let teacherRowHtml = `
           <tr class="hover:bg-slate-50 border-b border-slate-100 ${t === activeTeacher ? 'bg-indigo-50/50 font-medium' : ''}">
-            <td class="px-2.5 py-1.5 border-r border-slate-100 bg-white sticky left-0 z-10 cursor-pointer hover:text-indigo-600" onclick="openTeacherModal('${t}')">
-              <div class="font-bold text-slate-900">${t} <span class="text-[9px] text-indigo-500 font-normal ml-0.5">✏️</span></div>
-              ${subjectsSummary ? `<div class="text-[10px] text-slate-500 font-normal mt-0.5">${subjectsSummary}</div>` : ''}
+            <td class="px-2 py-1 border-r border-slate-100 bg-white sticky left-0 z-10 cursor-pointer hover:text-indigo-600" onclick="openTeacherModal('${t}')">
+              <div class="font-bold text-slate-900">${t} <span class="text-[8px] text-indigo-500 font-normal ml-0.5">✏️</span></div>
+              ${subjectsSummary ? `<div class="text-[9px] text-slate-500 font-normal leading-tight">${subjectsSummary}</div>` : ''}
             </td>
-            <td class="px-1.5 py-1.5 text-center border-r border-slate-100 text-indigo-700 font-semibold">${inCharge}</td>
+            <td class="px-1 py-1 text-center border-r border-slate-100 text-indigo-700 font-semibold">${inCharge}</td>
         `;
 
         let teacherTotalPeriods = 0;
@@ -2151,18 +2142,18 @@ and mobile-style labeled navigation.
           const matched = validAllocations.filter(a => a.className === c);
           if (matched.length > 0) {
             const displayStr = matched.map(m => `${m.subject}(${m.periods})`).join(", ");
-            teacherRowHtml += `<td class="px-1 py-1.5 text-center border-r border-slate-100 text-[10px] text-slate-800">${displayStr}</td>`;
+            teacherRowHtml += `<td class="px-1 py-1 text-center border-r border-slate-100 text-[9px] text-slate-800">${displayStr}</td>`;
             matched.forEach(m => teacherTotalPeriods += parseInt(m.periods) || 0);
           } else {
-            teacherRowHtml += `<td class="px-1 py-1.5 text-center border-r border-slate-100 text-slate-300">-</td>`;
+            teacherRowHtml += `<td class="px-1 py-1 text-center border-r border-slate-100 text-slate-300">-</td>`;
           }
         });
 
         teacherRowHtml += `
-            <td class="px-2.5 py-1.5 text-center bg-indigo-50/50 font-bold text-indigo-950">${teacherTotalPeriods}</td>
-            <td class="px-1.5 py-1.5 text-center border-l border-slate-200 share-col">
-              <button type="button" onclick="shareOnWhatsApp('${t}')" title="Share on WhatsApp" class="text-emerald-600 hover:text-emerald-800 p-1 rounded-full border border-emerald-200 w-6 h-6 inline-flex items-center justify-center bg-emerald-50">
-                <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M12.004 2C6.48 2 2 6.48 2 12.004c0 1.765.46 3.48 1.334 4.996L2 22l5.176-1.359c1.476.804 3.136 1.227 4.82 1.227 5.524 0 10.004-4.48 10.004-10.004C22.004 6.48 17.524 2 12.004 2zM17.47 15.35c-.24.36-.84.66-1.2.78-.36.12-.84.18-1.32.18-.3-.02-.66-.06-1.02-.12-.36-.06-.72-.12-1.08-.24-1.56-.54-2.88-1.56-3.84-2.82-.42-.54-.78-1.14-1.02-1.8-.18-.48-.24-.96-.24-1.44 0-.48.12-.9.36-1.26l.48-.6c.18-.24.36-.48.54-.72l.48-.36c.12-.12.24-.18.36-.18s.24 0 .36.06c.12.06.24.18.36.36l1.02 2.22c.06.12.12.24.12.36s0 .24-.06.36c-.06.12-.12.24-.24.36l-.36.42c-.12.12-.24.24-.36.36s-.12.24-.06.36c.24.48.54.9 1.02 1.32s1.02.72 1.5 1.02c.12.06.24.06.36 0 .12-.06.24-.18.36-.3l.42-.48c.12-.12.24-.18.36-.18.12 0 .24.06.36.12l2.22 1.02c.18.06.3.18.36.3.06.12.06.24 0 .36z"/></svg>
+            <td class="px-1.5 py-1 text-center bg-indigo-50/50 font-bold text-indigo-950">${teacherTotalPeriods}</td>
+            <td class="px-1 py-1 text-center border-l border-slate-200 share-col">
+              <button type="button" onclick="shareOnWhatsApp('${t}')" title="Share load on WhatsApp" class="text-emerald-600 hover:text-emerald-800 p-0.5 rounded-full border border-emerald-200 w-5 h-5 inline-flex items-center justify-center bg-emerald-50">
+                <svg class="w-3 h-3 fill-current" viewBox="0 0 24 24"><path d="M12.004 2C6.48 2 2 6.48 2 12.004c0 1.765.46 3.48 1.334 4.996L2 22l5.176-1.359c1.476.804 3.136 1.227 4.82 1.227 5.524 0 10.004-4.48 10.004-10.004C22.004 6.48 17.524 2 12.004 2zM17.47 15.35c-.24.36-.84.66-1.2.78-.36.12-.84.18-1.32.18-.3-.02-.66-.06-1.02-.12-.36-.06-.72-.12-1.08-.24-1.56-.54-2.88-1.56-3.84-2.82-.42-.54-.78-1.14-1.02-1.8-.18-.48-.24-.96-.24-1.44 0-.48.12-.9.36-1.26l.48-.6c.18-.24.36-.48.54-.72l.48-.36c.12-.12.24-.18.36-.18s.24 0 .36.06c.12.06.24.18.36.36l1.02 2.22c.06.12.12.24.12.36s0 .24-.06.36c-.06.12-.12.24-.24.36l-.36.42c-.12.12-.24.24-.36.36s-.12.24-.06.36c.24.48.54.9 1.02 1.32s1.02.72 1.5 1.02c.12.06.24.06.36 0 .12-.06.24-.18.36-.3l.42-.48c.12-.12.24-.18.36-.18.12 0 .24.06.36.12l2.22 1.02c.18.06.3.18.36.3.06.12.06.24 0 .36z"/></svg>
               </button>
             </td>
           </tr>
@@ -2170,13 +2161,13 @@ and mobile-style labeled navigation.
         tBody.insertAdjacentHTML('beforeend', teacherRowHtml);
       });
 
-      let classTeacherRowHtml = `<tr class="bg-indigo-50/30 border-b border-slate-200"><td class="px-2.5 py-1.5 font-bold border-r border-slate-100 bg-indigo-50/50 sticky left-0 z-10 text-indigo-950">Class Teacher</td>`;
-      CLASSES.forEach(c => classTeacherRowHtml += `<td class="px-1 py-1.5 text-center border-r border-slate-100 font-bold text-indigo-900 bg-indigo-50/20 text-xs">${classTeachers[c]}</td>`);
-      classTeacherRowHtml += `<td class="px-2.5 py-1.5 text-center bg-indigo-50/30 font-bold text-slate-400 border-l">-</td></tr>`;
+      let classTeacherRowHtml = `<tr class="bg-indigo-50/30 border-b border-slate-200"><td class="px-2 py-1 font-bold border-r border-slate-100 bg-indigo-50/50 sticky left-0 z-10 text-indigo-950 text-[10px]">Class Teacher</td>`;
+      CLASSES.forEach(c => classTeacherRowHtml += `<td class="px-1 py-1 text-center border-r border-slate-100 font-bold text-indigo-900 bg-indigo-50/20 text-[10px]">${classTeachers[c]}</td>`);
+      classTeacherRowHtml += `<td class="px-1.5 py-1 text-center bg-indigo-50/30 font-bold text-slate-400 border-l">-</td></tr>`;
       sBody.insertAdjacentHTML('beforeend', classTeacherRowHtml);
 
       SUBJECTS.forEach(sub => {
-        let studentRowHtml = `<tr class="hover:bg-slate-50 border-b border-slate-100"><td class="px-2.5 py-1.5 font-bold border-r border-slate-100 bg-white sticky left-0 z-10 text-indigo-950">${sub}</td>`;
+        let studentRowHtml = `<tr class="hover:bg-slate-50 border-b border-slate-100"><td class="px-2 py-1 font-bold border-r border-slate-100 bg-white sticky left-0 z-10 text-indigo-950 text-[10px]">${sub}</td>`;
         let subjectRowTotal = 0;
 
         CLASSES.forEach(c => {
@@ -2192,7 +2183,7 @@ and mobile-style labeled navigation.
           });
 
           if (cellAllocations.length > 0) {
-            studentRowHtml += `<td class="px-1 py-1 text-center border-r border-slate-100 font-medium text-teal-800 text-[10px] sm:text-xs">${cellAllocations.join(", ")}</td>`;
+            studentRowHtml += `<td class="px-1 py-1 text-center border-r border-slate-100 font-medium text-teal-800 text-[9px] sm:text-[10px]">${cellAllocations.join(", ")}</td>`;
             studentClassTotals[c] += cellPeriodsSum;
             subjectRowTotal += cellPeriodsSum;
           } else {
@@ -2200,18 +2191,18 @@ and mobile-style labeled navigation.
           }
         });
 
-        studentRowHtml += `<td class="px-2.5 py-1.5 text-center bg-teal-50/50 font-bold text-teal-950">${subjectRowTotal}</td></tr>`;
+        studentRowHtml += `<td class="px-1.5 py-1 text-center bg-teal-50/50 font-bold text-teal-950">${subjectRowTotal}</td></tr>`;
         sBody.insertAdjacentHTML('beforeend', studentRowHtml);
       });
 
       let grandTotalSum = 0;
-      let footerHtml = `<tr><td class="px-2.5 py-1.5 border-r border-slate-300 text-left uppercase sticky left-0 bg-slate-200 z-10 text-xs font-bold">Grand Total</td>`;
+      let footerHtml = `<tr><td class="px-2 py-1 border-r border-slate-300 text-left uppercase sticky left-0 bg-slate-200 z-10 text-[10px] font-bold">Grand Total</td>`;
       CLASSES.forEach(c => {
         const total = studentClassTotals[c];
         grandTotalSum += total;
-        footerHtml += `<td class="px-1 py-1.5 text-center border-r border-slate-300 font-bold ${total === 35 ? 'bg-emerald-100 text-emerald-900' : 'bg-amber-100 text-amber-950'}">${total}</td>`;
+        footerHtml += `<td class="px-1 py-1 text-center border-r border-slate-300 font-bold ${total === 35 ? 'bg-emerald-100 text-emerald-900' : 'bg-amber-100 text-amber-950'} text-[10px]">${total}</td>`;
       });
-      footerHtml += `<td class="px-2.5 py-1.5 text-center bg-teal-100 text-teal-950 text-xs sm:text-sm font-black">${grandTotalSum}</td></tr>`;
+      footerHtml += `<td class="px-1.5 py-1 text-center bg-teal-100 text-teal-950 text-xs font-black">${grandTotalSum}</td></tr>`;
       sFoot.innerHTML = footerHtml;
     }
 
@@ -2256,7 +2247,7 @@ and mobile-style labeled navigation.
       const rowId = 'modal-row-' + Date.now() + Math.random().toString(36).substring(2, 7);
       const div = document.createElement("div");
       div.id = rowId;
-      div.className = "modal-allocation-row grid grid-cols-1 sm:grid-cols-12 gap-2 items-center bg-slate-50 p-1.5 rounded border border-slate-200 relative w-full";
+      div.className = "modal-allocation-row grid grid-cols-1 sm:grid-cols-12 gap-1.5 items-center bg-slate-50 p-1.5 rounded border border-slate-200 relative w-full";
       
       let classOptions = `<option value="">-- Class --</option>`;
       CLASSES.forEach(c => classOptions += `<option value="${c}" ${c === className ? 'selected' : ''}>${c}</option>`);
@@ -2268,20 +2259,20 @@ and mobile-style labeled navigation.
 
       div.innerHTML = `
         <div class="sm:col-span-4">
-          <select required class="modal-class-select w-full px-2 py-1 border border-slate-300 rounded bg-white text-xs focus:ring-2 focus:ring-indigo-500 h-8">
+          <select required class="modal-class-select w-full px-2 py-1 border border-slate-300 rounded bg-white text-xs h-7.5">
             ${classOptions}
           </select>
         </div>
         <div class="sm:col-span-4">
-          <select required class="modal-subject-select w-full px-2 py-1 border border-slate-300 rounded bg-white text-xs focus:ring-2 focus:ring-indigo-500 h-8">
+          <select required class="modal-subject-select w-full px-2 py-1 border border-slate-300 rounded bg-white text-xs h-7.5">
             ${subjectOptions}
           </select>
         </div>
         <div class="sm:col-span-2">
-          <input type="number" readonly class="modal-periods-input w-full px-1 py-1 border border-slate-300 rounded bg-slate-100 text-slate-600 text-xs text-center font-semibold h-8" placeholder="0" value="${initialPeriods}">
+          <input type="number" readonly class="modal-periods-input w-full px-1 py-1 border border-slate-300 rounded bg-slate-100 text-slate-600 text-xs text-center font-semibold h-7.5" placeholder="0" value="${initialPeriods}">
         </div>
         <div class="sm:col-span-2 flex justify-end sm:justify-center">
-          <button type="button" onclick="removeModalRow('${rowId}')" title="Remove" class="text-red-500 hover:text-red-700 bg-red-50 hover:bg-red-100 w-7 h-7 rounded-full flex items-center justify-center transition border border-red-200 active:scale-95 text-xs font-bold">
+          <button type="button" onclick="removeModalRow('${rowId}')" title="Remove" class="text-red-500 hover:text-red-700 bg-red-50 hover:bg-red-100 w-6 h-6 rounded-full flex items-center justify-center transition border border-red-200 active:scale-95 text-[10px] font-bold">
             ✕
           </button>
         </div>
@@ -2352,10 +2343,10 @@ and mobile-style labeled navigation.
       const p7Badge = document.getElementById("p7ConstraintStatusBadge");
       if (p7Badge) {
         p7Badge.textContent = "Enabled";
-        p7Badge.className = "text-[9px] bg-emerald-200 text-emerald-900 font-extrabold px-1.5 py-0.5 rounded";
+        p7Badge.className = "text-[9px] bg-emerald-200 text-emerald-900 font-extrabold px-1 rounded";
       }
 
-      showStatus("🔄 Scheduling rules reset to default.");
+      showStatus("🔄 Constraints reset to default.");
     }
 
     // =========================================================================
@@ -2392,7 +2383,7 @@ and mobile-style labeled navigation.
           if (c !== selectedClass) {
             const slot = latestGeneratedTimetable[c]?.[day]?.[period];
             if (slot && (slot.teacher === selectedTeacher || slot.teacher2 === selectedTeacher)) {
-              warnings.push(`⚠️ <strong>Teacher ${selectedTeacher}</strong> is already allotted to <strong>Class ${c}</strong> in this period. Saving will unassign them from Class ${c}.`);
+              warnings.push(`⚠️ <strong>${selectedTeacher}</strong> is already teaching <strong>Class ${c}</strong> in this slot.`);
             }
           }
         });
@@ -2404,7 +2395,7 @@ and mobile-style labeled navigation.
           if (c !== selectedClass) {
             const slot = latestGeneratedTimetable[c]?.[day]?.[period];
             if (slot && (slot.teacher === selectedTeacher2 || slot.teacher2 === selectedTeacher2)) {
-              warnings.push(`⚠️ <strong>Teacher ${selectedTeacher2} (Parallel)</strong> is already allotted to <strong>Class ${c}</strong> in this period. Saving will unassign them from Class ${c}.`);
+              warnings.push(`⚠️ <strong>${selectedTeacher2} (Parallel)</strong> is already teaching <strong>Class ${c}</strong> in this slot.`);
             }
           }
         });
@@ -2417,7 +2408,7 @@ and mobile-style labeled navigation.
           const currentDesc = (currentClassSlot.subject2 && currentClassSlot.teacher2) 
             ? `${currentClassSlot.subject} (${currentClassSlot.teacher}) / ${currentClassSlot.subject2} (${currentClassSlot.teacher2})`
             : `${currentClassSlot.subject} (${currentClassSlot.teacher})`;
-          warnings.push(`ℹ️ <strong>Class ${selectedClass}</strong> currently has <strong>${currentDesc}</strong>. Saving will reassign this slot.`);
+          warnings.push(`ℹ️ <strong>Class ${selectedClass}</strong> currently holds <strong>${currentDesc}</strong>.`);
         }
       }
 
@@ -2474,7 +2465,7 @@ and mobile-style labeled navigation.
       }
 
       if (isTimetableLocked) {
-        showStatus("⚠️ Timetable is locked by Administrator. Unlock before making changes.", true);
+        showStatus("⚠️ Timetable is locked by Administrator.", true);
         return;
       }
 
@@ -2670,7 +2661,7 @@ and mobile-style labeled navigation.
       closeSlotEditor();
       const displaySubj = (isDual && subject2Name) ? `${subjectName}/${subject2Name}` : subjectName;
       const displayT = (isDual && teacher2Name) ? `${teacherName}/${teacher2Name}` : teacherName;
-      showStatus(`✅ Instantly updated ${className} (P${period+1}, ${DAYS[day]}): ${displaySubj || 'Free'} [${displayT || '-'}]`);
+      showStatus(`✅ Updated ${className} (P${period+1}, ${DAYS[day]}): ${displaySubj || 'Free'} [${displayT || '-'}]`);
     }
 
     function reflectTimetableChanges(saveToCloud = true) {
@@ -2717,7 +2708,7 @@ and mobile-style labeled navigation.
       }
 
       if (isTimetableLocked) {
-        showStatus("⚠️ Timetable is locked by Administrator. Unlock before editing.", true);
+        showStatus("⚠️ Timetable is locked by Administrator.", true);
         return;
       }
       if (!latestGeneratedTimetable) return;
@@ -2777,7 +2768,7 @@ and mobile-style labeled navigation.
 
       reflectTimetableChanges(true);
       completeTopLoader();
-      showStatus(`🪄 AI Auto-Resolved all open slots for Class ${className}!`);
+      showStatus(`🪄 AI Auto-Resolved Class ${className}!`);
     }
 
     async function autoFixAllUnplacedCardsWithAI() {
@@ -2796,14 +2787,14 @@ and mobile-style labeled navigation.
         await autoFixClassUnplaced(c);
       }
       completeTopLoader();
-      showStatus("🎉 100% Conflict-free timetable complete: All class periods solved!");
+      showStatus("🎉 Conflict-free timetable complete!");
       runAIScheduleAudit();
     }
 
     function runAIScheduleAudit() {
       const resBox = document.getElementById("aiAuditResults");
       if (!latestGeneratedTimetable) {
-        resBox.innerHTML = `<span class="text-red-600 font-semibold">⚠️ Please generate a timetable first to run the audit.</span>`;
+        resBox.innerHTML = `<span class="text-red-600 font-semibold">⚠️ Please generate a timetable first.</span>`;
         resBox.classList.remove("hidden");
         return;
       }
@@ -2826,16 +2817,15 @@ and mobile-style labeled navigation.
 
       const score = Math.round((filledSlots / 315) * 100);
       let html = `
-        <div class="flex items-center justify-between border-b pb-1.5">
+        <div class="flex items-center justify-between border-b pb-1">
           <span class="font-bold text-indigo-950">Timetable Health Score:</span>
-          <span class="text-base font-extrabold text-emerald-600">${score}%</span>
+          <span class="text-sm font-extrabold text-emerald-600">${score}%</span>
         </div>
-        <ul class="list-disc pl-4 space-y-1 text-slate-600">
-          <li>${filledSlots === 315 ? '✅ 100% Zero Gap: All 315/315 periods allocated across all 9 classes.' : `⚠️ ${315 - filledSlots} empty slot(s) remaining.`}</li>
-          <li>${majorInP7Count === 0 ? '✅ 100% Clean Period 7: Zero major/core subjects in the last period.' : `⚠️ ${majorInP7Count} core subjects found in P7.`}</li>
-          <li>✅ Parallel Elective Matrix enforced: 5D, 6D, 7D have simultaneous MI & ARB periods.</li>
-          <li>✅ Limit Continuous Teaching Periods constraint strictly enforced.</li>
-          <li>✅ Single IT Lab & Single PE Ground constraints observed.</li>
+        <ul class="list-disc pl-3.5 space-y-0.5 text-slate-600 text-[10px]">
+          <li>${filledSlots === 315 ? '✅ 100% Zero Gap: All 315/315 periods allocated.' : `⚠️ ${315 - filledSlots} empty slot(s) remaining.`}</li>
+          <li>${majorInP7Count === 0 ? '✅ 100% Clean Period 7: Zero core subjects in last period.' : `⚠️ ${majorInP7Count} core subjects found in P7.`}</li>
+          <li>✅ Parallel Elective Matrix enforced (5D, 6D, 7D: MI & ARB simultaneous).</li>
+          <li>✅ Max continuous teaching limits strictly observed.</li>
         </ul>
       `;
 
@@ -2863,7 +2853,7 @@ and mobile-style labeled navigation.
       }
 
       if (isTimetableLocked) {
-        showStatus("⚠️ Timetable is locked by Administrator. Unlock to generate a fresh schedule.", true);
+        showStatus("⚠️ Timetable is locked by Administrator.", true);
         return;
       }
       if (isGeneratingTimetable) return;
@@ -2999,7 +2989,6 @@ and mobile-style labeled navigation.
                 group.lessons.forEach(item => {
                   const c = item.className;
                   if (item.teacher2 && item.subject2) {
-                    // Parallel dual slot (e.g. 5D, 6D, 7D MI + ARB)
                     if (!timetable[c][d][p] && !teacherBusy[item.teacher][d][p] && !teacherBusy[item.teacher2][d][p]) {
                       assignDualSlot(c, d, p, item.teacher, item.subject, item.teacher2, item.subject2);
                     }
@@ -3163,9 +3152,9 @@ and mobile-style labeled navigation.
         completeTopLoader();
         
         if (lowestUnfilled > 0) {
-          showStatus(`⚡ Timetable generated with ${lowestUnfilled} open slot(s). Check the unplaced indicators on division cards.`, false);
+          showStatus(`⚡ Timetable generated with ${lowestUnfilled} open slot(s).`);
         } else {
-          showStatus("🎉 100% Conflict-Free Timetable generated successfully!");
+          showStatus("🎉 Conflict-Free Timetable complete!");
         }
       } catch (err) {
         completeTopLoader();
@@ -3227,26 +3216,26 @@ and mobile-style labeled navigation.
       const dutySlotKey = `${day}_${period}_${absentTeacher}`;
       const existingAssignment = assignedSubstituteDuties[dutySlotKey];
 
-      let html = `<div class="font-bold text-slate-900 mb-1">Status for ${absentTeacher} (${DAYS[day]}, Period P${period+1} - ${PERIOD_TIMES[period]}):</div>`;
+      let html = `<div class="font-bold text-slate-900 mb-0.5">Status: ${absentTeacher} (${DAYS[day]}, P${period+1} - ${PERIOD_TIMES[period]}):</div>`;
       
       if (!affectedClass) {
-        html += `<div class="text-emerald-700 font-semibold mb-1.5 bg-emerald-50 p-2 rounded border border-emerald-200">ℹ️ Teacher <strong>${absentTeacher}</strong> is FREE in this period. No substitution needed.</div>`;
+        html += `<div class="text-emerald-700 font-semibold bg-emerald-50 p-1.5 rounded border border-emerald-200">ℹ️ Teacher <strong>${absentTeacher}</strong> is FREE in this period. No substitution needed.</div>`;
       } else {
-        html += `<div class="text-amber-900 font-semibold mb-1.5 bg-amber-50 p-1.5 rounded border border-amber-200">🚨 Class <strong>${affectedClass}</strong> [${affectedSubject}].</div>`;
+        html += `<div class="text-amber-900 font-semibold bg-amber-50 p-1.5 rounded border border-amber-200">🚨 Class <strong>${affectedClass}</strong> [${affectedSubject}].</div>`;
 
         if (existingAssignment) {
           html += `
-            <div class="p-2.5 bg-emerald-50 rounded border border-emerald-200 flex items-center justify-between">
+            <div class="p-2 bg-emerald-50 rounded border border-emerald-200 flex items-center justify-between">
               <div>
-                <span class="font-bold text-emerald-950 text-xs">✅ Assigned Substitute: <strong class="text-indigo-900 text-sm">${existingAssignment.substituteTeacher}</strong></span>
-                <p class="text-[10px] text-emerald-800 mt-0.5">Engaging Class ${existingAssignment.className} [${existingAssignment.subject}]</p>
+                <span class="font-bold text-emerald-950 text-xs">✅ Assigned: <strong class="text-indigo-900">${existingAssignment.substituteTeacher}</strong></span>
+                <p class="text-[9px] text-emerald-800">Class ${existingAssignment.className} [${existingAssignment.subject}]</p>
               </div>
-              <div class="flex items-center gap-1.5">
-                <button type="button" onclick='sendIndividualSubstituteWhatsApp("${existingAssignment.substituteTeacher}", ${JSON.stringify(existingAssignment)})' title="Resend WhatsApp Message" class="text-emerald-700 bg-white border border-emerald-300 hover:bg-emerald-100 p-1.5 rounded-full w-7 h-7 inline-flex items-center justify-center transition active:scale-95 shadow-xs">
-                  <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M12.004 2C6.48 2 2 6.48 2 12.004c0 1.765.46 3.48 1.334 4.996L2 22l5.176-1.359c1.476.804 3.136 1.227 4.82 1.227 5.524 0 10.004-4.48 10.004-10.004C22.004 6.48 17.524 2 12.004 2zM17.47 15.35c-.24.36-.84.66-1.2.78-.36.12-.84.18-1.32.18-.3-.02-.66-.06-1.02-.12-.36-.06-.72-.12-1.08-.24-1.56-.54-2.88-1.56-3.84-2.82-.42-.54-.78-1.14-1.02-1.8-.18-.48-.24-.96-.24-1.44 0-.48.12-.9.36-1.26l.48-.6c.18-.24.36-.48.54-.72l.48-.36c.12-.12.24-.18.36-.18s.24 0 .36.06c.12.06.24.18.36.36l1.02 2.22c.06.12.12.24.12.36s0 .24-.06.36c-.06.12-.12.24-.24.36l-.36.42c-.12.12-.24.24-.36.36s-.12.24-.06.36c.24.48.54.9 1.02 1.32s1.02.72 1.5 1.02c.12.06.24.06.36 0 .12-.06.24-.18.36-.3l.42-.48c.12-.12.24-.18.36-.18.12 0 .24.06.36.12l2.22 1.02c.18.06.3.18.36.3.06.12.06.24 0 .36z"/></svg>
+              <div class="flex items-center gap-1">
+                <button type="button" onclick='sendIndividualSubstituteWhatsApp("${existingAssignment.substituteTeacher}", ${JSON.stringify(existingAssignment)})' title="Resend WhatsApp Message" class="text-emerald-700 bg-white border border-emerald-300 hover:bg-emerald-100 p-1 rounded-full w-6 h-6 inline-flex items-center justify-center transition active:scale-95 shadow-2xs">
+                  <svg class="w-3 h-3 fill-current" viewBox="0 0 24 24"><path d="M12.004 2C6.48 2 2 6.48 2 12.004c0 1.765.46 3.48 1.334 4.996L2 22l5.176-1.359c1.476.804 3.136 1.227 4.82 1.227 5.524 0 10.004-4.48 10.004-10.004C22.004 6.48 17.524 2 12.004 2zM17.47 15.35c-.24.36-.84.66-1.2.78-.36.12-.84.18-1.32.18-.3-.02-.66-.06-1.02-.12-.36-.06-.72-.12-1.08-.24-1.56-.54-2.88-1.56-3.84-2.82-.42-.54-.78-1.14-1.02-1.8-.18-.48-.24-.96-.24-1.44 0-.48.12-.9.36-1.26l.48-.6c.18-.24.36-.48.54-.72l.48-.36c.12-.12.24-.18.36-.18s.24 0 .36.06c.12.06.24.18.36.36l1.02 2.22c.06.12.12.24.12.36s0 .24-.06.36c-.06.12-.12.24-.24.36l-.36.42c-.12.12-.24.24-.36.36s-.12.24-.06.36c.24.48.54.9 1.02 1.32s1.02.72 1.5 1.02c.12.06.24.06.36 0 .12-.06.24-.18.36-.3l.42-.48c.12-.12.24-.18.36-.18.12 0 .24.06.36.12l2.22 1.02c.18.06.3.18.36.3.06.12.06.24 0 .36z"/></svg>
                 </button>
-                <button type="button" onclick="cancelSlotSubstitution('${dutySlotKey}')" title="Change Substitute" class="p-1 bg-red-100 hover:bg-red-200 text-red-800 rounded text-xs transition">
-                  🔄
+                <button type="button" onclick="cancelSlotSubstitution('${dutySlotKey}')" class="text-[9px] bg-red-100 hover:bg-red-200 text-red-800 font-bold px-1.5 py-0.5 rounded transition">
+                  Change 🔄
                 </button>
               </div>
             </div>
@@ -3304,8 +3293,8 @@ and mobile-style labeled navigation.
           if (freeCandidates.length === 0) {
             html += `<div class="text-red-600 font-bold">No eligible free staff available for this period.</div>`;
           } else {
-            html += `<div class="text-slate-700 font-bold mb-1">Click WhatsApp icon to assign & notify:</div>`;
-            html += `<div class="space-y-1 max-h-52 overflow-y-auto pr-1">`;
+            html += `<div class="text-slate-700 font-bold mb-0.5">Click WhatsApp icon to assign & notify:</div>`;
+            html += `<div class="space-y-1 max-h-48 overflow-y-auto pr-0.5">`;
             
             freeCandidates.forEach(({ teacher, freePeriodsCount, alreadySubstitutedPeriods }) => {
               const dutyContext = {
@@ -3317,20 +3306,20 @@ and mobile-style labeled navigation.
               };
 
               const alreadySubBadge = (alreadySubstitutedPeriods && alreadySubstitutedPeriods.length > 0)
-                ? `<span class="text-[9px] font-bold text-red-700 bg-red-100 border border-red-300 px-1.5 py-0.5 rounded-full shadow-xs">⚠️ Already sub (${alreadySubstitutedPeriods.join(', ')})</span>`
+                ? `<span class="text-[8px] font-bold text-red-700 bg-red-100 border border-red-300 px-1 py-0.2 rounded shadow-2xs">⚠️ Already sub (${alreadySubstitutedPeriods.join(', ')})</span>`
                 : '';
 
               html += `
                 <div class="flex items-center justify-between p-1.5 bg-slate-50 hover:bg-purple-50/60 rounded border border-slate-200 transition">
                   <div class="flex flex-wrap items-center gap-1">
                     <span class="font-bold text-indigo-950">${teacher}</span>
-                    <span class="text-[9px] text-purple-700 font-bold bg-purple-50 px-1.5 py-0.5 rounded-full border border-purple-200">
-                      ${freePeriodsCount} free today
+                    <span class="text-[9px] text-purple-700 font-bold bg-purple-50 px-1.5 py-0.2 rounded-full border border-purple-200">
+                      ${freePeriodsCount} free
                     </span>
                     ${alreadySubBadge}
                   </div>
-                  <button type="button" onclick='selectSubstituteAndNotify("${teacher}", ${JSON.stringify(dutyContext)})' title="Assign as Substitute & Send WhatsApp" class="text-emerald-700 hover:text-emerald-800 bg-emerald-100 hover:bg-emerald-200 p-1 rounded-full border border-emerald-300 w-7 h-7 inline-flex items-center justify-center transition active:scale-95 shadow-xs">
-                    <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M12.004 2C6.48 2 2 6.48 2 12.004c0 1.765.46 3.48 1.334 4.996L2 22l5.176-1.359c1.476.804 3.136 1.227 4.82 1.227 5.524 0 10.004-4.48 10.004-10.004C22.004 6.48 17.524 2 12.004 2zM17.47 15.35c-.24.36-.84.66-1.2.78-.36.12-.84.18-1.32.18-.3-.02-.66-.06-1.02-.12-.36-.06-.72-.12-1.08-.24-1.56-.54-2.88-1.56-3.84-2.82-.42-.54-.78-1.14-1.02-1.8-.18-.48-.24-.96-.24-1.44 0-.48.12-.9.36-1.26l.48-.6c.18-.24.36-.48.54-.72l.48-.36c.12-.12.24-.18.36-.18s.24 0 .36.06c.12.06.24.18.36.36l1.02 2.22c.06.12.12.24.12.36s0 .24-.06.36c-.06.12-.12.24-.24.36l-.36.42c-.12.12-.24.24-.36.36s-.12.24-.06.36c.24.48.54.9 1.02 1.32s1.02.72 1.5 1.02c.12.06.24.06.36 0 .12-.06.24-.18.36-.3l.42-.48c.12-.12.24-.18.36-.18.12 0 .24.06.36.12l2.22 1.02c.18.06.3.18.36.3.06.12.06.24 0 .36z"/></svg>
+                  <button type="button" onclick='selectSubstituteAndNotify("${teacher}", ${JSON.stringify(dutyContext)})' title="Assign & WhatsApp" class="text-emerald-700 hover:text-emerald-800 bg-emerald-100 hover:bg-emerald-200 p-1 rounded-full border border-emerald-300 w-6 h-6 inline-flex items-center justify-center transition active:scale-95 shadow-2xs">
+                    <svg class="w-3 h-3 fill-current" viewBox="0 0 24 24"><path d="M12.004 2C6.48 2 2 6.48 2 12.004c0 1.765.46 3.48 1.334 4.996L2 22l5.176-1.359c1.476.804 3.136 1.227 4.82 1.227 5.524 0 10.004-4.48 10.004-10.004C22.004 6.48 17.524 2 12.004 2zM17.47 15.35c-.24.36-.84.66-1.2.78-.36.12-.84.18-1.32.18-.3-.02-.66-.06-1.02-.12-.36-.06-.72-.12-1.08-.24-1.56-.54-2.88-1.56-3.84-2.82-.42-.54-.78-1.14-1.02-1.8-.18-.48-.24-.96-.24-1.44 0-.48.12-.9.36-1.26l.48-.6c.18-.24.36-.48.54-.72l.48-.36c.12-.12.24-.18.36-.18s.24 0 .36.06c.12.06.24.18.36.36l1.02 2.22c.06.12.12.24.12.36s0 .24-.06.36c-.06.12-.12.24-.24.36l-.36.42c-.12.12-.24.24-.36.36s-.12.24-.06.36c.24.48.54.9 1.02 1.32s1.02.72 1.5 1.02c.12.06.24.06.36 0 .12-.06.24-.18.36-.3l.42-.48c.12-.12.24-.18.36-.18.12 0 .24.06.36.12l2.22 1.02c.18.06.3.18.36.3.06.12.06.24 0 .36z"/></svg>
                   </button>
                 </div>
               `;
@@ -3352,19 +3341,19 @@ and mobile-style labeled navigation.
       };
 
       sendIndividualSubstituteWhatsApp(substituteTeacher, context);
-      showStatus(`✅ ${substituteTeacher} assigned to substitute ${context.absentTeacher} (P${context.period+1}, Class ${context.className}).`);
+      showStatus(`✅ ${substituteTeacher} assigned to substitute ${context.absentTeacher}.`);
       findAISubstitutes();
     }
 
     function cancelSlotSubstitution(dutySlotKey) {
       delete assignedSubstituteDuties[dutySlotKey];
-      showStatus("🔄 Substitution cleared. You can select another substitute.");
+      showStatus("🔄 Substitution cleared.");
       findAISubstitutes();
     }
 
     function clearDaySubstituteDuties() {
       assignedSubstituteDuties = {};
-      showStatus("🔄 Reset all substitute allocations.");
+      showStatus("🔄 Reset substitute allocations.");
       findAISubstitutes();
     }
 
@@ -3426,18 +3415,18 @@ and mobile-style labeled navigation.
           if (subRecord) {
             assignedCount++;
             html += `
-              <div class="p-1.5 flex items-center justify-between bg-emerald-50/50">
-                <span class="font-bold text-slate-800">P${p+1} (${PERIOD_TIMES[p]}): Class ${taughtClass} [${taughtSubj}]</span>
-                <span class="font-bold text-emerald-800 bg-emerald-100 px-1.5 py-0.5 rounded text-[9px]">
+              <div class="p-1 flex items-center justify-between bg-emerald-50/50">
+                <span class="font-bold text-slate-800 text-[10px]">P${p+1} (${PERIOD_TIMES[p]}): Class ${taughtClass} [${taughtSubj}]</span>
+                <span class="font-bold text-emerald-800 bg-emerald-100 px-1.5 py-0.2 rounded text-[9px]">
                   Sub: ${subRecord.substituteTeacher}
                 </span>
               </div>
             `;
           } else {
             html += `
-              <div class="p-1.5 flex items-center justify-between bg-amber-50/50">
-                <span class="font-semibold text-slate-700">P${p+1} (${PERIOD_TIMES[p]}): Class ${taughtClass} [${taughtSubj}]</span>
-                <span class="font-bold text-amber-900 bg-amber-100 px-1.5 py-0.5 rounded text-[9px]">
+              <div class="p-1 flex items-center justify-between bg-amber-50/50">
+                <span class="font-semibold text-slate-700 text-[10px]">P${p+1} (${PERIOD_TIMES[p]}): Class ${taughtClass} [${taughtSubj}]</span>
+                <span class="font-bold text-amber-900 bg-amber-100 px-1.5 py-0.2 rounded text-[9px]">
                   ⚠️ Pending
                 </span>
               </div>
@@ -3445,8 +3434,8 @@ and mobile-style labeled navigation.
           }
         } else {
           html += `
-            <div class="p-1.5 flex items-center justify-between text-slate-400 bg-slate-50/40">
-              <span>P${p+1} (${PERIOD_TIMES[p]}): Free</span>
+            <div class="p-1 flex items-center justify-between text-slate-400 bg-slate-50/40">
+              <span class="text-[10px]">P${p+1} (${PERIOD_TIMES[p]}): Free</span>
               <span class="text-[9px] italic">No sub needed</span>
             </div>
           `;
@@ -3455,7 +3444,7 @@ and mobile-style labeled navigation.
       html += `</div>`;
 
       if (totalTeachingSlots === 0) {
-        html = `<div class="p-2.5 bg-emerald-50 rounded text-emerald-900 font-semibold border border-emerald-200 text-xs">Teacher ${absentTeacher} has 0 teaching periods on ${DAYS[day]}. No substitutions required.</div>`;
+        html = `<div class="p-2 bg-emerald-50 rounded text-emerald-900 font-semibold border border-emerald-200 text-[10px]">Teacher ${absentTeacher} has 0 teaching periods on ${DAYS[day]}. No substitutions required.</div>`;
       }
 
       container.innerHTML = html;
@@ -3590,21 +3579,21 @@ and mobile-style labeled navigation.
           : `${filledCount}/35 (${35 - filledCount} Empty ⚠️)`;
 
         let cardHtml = `
-          <div class="class-timetable-card bg-slate-50 p-2.5 sm:p-3 rounded-lg border border-slate-200 shadow-xs space-y-1.5 w-full">
-            <div class="flex justify-between items-center border-b pb-1.5">
-              <div class="flex items-center gap-1.5">
-                <h3 class="text-xs sm:text-sm font-bold text-indigo-950">Division Class: ${c}</h3>
+          <div class="class-timetable-card bg-slate-50 p-2 rounded-lg border border-slate-200 shadow-2xs space-y-1 w-full">
+            <div class="flex justify-between items-center border-b pb-1">
+              <div class="flex items-center gap-1">
+                <span class="font-bold text-xs text-indigo-950">Division ${c}</span>
               </div>
               
               <div class="flex items-center gap-1 no-print">
-                <span class="text-[10px] ${badgeStyle} border px-1.5 py-0.5 rounded font-bold">${badgeText}</span>
+                <span class="text-[9px] ${badgeStyle} border px-1.5 py-0.2 rounded font-bold">${badgeText}</span>
                 ${isAdmin && !isComplete ? `
-                  <button type="button" onclick="autoFixClassUnplaced('${c}')" title="Auto-Fill Empty Periods" class="p-1 bg-purple-600 hover:bg-purple-700 text-white rounded text-xs transition active:scale-95">
+                  <button type="button" onclick="autoFixClassUnplaced('${c}')" title="Auto-Fill Empty Periods" class="p-0.5 bg-purple-600 hover:bg-purple-700 text-white rounded text-[10px] transition active:scale-95">
                     🪄
                   </button>
                 ` : ''}
-                <button type="button" onclick="shareClassTimetableWhatsApp('${c}')" title="Share on WhatsApp" class="text-emerald-600 hover:text-emerald-800 p-1 rounded-full border border-emerald-200 w-6 h-6 inline-flex items-center justify-center bg-emerald-50">
-                  <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M12.004 2C6.48 2 2 6.48 2 12.004c0 1.765.46 3.48 1.334 4.996L2 22l5.176-1.359c1.476.804 3.136 1.227 4.82 1.227 5.524 0 10.004-4.48 10.004-10.004C22.004 6.48 17.524 2 12.004 2zM17.47 15.35c-.24.36-.84.66-1.2.78-.36.12-.84.18-1.32.18-.3-.02-.66-.06-1.02-.12-.36-.06-.72-.12-1.08-.24-1.56-.54-2.88-1.56-3.84-2.82-.42-.54-.78-1.14-1.02-1.8-.18-.48-.24-.96-.24-1.44 0-.48.12-.9.36-1.26l.48-.6c.18-.24.36-.48.54-.72l.48-.36c.12-.12.24-.18.36-.18s.24 0 .36.06c.12.06.24.18.36.36l1.02 2.22c.06.12.12.24.12.36s0 .24-.06.36c-.06.12-.12.24-.24.36l-.36.42c-.12.12-.24.24-.36.36s-.12.24-.06.36c.24.48.54.9 1.02 1.32s1.02.72 1.5 1.02c.12.06.24.06.36 0 .12-.06.24-.18.36-.3l.42-.48c.12-.12.24-.18.36-.18.12 0 .24.06.36.12l2.22 1.02c.18.06.3.18.36.3.06.12.06.24 0 .36z"/></svg>
+                <button type="button" onclick="shareClassTimetableWhatsApp('${c}')" title="Share on WhatsApp" class="text-emerald-600 hover:text-emerald-800 p-0.5 rounded-full border border-emerald-200 w-5 h-5 inline-flex items-center justify-center bg-emerald-50">
+                  <svg class="w-3 h-3 fill-current" viewBox="0 0 24 24"><path d="M12.004 2C6.48 2 2 6.48 2 12.004c0 1.765.46 3.48 1.334 4.996L2 22l5.176-1.359c1.476.804 3.136 1.227 4.82 1.227 5.524 0 10.004-4.48 10.004-10.004C22.004 6.48 17.524 2 12.004 2zM17.47 15.35c-.24.36-.84.66-1.2.78-.36.12-.84.18-1.32.18-.3-.02-.66-.06-1.02-.12-.36-.06-.72-.12-1.08-.24-1.56-.54-2.88-1.56-3.84-2.82-.42-.54-.78-1.14-1.02-1.8-.18-.48-.24-.96-.24-1.44 0-.48.12-.9.36-1.26l.48-.6c.18-.24.36-.48.54-.72l.48-.36c.12-.12.24-.18.36-.18s.24 0 .36.06c.12.06.24.18.36.36l1.02 2.22c.06.12.12.24.12.36s0 .24-.06.36c-.06.12-.12.24-.24.36l-.36.42c-.12.12-.24.24-.36.36s-.12.24-.06.36c.24.48.54.9 1.02 1.32s1.02.72 1.5 1.02c.12.06.24.06.36 0 .12-.06.24-.18.36-.3l.42-.48c.12-.12.24-.18.36-.18.12 0 .24.06.36.12l2.22 1.02c.18.06.3.18.36.3.06.12.06.24 0 .36z"/></svg>
                 </button>
               </div>
             </div>
@@ -3612,18 +3601,18 @@ and mobile-style labeled navigation.
 
         if (unplacedList.length > 0) {
           cardHtml += `
-            <div class="p-1.5 bg-amber-50/90 border border-amber-200 rounded text-[10px] text-amber-950 flex flex-wrap items-center justify-between gap-1 no-print">
+            <div class="p-1 bg-amber-50/90 border border-amber-200 rounded text-[9px] text-amber-950 flex flex-wrap items-center justify-between gap-1 no-print">
               <div class="flex flex-wrap items-center gap-1">
-                <span class="font-bold flex items-center gap-1 text-amber-900">⚠️ Unplaced (${unplacedList.reduce((sum, u) => sum + u.count, 0)}p):</span>
+                <span class="font-bold flex items-center gap-0.5 text-amber-900">⚠️ Unplaced (${unplacedList.reduce((sum, u) => sum + u.count, 0)}p):</span>
                 ${unplacedList.map(u => `
-                  <span class="bg-white border border-amber-300 text-amber-900 font-bold px-1.5 py-0.5 rounded text-[9px] shadow-xs">
-                    📌 ${u.subject} (${u.teacher}) - ${u.count}p
+                  <span class="bg-white border border-amber-300 text-amber-900 font-bold px-1 rounded text-[8px] shadow-2xs">
+                    ${u.subject}(${u.teacher})-${u.count}p
                   </span>
                 `).join('')}
               </div>
               ${isAdmin ? `
-                <button type="button" onclick="autoFixClassUnplaced('${c}')" title="Place with AI" class="p-1 text-purple-700 bg-purple-50 hover:bg-purple-100 rounded border border-purple-200 text-xs transition active:scale-95">
-                  🪄
+                <button type="button" onclick="autoFixClassUnplaced('${c}')" title="Place with AI" class="px-1.5 py-0.2 text-purple-700 bg-purple-50 hover:bg-purple-100 rounded border border-purple-200 text-[9px] font-bold transition active:scale-95">
+                  🪄 AI
                 </button>
               ` : ''}
             </div>
@@ -3632,18 +3621,18 @@ and mobile-style labeled navigation.
 
         cardHtml += `
             <div class="overflow-x-auto w-full">
-              <table class="w-full text-[10px] text-center border-collapse">
+              <table class="w-full text-[9px] sm:text-[10px] text-center border-collapse">
                 <thead>
                   <tr class="bg-slate-200 text-slate-700 font-semibold">
-                    <th class="border border-slate-300 p-1">Day</th>
-                    ${PERIOD_TIMES.map((t, idx) => `<th class="border border-slate-300 p-1">P${idx+1}<br><span class="text-[8px] font-normal">${t}</span></th>`).join("")}
+                    <th class="border border-slate-300 p-0.5">Day</th>
+                    ${PERIOD_TIMES.map((t, idx) => `<th class="border border-slate-300 p-0.5">P${idx+1}<br><span class="text-[7.5px] font-normal">${t}</span></th>`).join("")}
                   </tr>
                 </thead>
                 <tbody>
         `;
 
         DAYS.forEach((day, dIdx) => {
-          cardHtml += `<tr><td class="border border-slate-300 p-1 font-semibold bg-slate-100">${day}</td>`;
+          cardHtml += `<tr><td class="border border-slate-300 p-0.5 font-semibold bg-slate-100 text-[9px]">${day}</td>`;
           for (let pIdx = 0; pIdx < 7; pIdx++) {
             const slot = timetables[c][dIdx][pIdx];
             const isP7 = pIdx === 6;
@@ -3651,19 +3640,19 @@ and mobile-style labeled navigation.
             
             if (slot) {
               const isDual = Boolean(slot.subject2 && slot.teacher2);
-              const subjectDisplay = isDual ? `${slot.subject} / ${slot.subject2}` : slot.subject;
-              const teacherDisplay = isDual ? `${slot.teacher} / ${slot.teacher2}` : slot.teacher;
+              const subjectDisplay = isDual ? `${slot.subject}/${slot.subject2}` : slot.subject;
+              const teacherDisplay = isDual ? `${slot.teacher}/${slot.teacher2}` : slot.teacher;
 
               if (isAdmin) {
-                cardHtml += `<td onclick="openSlotEditor('class', '${c}', ${dIdx}, ${pIdx})" title="Click to Modify Period" class="interactive-slot border border-slate-300 p-1 ${bgClass}"><span class="font-bold text-indigo-900">${subjectDisplay}</span><br><span class="text-[8px] text-slate-500">${teacherDisplay}</span></td>`;
+                cardHtml += `<td onclick="openSlotEditor('class', '${c}', ${dIdx}, ${pIdx})" title="Click to Modify Period" class="interactive-slot border border-slate-300 p-0.5 ${bgClass}"><span class="font-bold text-indigo-900">${subjectDisplay}</span><br><span class="text-[7.5px] text-slate-500">${teacherDisplay}</span></td>`;
               } else {
-                cardHtml += `<td class="border border-slate-300 p-1 ${bgClass}"><span class="font-bold text-indigo-900">${subjectDisplay}</span><br><span class="text-[8px] text-slate-500">${teacherDisplay}</span></td>`;
+                cardHtml += `<td class="border border-slate-300 p-0.5 ${bgClass}"><span class="font-bold text-indigo-900">${subjectDisplay}</span><br><span class="text-[7.5px] text-slate-500">${teacherDisplay}</span></td>`;
               }
             } else {
               if (isAdmin) {
-                cardHtml += `<td onclick="openSlotEditor('class', '${c}', ${dIdx}, ${pIdx})" title="Click to Assign Period" class="interactive-slot border border-slate-300 p-1 bg-amber-50 text-amber-700 italic font-medium hover:bg-amber-100">+ Add</td>`;
+                cardHtml += `<td onclick="openSlotEditor('class', '${c}', ${dIdx}, ${pIdx})" title="Click to Assign Period" class="interactive-slot border border-slate-300 p-0.5 bg-amber-50 text-amber-700 italic font-medium hover:bg-amber-100">+ Add</td>`;
               } else {
-                cardHtml += `<td class="border border-slate-300 p-1 bg-amber-50/50 text-slate-400 italic font-medium">Empty</td>`;
+                cardHtml += `<td class="border border-slate-300 p-0.5 bg-amber-50/50 text-slate-400 italic font-medium">Empty</td>`;
               }
             }
           }
@@ -3711,43 +3700,43 @@ and mobile-style labeled navigation.
         const badgeText = `${allottedPeriods}/${targetPeriods}p`;
 
         let cardHtml = `
-          <div class="teacher-timetable-card bg-slate-50 p-2.5 sm:p-3 rounded-lg border border-slate-200 shadow-xs space-y-1.5 w-full">
-            <div class="flex justify-between items-center border-b pb-1.5">
-              <div class="flex items-center gap-1.5">
-                <h3 class="text-xs sm:text-sm font-bold text-slate-900">Teacher: ${t}</h3>
-                <span class="text-[9px] bg-teal-100 text-teal-800 px-1.5 py-0.5 rounded font-semibold no-print">Teacher View</span>
+          <div class="teacher-timetable-card bg-slate-50 p-2 rounded-lg border border-slate-200 shadow-2xs space-y-1 w-full">
+            <div class="flex justify-between items-center border-b pb-1">
+              <div class="flex items-center gap-1">
+                <span class="font-bold text-xs text-slate-900">${t}</span>
+                <span class="text-[9px] bg-teal-100 text-teal-800 px-1 rounded font-semibold no-print">Teacher</span>
               </div>
               
               <div class="flex items-center gap-1 no-print">
-                <span class="text-[10px] ${badgeStyle} border px-1.5 py-0.5 rounded font-bold" title="Total Allotted / Target">${badgeText}</span>
-                <button type="button" onclick="shareTeacherTimetableWhatsApp('${t}')" title="Share on WhatsApp" class="text-emerald-600 hover:text-emerald-800 p-1 rounded-full border border-emerald-200 w-6 h-6 inline-flex items-center justify-center bg-emerald-50">
-                  <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M12.004 2C6.48 2 2 6.48 2 12.004c0 1.765.46 3.48 1.334 4.996L2 22l5.176-1.359c1.476.804 3.136 1.227 4.82 1.227 5.524 0 10.004-4.48 10.004-10.004C22.004 6.48 17.524 2 12.004 2zM17.47 15.35c-.24.36-.84.66-1.2.78-.36.12-.84.18-1.32.18-.3-.02-.66-.06-1.02-.12-.36-.06-.72-.12-1.08-.24-1.56-.54-2.88-1.56-3.84-2.82-.42-.54-.78-1.14-1.02-1.8-.18-.48-.24-.96-.24-1.44 0-.48.12-.9.36-1.26l.48-.6c.18-.24.36-.48.54-.72l.48-.36c.12-.12.24-.18.36-.18s.24 0 .36.06c.12.06.24.18.36.36l1.02 2.22c.06.12.12.24.12.36s0 .24-.06.36c-.06.12-.12.24-.24.36l-.36.42c-.12.12-.24.24-.36.36s-.12.24-.06.36c.24.48.54.9 1.02 1.32s1.02.72 1.5 1.02c.12.06.24.06.36 0 .12-.06.24-.18.36-.3l.42-.48c.12-.12.24-.18.36-.18.12 0 .24.06.36.12l2.22 1.02c.18.06.3.18.36.3.06.12.06.24 0 .36z"/></svg>
+                <span class="text-[9px] ${badgeStyle} border px-1.5 py-0.2 rounded font-bold" title="Total Allotted / Target">${badgeText}</span>
+                <button type="button" onclick="shareTeacherTimetableWhatsApp('${t}')" title="Share on WhatsApp" class="text-emerald-600 hover:text-emerald-800 p-0.5 rounded-full border border-emerald-200 w-5 h-5 inline-flex items-center justify-center bg-emerald-50">
+                  <svg class="w-3 h-3 fill-current" viewBox="0 0 24 24"><path d="M12.004 2C6.48 2 2 6.48 2 12.004c0 1.765.46 3.48 1.334 4.996L2 22l5.176-1.359c1.476.804 3.136 1.227 4.82 1.227 5.524 0 10.004-4.48 10.004-10.004C22.004 6.48 17.524 2 12.004 2zM17.47 15.35c-.24.36-.84.66-1.2.78-.36.12-.84.18-1.32.18-.3-.02-.66-.06-1.02-.12-.36-.06-.72-.12-1.08-.24-1.56-.54-2.88-1.56-3.84-2.82-.42-.54-.78-1.14-1.02-1.8-.18-.48-.24-.96-.24-1.44 0-.48.12-.9.36-1.26l.48-.6c.18-.24.36-.48.54-.72l.48-.36c.12-.12.24-.18.36-.18s.24 0 .36.06c.12.06.24.18.36.36l1.02 2.22c.06.12.12.24.12.36s0 .24-.06.36c-.06.12-.12.24-.24.36l-.36.42c-.12.12-.24.24-.36.36s-.12.24-.06.36c.24.48.54.9 1.02 1.32s1.02.72 1.5 1.02c.12.06.24.06.36 0 .12-.06.24-.18.36-.3l.42-.48c.12-.12.24-.18.36-.18.12 0 .24.06.36.12l2.22 1.02c.18.06.3.18.36.3.06.12.06.24 0 .36z"/></svg>
                 </button>
               </div>
             </div>
             <div class="overflow-x-auto w-full">
-              <table class="w-full text-[10px] text-center border-collapse">
+              <table class="w-full text-[9px] sm:text-[10px] text-center border-collapse">
                 <thead>
                   <tr class="bg-slate-200 text-slate-700 font-semibold">
-                    <th class="border border-slate-300 p-1">Day</th>
-                    ${PERIOD_TIMES.map((time, idx) => `<th class="border border-slate-300 p-1">P${idx+1}<br><span class="text-[8px] font-normal">${time}</span></th>`).join("")}
+                    <th class="border border-slate-300 p-0.5">Day</th>
+                    ${PERIOD_TIMES.map((time, idx) => `<th class="border border-slate-300 p-0.5">P${idx+1}<br><span class="text-[7.5px] font-normal">${time}</span></th>`).join("")}
                   </tr>
                 </thead>
                 <tbody>
         `;
 
         DAYS.forEach((day, dIdx) => {
-          cardHtml += `<tr><td class="border border-slate-300 p-1 font-semibold bg-slate-100">${day}</td>`;
+          cardHtml += `<tr><td class="border border-slate-300 p-0.5 font-semibold bg-slate-100 text-[9px]">${day}</td>`;
           for (let pIdx = 0; pIdx < 7; pIdx++) {
             const slot = schedules[t][dIdx][pIdx];
             if (isAdmin) {
               cardHtml += slot 
-                ? `<td onclick="openSlotEditor('teacher', '${t}', ${dIdx}, ${pIdx})" title="Click to Modify Period" class="interactive-slot border border-slate-300 p-1 bg-white text-slate-800"><span class="font-bold text-teal-800">Class ${slot.className}</span><br><span class="text-[8px] text-slate-500">${slot.subject}</span></td>`
-                : `<td onclick="openSlotEditor('teacher', '${t}', ${dIdx}, ${pIdx})" title="Click to Assign Class" class="interactive-slot border border-slate-300 p-1 bg-white text-slate-300 font-normal hover:bg-slate-100 hover:text-slate-600">+ Free</td>`;
+                ? `<td onclick="openSlotEditor('teacher', '${t}', ${dIdx}, ${pIdx})" title="Click to Modify Period" class="interactive-slot border border-slate-300 p-0.5 bg-white text-slate-800"><span class="font-bold text-teal-800">Class ${slot.className}</span><br><span class="text-[7.5px] text-slate-500">${slot.subject}</span></td>`
+                : `<td onclick="openSlotEditor('teacher', '${t}', ${dIdx}, ${pIdx})" title="Click to Assign Class" class="interactive-slot border border-slate-300 p-0.5 bg-white text-slate-300 font-normal hover:bg-slate-100 hover:text-slate-600">+ Free</td>`;
             } else {
               cardHtml += slot 
-                ? `<td class="border border-slate-300 p-1 bg-white text-slate-800"><span class="font-bold text-teal-800">Class ${slot.className}</span><br><span class="text-[8px] text-slate-500">${slot.subject}</span></td>`
-                : `<td class="border border-slate-300 p-1 bg-white text-slate-300 font-normal">Free</td>`;
+                ? `<td class="border border-slate-300 p-0.5 bg-white text-slate-800"><span class="font-bold text-teal-800">Class ${slot.className}</span><br><span class="text-[7.5px] text-slate-500">${slot.subject}</span></td>`
+                : `<td class="border border-slate-300 p-0.5 bg-white text-slate-300 font-normal">Free</td>`;
             }
           }
           cardHtml += `</tr>`;
@@ -3770,17 +3759,17 @@ and mobile-style labeled navigation.
       setTimetableFocusMode(true);
 
       if (type === 'class') {
-        if (classBtn) classBtn.className = "px-3.5 py-1.5 border-b-2 border-indigo-600 text-indigo-600 font-bold text-xs sm:text-sm active:scale-95 transition";
-        if (teacherBtn) teacherBtn.className = "px-3.5 py-1.5 border-b-2 border-transparent text-slate-500 hover:text-slate-700 font-bold text-xs sm:text-sm active:scale-95 transition ml-2";
-        if (focusClassBtn) focusClassBtn.className = "px-3 py-1.5 rounded-md font-bold text-xs shadow-xs transition active:scale-95 bg-indigo-600 text-white";
-        if (focusTeacherBtn) focusTeacherBtn.className = "px-3 py-1.5 rounded-md font-bold text-xs shadow-xs transition active:scale-95 bg-white text-slate-700 border border-slate-300 hover:bg-slate-50";
+        if (classBtn) classBtn.className = "px-3 py-1 border-b-2 border-indigo-600 text-indigo-600 font-bold text-xs active:scale-95 transition";
+        if (teacherBtn) teacherBtn.className = "px-3 py-1 border-b-2 border-transparent text-slate-500 hover:text-slate-700 font-bold text-xs active:scale-95 transition ml-1.5";
+        if (focusClassBtn) focusClassBtn.className = "px-2.5 py-1 rounded font-bold text-[11px] transition active:scale-95 bg-indigo-600 text-white";
+        if (focusTeacherBtn) focusTeacherBtn.className = "px-2.5 py-1 rounded font-bold text-[11px] transition active:scale-95 bg-white text-slate-700 border border-slate-300 hover:bg-slate-50";
         classCont.classList.remove("hidden");
         teacherCont.classList.add("hidden");
       } else {
-        if (teacherBtn) teacherBtn.className = "px-3.5 py-1.5 border-b-2 border-teal-600 text-teal-600 font-bold text-xs sm:text-sm active:scale-95 transition ml-2";
-        if (classBtn) classBtn.className = "px-3.5 py-1.5 border-b-2 border-transparent text-slate-500 hover:text-slate-700 font-bold text-xs sm:text-sm active:scale-95 transition";
-        if (focusTeacherBtn) focusTeacherBtn.className = "px-3 py-1.5 rounded-md font-bold text-xs shadow-xs transition active:scale-95 bg-teal-600 text-white";
-        if (focusClassBtn) focusClassBtn.className = "px-3 py-1.5 rounded-md font-bold text-xs shadow-xs transition active:scale-95 bg-white text-slate-700 border border-slate-300 hover:bg-slate-50";
+        if (teacherBtn) teacherBtn.className = "px-3 py-1 border-b-2 border-teal-600 text-teal-600 font-bold text-xs active:scale-95 transition ml-1.5";
+        if (classBtn) classBtn.className = "px-3 py-1 border-b-2 border-transparent text-slate-500 hover:text-slate-700 font-bold text-xs active:scale-95 transition";
+        if (focusTeacherBtn) focusTeacherBtn.className = "px-2.5 py-1 rounded font-bold text-[11px] transition active:scale-95 bg-teal-600 text-white";
+        if (focusClassBtn) focusClassBtn.className = "px-2.5 py-1 rounded font-bold text-[11px] transition active:scale-95 bg-white text-slate-700 border border-slate-300 hover:bg-slate-50";
         classCont.classList.add("hidden");
         teacherCont.classList.remove("hidden");
       }
@@ -3833,7 +3822,7 @@ and mobile-style labeled navigation.
       batch.commit().then(() => {
         if (!isFromModal) {
           completeTopLoader();
-          showStatus(`✅ All distributions synced to Cloud Firestore! (${new Date().toLocaleTimeString()})`);
+          showStatus(`✅ Synced to Firestore! (${new Date().toLocaleTimeString()})`);
         }
       }).catch(err => {
         if (!isFromModal) completeTopLoader();
@@ -3845,7 +3834,7 @@ and mobile-style labeled navigation.
     printBtn.addEventListener("click", () => printTimetables("default"));
 
     function printTimetables(target) {
-      document.body.className = `bg-slate-50 min-h-screen text-slate-800 font-sans pb-8 w-full print-${target}`;
+      document.body.className = `bg-slate-50 min-h-screen text-slate-800 font-sans pb-6 w-full print-${target}`;
       window.print();
     }
 
@@ -3925,7 +3914,7 @@ and mobile-style labeled navigation.
           }
         });
         if (activeTeacher) loadTeacherForm(activeTeacher);
-        syncTimestamp.textContent = `Last Synced: ${new Date().toLocaleTimeString()}`;
+        syncTimestamp.textContent = `Last: ${new Date().toLocaleTimeString()}`;
         updateTables();
         if (isManual) completeTopLoader();
       }, () => {
